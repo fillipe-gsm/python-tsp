@@ -40,11 +40,16 @@ class TestEuclideanDistanceMatrix:
 
         assert np.all(distance_matrix >= 0)
 
-    def test_diagonal_has_zeros_with_square_matrix(self, sources):
+    def test_square_matrix_has_zero_diagonal(self, sources):
         """Main diagonal is the distance from a point to itself"""
         distance_matrix = distances.euclidean_distance_matrix(sources, sources)
 
         assert np.all(np.diag(distance_matrix) == 0)
+
+    def test_square_matrix_is_symmetric(self, sources):
+        distance_matrix = distances.euclidean_distance_matrix(sources, sources)
+
+        assert np.allclose(distance_matrix, distance_matrix.T)
 
     def test_matrix_has_proper_shape(self, sources, destinations):
         """N sources and M destinations should produce an (N x M) array"""
@@ -54,3 +59,45 @@ class TestEuclideanDistanceMatrix:
 
         N, M = sources.shape[0], destinations.shape[0]
         assert distance_matrix.shape == (N, M)
+
+
+class TestGreatCircleDistanceMatrix:
+    def test_all_elements_are_non_negative(self, sources, destinations):
+        """Being distances, all elements must be non-negative"""
+        distance_matrix = distances.great_circle_distance_matrix(
+            sources, destinations
+        )
+
+        assert np.all(distance_matrix >= 0)
+
+    def test_square_matrix_has_zero_diagonal(self, sources):
+        """Main diagonal is the distance from a point to itself"""
+        distance_matrix = distances.great_circle_distance_matrix(
+            sources, sources
+        )
+
+        assert np.all(np.diag(distance_matrix) == 0)
+
+    def test_square_matrix_is_symmetric(self, sources):
+        distance_matrix = distances.great_circle_distance_matrix(
+            sources, sources
+        )
+
+        assert np.allclose(distance_matrix, distance_matrix.T)
+
+    def test_matrix_has_proper_shape(self, sources, destinations):
+        """N sources and M destinations should produce an (N x M) array"""
+        distance_matrix = distances.great_circle_distance_matrix(
+            sources, destinations
+        )
+
+        N, M = sources.shape[0], destinations.shape[0]
+        assert distance_matrix.shape == (N, M)
+
+    def test_distance_works_with_1d_arrays(self, sources, destinations):
+        """The code is vectorized for 2d arrays, but should work for 1d as well
+        """
+        source = sources[0]
+        destination = destinations[0]
+
+        distances.great_circle_distance_matrix(source, destination)
