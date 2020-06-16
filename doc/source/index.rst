@@ -3,8 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to python-tsp's documentation!
-======================================
+Simple TSP Solver in Pure Python
+================================
+
+Python-tsp is a simple library providing functions to solve TSP problems.
+
+
+Audience
+--------
+
+It is intended for users
 
 .. toctree::
    :maxdepth: 2
