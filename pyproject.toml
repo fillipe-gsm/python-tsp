@@ -6,6 +6,8 @@ authors = ["Fillipe Goulart <fillipe.gsm@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+sphinx = "^3.1.1"
+numpy = "^1.18.5"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
