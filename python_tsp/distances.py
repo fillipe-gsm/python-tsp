@@ -1,4 +1,4 @@
-"""Compute distance matrices for given sets of points"""
+"""Contains typical distance matrices"""
 
 import numpy as np
 
@@ -51,7 +51,7 @@ def great_circle_distance_matrix(
     ----------
     sources, destinations
         Arrays with each row containing the coordinates of a point in the form
-        [lat, lng].
+        [lat, lng]. Notice it only considers the first two columns.
 
     Returns
     -------
