@@ -71,3 +71,41 @@ class TestBruteForceAlgorithm:
         n = distance_matrix.shape[0]
         assert len(permutation) == n
         assert set(permutation) == set(range(n))
+
+    @pytest.mark.parametrize(
+        "distance_matrix, expected_permutation, expected_distance",
+        [
+            (symmetric_distance_matrix, [0, 1, 2, 0], 11),
+            (unsymmetric_distance_matrix, [0, 2, 1, 0], 7)
+        ]
+    )
+    def test_solution_is_optimal_closed_problem(
+        self, distance_matrix, expected_permutation, expected_distance
+    ):
+        """This exact method should return an optimal solution"""
+        permutation, distance = brute_force.solve_tsp_brute_force(
+            distance_matrix
+        )
+
+        assert permutation == expected_permutation
+        assert distance == expected_distance
+
+    @pytest.mark.parametrize(
+        "distance_matrix, expected_permutation, expected_distance",
+        [
+            (symmetric_distance_matrix, [0, 1, 2], 7),
+            (unsymmetric_distance_matrix, [0, 2, 1], 6)
+        ]
+    )
+    def test_solution_is_optimal_open_problem(
+        self, distance_matrix, expected_permutation, expected_distance
+    ):
+        """
+        This exact method should return an optimal solution in the open case
+        """
+        permutation, distance = brute_force.solve_tsp_brute_force(
+            distance_matrix, open_tsp=True
+        )
+
+        assert permutation == expected_permutation
+        assert distance == expected_distance
