@@ -9,7 +9,7 @@ import numpy as np
 def solve_tsp_brute_force(
     distance_matrix: np.ndarray, open_tsp: bool = False
 ) -> Tuple[List, float]:
-    """Solve TSP with a brute force approach
+    """Solve TSP to optimality with a brute force approach
 
     Parameters
     ----------
