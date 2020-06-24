@@ -1,8 +1,9 @@
 import numpy as np
 import pytest
 
-from python_tsp.brute_force import solve_tsp_brute_force, _permutation_distance
-from python_tsp.dynamic_programming import solve_tsp_dynamic_programming
+from python_tsp.exact import (
+    solve_tsp_brute_force, solve_tsp_dynamic_programming
+)
 
 
 symmetric_distance_matrix = np.array([
@@ -18,6 +19,24 @@ unsymmetric_distance_matrix = np.array([
 ])
 
 
+class TestImportModule:
+    def test_can_import_exact_solvers(self):
+        """
+        Check if the main functions can be imported from the `exact` package
+        """
+        from python_tsp.exact import (  # noqa
+            solve_tsp_brute_force, solve_tsp_dynamic_programming
+        )
+
+    def test_cannot_import_auxiliar_function(self):
+        """
+        Check if auxiliar function inside modules are not importable directly
+        from `exact` package
+        """
+        with pytest.raises(ImportError):
+            from python_tsp.exact import _permutation_distance  # noqa
+
+
 class TestBruteForceAlgorithm:
     @pytest.mark.parametrize(
         "distance_matrix, expected_distance",
@@ -30,7 +49,11 @@ class TestBruteForceAlgorithm:
         For the permutation [0, 2, 1], the correct distances are:
             - 4 + 5 + 2 = 11, for the symmetric case
             - 4 + 2 + 1 = 7, for the unsymmetric case
+        This function tests a subfunction inside the module, so it is imported
+        explicitly in this case
         """
+        from python_tsp.exact.brute_force import _permutation_distance
+
         permutation = (2, 1)  # node 0 is automatically inserted in the code
         distance = _permutation_distance(
             permutation, distance_matrix
