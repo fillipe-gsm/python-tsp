@@ -22,6 +22,11 @@ def solve_tsp_dynamic_programming(
         True for an open problem (the traveler does not return to the origin).
         In that case, the first column of the `distance_matrix` is zeroed.
 
+    maxsize
+        Parameter passed to ``lru_cache`` decorator. Used to define the maximum
+        size for the recursion tree. Defaults to `None`, which essentially
+        means "take as much space as needed".
+
     Returns
     -------
     permutation
