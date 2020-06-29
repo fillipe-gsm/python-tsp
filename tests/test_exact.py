@@ -120,34 +120,13 @@ class TestBruteForceAlgorithm:
 class TestDynamicProgrammingAlgorithm:
     @pytest.mark.parametrize(
         "distance_matrix",
-        [distance_matrix1, distance_matrix2]
+        [distance_matrix1, distance_matrix2, distance_matrix3]
     )
-    def test_solution_has_all_nodes_closed_problem(self, distance_matrix):
-        """Check if the solution has all input nodes in the closed version
-        For an input with n nodes, the solution must have lenght n + 1, with
-        the starting node being repeated, and all nodes from 0 to n.
+    def test_solution_has_all_nodes(self, distance_matrix):
+        """Check if the solution has all input nodes in any order
         """
 
-        permutation, _ = solve_tsp_dynamic_programming(
-            distance_matrix
-        )
-
-        n = distance_matrix.shape[0]
-        assert len(permutation) == n + 1
-        assert set(permutation) == set(range(n))
-
-    @pytest.mark.parametrize(
-        "distance_matrix",
-        [distance_matrix1, distance_matrix2]
-    )
-    def test_solution_has_all_nodes_open_problem(self, distance_matrix):
-        """Check if the solution has all input nodes in the open version
-        For an input with n nodes, the solution must have lenght n, plus all
-        nodes from 0 to n.
-        """
-        permutation, _ = solve_tsp_dynamic_programming(
-            distance_matrix, open_tsp=True
-        )
+        permutation, _ = solve_tsp_dynamic_programming(distance_matrix)
 
         n = distance_matrix.shape[0]
         assert len(permutation) == n
@@ -156,37 +135,16 @@ class TestDynamicProgrammingAlgorithm:
     @pytest.mark.parametrize(
         "distance_matrix, expected_permutation, expected_distance",
         [
-            (distance_matrix1, [0, 1, 2, 0], 11),
-            (distance_matrix2, [0, 2, 1, 0], 7)
+            (distance_matrix1, optimal_permutation1, optimal_distance1),
+            (distance_matrix2, optimal_permutation2, optimal_distance2),
+            (distance_matrix3, optimal_permutation3, optimal_distance3),
         ]
     )
-    def test_solution_is_optimal_closed_problem(
+    def test_solution_is_optimal(
         self, distance_matrix, expected_permutation, expected_distance
     ):
         """This exact method should return an optimal solution"""
-        permutation, distance = solve_tsp_dynamic_programming(
-            distance_matrix
-        )
-
-        assert permutation == expected_permutation
-        assert distance == expected_distance
-
-    @pytest.mark.parametrize(
-        "distance_matrix, expected_permutation, expected_distance",
-        [
-            (distance_matrix1, [0, 1, 2], 7),
-            (distance_matrix2, [0, 2, 1], 6)
-        ]
-    )
-    def test_solution_is_optimal_open_problem(
-        self, distance_matrix, expected_permutation, expected_distance
-    ):
-        """
-        This exact method should return an optimal solution in the open case
-        """
-        permutation, distance = solve_tsp_dynamic_programming(
-            distance_matrix, open_tsp=True
-        )
+        permutation, distance = solve_tsp_dynamic_programming(distance_matrix)
 
         assert permutation == expected_permutation
         assert distance == expected_distance

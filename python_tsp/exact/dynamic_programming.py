@@ -6,7 +6,6 @@ import numpy as np
 
 def solve_tsp_dynamic_programming(
     distance_matrix: np.ndarray,
-    open_tsp: bool = False,
     maxsize: Optional = None
 ) -> Tuple[List, float]:
     """
@@ -18,10 +17,6 @@ def solve_tsp_dynamic_programming(
         Distance matrix of shape (n x n) with the (i, j) entry indicating the
         distance from node i to j. It does not need to be symmetric
 
-    open_tsp
-        True for an open problem (the traveler does not return to the origin).
-        In that case, the first column of the `distance_matrix` is zeroed.
-
     maxsize
         Parameter passed to ``lru_cache`` decorator. Used to define the maximum
         size for the recursion tree. Defaults to `None`, which essentially
@@ -30,8 +25,8 @@ def solve_tsp_dynamic_programming(
     Returns
     -------
     permutation
-        A permutation of nodes from 0 to n (with another 0 in case of a closed
-        problem) that produces the least total distance
+        A permutation of nodes from 0 to n that produces the least total
+        distance
 
     distance
         The total distance the optimal permutation produces
@@ -95,12 +90,6 @@ def solve_tsp_dynamic_programming(
     ---------
     https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm#cite_note-5
     """
-
-    if open_tsp:
-        # Copy the matrix to prevent messing with external data
-        distance_matrix = distance_matrix.copy()
-        distance_matrix[:, 0] = 0
-
     # Get initial set {1, 2, ..., tsp_size}. Notice it needs to be a tuple
     # since @lru_cache requires a hashable type
     N = frozenset(range(1, distance_matrix.shape[0]))
@@ -109,18 +98,18 @@ def solve_tsp_dynamic_programming(
     # Step 1: get minimum distance
     @lru_cache(maxsize=maxsize)
     def dist(ni, N):
-        if N:
-            # Store the costs in the form (nj, dist(nj, N))
-            costs = [
-                (nj, distance_matrix[ni, nj] + dist(nj, N.difference({nj})))
-                for nj in N
-            ]
-            # Get node with smallest cost and store in the memo
-            nmin, min_cost = min(costs, key=lambda x: x[1])
-            memo[(ni, N)] = nmin
-            return min_cost
+        if not N:
+            return distance_matrix[ni, 0]
 
-        return distance_matrix[ni, 0]
+        # Store the costs in the form (nj, dist(nj, N))
+        costs = [
+            (nj, distance_matrix[ni, nj] + dist(nj, N.difference({nj})))
+            for nj in N
+        ]
+        # Get node with smallest cost and store in the memo
+        nmin, min_cost = min(costs, key=lambda x: x[1])
+        memo[(ni, N)] = nmin
+        return min_cost
 
     best_distance = dist(0, N)
 
@@ -131,9 +120,5 @@ def solve_tsp_dynamic_programming(
         ni = memo[(ni, N)]
         solution.append(ni)
         N = N.difference({ni})
-
-    # Insert node 0 if the problem requires coming back to origin
-    if not open_tsp:
-        solution.append(0)
 
     return solution, best_distance
