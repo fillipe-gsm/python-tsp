@@ -5,6 +5,8 @@ from typing import List, Tuple
 
 import numpy as np
 
+from python_tsp.utils import compute_permutation_distance
+
 
 def solve_tsp_brute_force(distance_matrix: np.ndarray) -> Tuple[List, float]:
     """Solve TSP to optimality with a brute force approach
@@ -36,20 +38,12 @@ def solve_tsp_brute_force(distance_matrix: np.ndarray) -> Tuple[List, float]:
     points = range(1, distance_matrix.shape[0])
     best_distance = np.inf
     best_solution = None
-    for permutation in permutations(points):
-        distance = _permutation_distance(permutation, distance_matrix)
+    for partial_permutation in permutations(points):
+        # Add 0 node to the partial permutation and convert to a list
+        permutation = [0] + list(partial_permutation)
+        distance = compute_permutation_distance(permutation, distance_matrix)
         if distance < best_distance:
             best_distance = distance
             best_solution = permutation
 
-    # Insert node 0 at the beginning
-    best_solution = [0] + list(best_solution)
     return best_solution, best_distance
-
-
-def _permutation_distance(permutation, distance_matrix):
-    """Compute distance of a given permutation"""
-    permutation = list(permutation)
-    ind1 = [0] + permutation
-    ind2 = permutation + [0]
-    return distance_matrix[ind1, ind2].sum()

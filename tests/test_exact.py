@@ -60,32 +60,6 @@ class TestImportModule:
 
 class TestBruteForceAlgorithm:
     @pytest.mark.parametrize(
-        "distance_matrix, expected_distance",
-        [
-            (distance_matrix1, 28),
-            (distance_matrix2, 26),
-            (distance_matrix3, 20)
-        ]
-    )
-    def test_return_correct_permutation_distance(
-        self, distance_matrix, expected_distance
-    ):
-        """Check if the correct distance is returned for a given permutation
-        This function tests a subfunction inside the module, so it is imported
-        explicitly in this case
-        """
-        from python_tsp.exact.brute_force import _permutation_distance
-
-        # Get a random permutation (node 0 is automatically inserted in the
-        # code)
-        permutation = (2, 3, 1, 4)
-        distance = _permutation_distance(
-            permutation, distance_matrix
-        )
-
-        assert distance == expected_distance
-
-    @pytest.mark.parametrize(
         "distance_matrix",
         [distance_matrix1, distance_matrix2, distance_matrix3]
     )
