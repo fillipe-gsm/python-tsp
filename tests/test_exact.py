@@ -19,14 +19,6 @@ class TestImportModule:
             solve_tsp_brute_force, solve_tsp_dynamic_programming
         )
 
-    def test_cannot_import_auxiliar_function(self):
-        """
-        Check if auxiliar function inside modules are not importable directly
-        from `exact` package
-        """
-        with pytest.raises(ImportError):
-            from python_tsp.exact import _permutation_distance  # noqa
-
 
 class TestBruteForceAlgorithm:
     @pytest.mark.parametrize(
