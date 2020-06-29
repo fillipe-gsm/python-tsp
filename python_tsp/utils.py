@@ -23,5 +23,5 @@ def compute_permutation_distance(
     given permutation, and moving the first node to the end to generate ind2.
     """
     ind1 = permutation
-    ind2 = permutation[1:] + [0]
+    ind2 = permutation[1:] + permutation[:1]
     return distance_matrix[ind1, ind2].sum()
