@@ -41,7 +41,7 @@ def solve_tsp_brute_force(distance_matrix: np.ndarray) -> Tuple[List, float]:
     for partial_permutation in permutations(points):
         # Add 0 node to the partial permutation and convert to a list
         permutation = [0] + list(partial_permutation)
-        distance = compute_permutation_distance(permutation, distance_matrix)
+        distance = compute_permutation_distance(distance_matrix, permutation)
         if distance < best_distance:
             best_distance = distance
             best_solution = permutation

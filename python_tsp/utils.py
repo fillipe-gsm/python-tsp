@@ -5,9 +5,23 @@ import numpy as np
 
 
 def compute_permutation_distance(
-    permutation: List[int], distance_matrix: np.ndarray
+    distance_matrix: np.ndarray, permutation: List[int]
 ) -> float:
     """Compute distance of a given permutation
+
+    Parameters
+    ----------
+    distance_matrix
+        Distance matrix of shape (n x n) with the (i, j) entry indicating the
+        distance from node i to j. It does not need to be symmetric
+
+    permutation
+        A list with nodes from 0 to n-1 in any order
+
+    Returns
+    -------
+    Total distance of the path given in `permutation` for the provided
+    `distance_matrix`
 
     Notes
     -----

@@ -23,7 +23,7 @@ class TestComputePermutationDistance:
         a given distance matrix
         """
         permutation = [0, 2, 3, 1, 4]
-        distance = compute_permutation_distance(permutation, distance_matrix)
+        distance = compute_permutation_distance(distance_matrix, permutation)
 
         assert distance == expected_distance
 
@@ -43,6 +43,6 @@ class TestComputePermutationDistance:
         """
         # Same permutation as before but starting at 3
         permutation = [3, 1, 4, 0, 2]
-        distance = compute_permutation_distance(permutation, distance_matrix)
+        distance = compute_permutation_distance(distance_matrix, permutation)
 
         assert distance == expected_distance
