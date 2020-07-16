@@ -52,7 +52,7 @@ def _initial_solution(
 
 def _neighborhood_search(
     distance_matrix: np.ndarray, x: List[int], fx: float
-) -> Tuple[List[int], float, bool]:
+) -> Tuple[bool, List[int], float]:
     """Perform neighborhood search and return the best neighbor
 
     Parameters
