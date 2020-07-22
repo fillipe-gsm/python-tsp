@@ -63,7 +63,7 @@ def great_circle_distance_matrix(
     References
     ----------
     [1] https://en.wikipedia.org/wiki/Great-circle_distance
-    Using the second computational formula
+    Using the third computational formula
     """
     # Ensure at least two dimensions for the following vectorized code work
     sources = np.atleast_2d(sources)
@@ -73,13 +73,18 @@ def great_circle_distance_matrix(
     dests_rad = np.radians(destinations)
 
     # Define variables for better readability
-    delta_phi = sources_rad[:, [0]] - dests_rad[:, 0]  # (N x M) lat difference
-    delta_lambda = sources_rad[:, [1]] - dests_rad[:, 1]  # (N x M) lng
-    phi1 = sources_rad[:, [0]]  # (N x 1) array of source latitudes
-    phi2 = dests_rad[:, 0]  # (1 x M) array of destination latitudes
+    delta_lambda = sources_rad[:, [0]] - dests_rad[:, 0]  # (N x M) lng
+    phi1 = sources_rad[:, [1]]  # (N x 1) array of source latitudes
+    phi2 = dests_rad[:, 1]  # (1 x M) array of destination latitudes
 
-    delta_sigma = 2 * np.arcsin(np.sqrt(
-        np.sin(delta_phi / 2)**2
-        + np.cos(phi1) * np.cos(phi2) * np.sin(delta_lambda / 2)**2
-    ))
+    delta_sigma = np.arctan2(
+        np.sqrt(
+            (np.cos(phi2) * np.sin(delta_lambda))**2 +
+            (np.cos(phi1) * np.sin(phi2) -
+             np.sin(phi1) * np.cos(phi2) * np.cos(delta_lambda))**2
+        ),
+        (np.sin(phi1) * np.sin(phi2) +
+         np.cos(phi1) * np.cos(phi2) * np.cos(delta_lambda))
+    )
+
     return EARTH_RADIUS_M * delta_sigma
