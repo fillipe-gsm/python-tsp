@@ -78,8 +78,8 @@ def great_circle_distance_matrix(
     phi1 = sources_rad[:, [0]]  # (N x 1) array of source latitudes
     phi2 = dests_rad[:, 0]  # (1 x M) array of destination latitudes
 
-    delta_sigma = 2*np.arcsin(np.sqrt(
-        np.sin(delta_phi/2)**2
-        + np.cos(phi1)*np.cos(phi2)*np.sin(delta_lambda/2)**2
+    delta_sigma = 2 * np.arcsin(np.sqrt(
+        np.sin(delta_phi / 2)**2
+        + np.cos(phi1) * np.cos(phi2) * np.sin(delta_lambda / 2)**2
     ))
-    return EARTH_RADIUS_M*delta_sigma
+    return EARTH_RADIUS_M * delta_sigma
