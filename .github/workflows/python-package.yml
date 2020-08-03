@@ -26,8 +26,10 @@ jobs:
     - name: Install dependencies
       run: |
         # ** The original poetry script simply never finishes, so I had to use pip
-        python -m pip install --upgrade pip
-        pip install poetry
+        #python -m pip install --upgrade pip
+        #pip install poetry
+        # Trying to install with poetry's preferred method
+        curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
         poetry install
     - name: Lint with flake8
       run: |
@@ -43,4 +45,4 @@ jobs:
         poetry run mypy --ignore-missing-imports .
     - name: Test with pytest
       run: |
-        pytest tests/
+        poetry run pytest tests/
