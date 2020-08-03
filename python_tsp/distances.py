@@ -1,4 +1,5 @@
 """Contains typical distance matrices"""
+import typing
 
 import numpy as np
 
@@ -6,14 +7,16 @@ EARTH_RADIUS_M = 6371000  # Earth radius in meters
 
 
 def euclidean_distance_matrix(
-    sources: np.ndarray, destinations: np.ndarray
+    sources: np.ndarray, destinations: typing.Optional[np.ndarray] = None
 ) -> np.ndarray:
     """Distance matrix using the Euclidean distance
 
     Parameters
     ----------
     sources, destinations
-        Arrays with each row containing the coordinates of a point
+        Arrays with each row containing the coordinates of a point. If
+        ``destinations`` is None, compute the distance between each source in
+        ``sources``.
 
     Returns
     -------
@@ -31,17 +34,14 @@ def euclidean_distance_matrix(
     If the user requires the distance between each point in a single array,
     call this this function with `sources` = `destinations`.
     """
-    # Ensure at least two dimensions for the following vectorized code work
-    sources = np.atleast_2d(sources)
-    destinations = np.atleast_2d(destinations)
-
+    sources, destinations = _process_input(sources, destinations)
     return np.sqrt(
         ((sources[:, :, None] - destinations[:, :, None].T) ** 2).sum(1)
     )
 
 
 def great_circle_distance_matrix(
-    sources: np.ndarray, destinations: np.ndarray
+    sources: np.ndarray, destinations: typing.Optional[np.ndarray] = None
 ) -> np.ndarray:
     """Distance matrix using the Great Circle distance
     This is an Euclidean-like distance but on spheres [1]. In this case it is
@@ -52,6 +52,8 @@ def great_circle_distance_matrix(
     sources, destinations
         Arrays with each row containing the coordinates of a point in the form
         [lat, lng]. Notice it only considers the first two columns.
+        Also, if ``destinations`` is `None`, compute the distance between each
+        source in ``sources``.
 
     Returns
     -------
@@ -65,17 +67,15 @@ def great_circle_distance_matrix(
     [1] https://en.wikipedia.org/wiki/Great-circle_distance
     Using the third computational formula
     """
-    # Ensure at least two dimensions for the following vectorized code work
-    sources = np.atleast_2d(sources)
-    destinations = np.atleast_2d(destinations)
 
+    sources, destinations = _process_input(sources, destinations)
     sources_rad = np.radians(sources)
     dests_rad = np.radians(destinations)
 
     # Define variables for better readability
-    delta_lambda = sources_rad[:, [0]] - dests_rad[:, 0]  # (N x M) lng
-    phi1 = sources_rad[:, [1]]  # (N x 1) array of source latitudes
-    phi2 = dests_rad[:, 1]  # (1 x M) array of destination latitudes
+    delta_lambda = sources_rad[:, [1]] - dests_rad[:, 1]  # (N x M) lng
+    phi1 = sources_rad[:, [0]]  # (N x 1) array of source latitudes
+    phi2 = dests_rad[:, 0]  # (1 x M) array of destination latitudes
 
     delta_sigma = np.arctan2(
         np.sqrt(
@@ -88,3 +88,20 @@ def great_circle_distance_matrix(
     )
 
     return EARTH_RADIUS_M * delta_sigma
+
+
+def _process_input(
+    sources: np.ndarray, destinations: typing.Optional[np.ndarray] = None
+) -> typing.Tuple[np.ndarray, np.ndarray]:
+    """Pre-process input
+    This function ensures ``sources`` and ``destinations`` have at least two
+    dimensions, and if ``destinations`` is `None`, set it equal to ``sources``.
+    """
+    if destinations is None:
+        destinations = sources
+
+    # Ensure at least two dimensions for the following vectorized code work
+    sources = np.atleast_2d(sources)
+    destinations = np.atleast_2d(destinations)
+
+    return sources, destinations
