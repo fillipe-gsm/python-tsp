@@ -25,8 +25,12 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-        source $HOME/.poetry/env  
+        #curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+        #source $HOME/.poetry/env  
+        # Somehow the preferred way of installing poetry does not persist the
+        # executable, so I had to go with pip
+        python -m pip install --upgrade pip
+        pip install poetry
         poetry install
     - name: Lint with flake8
       run: |
