@@ -25,11 +25,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        # ** The original poetry script simply never finishes, so I had to use pip
-        #python -m pip install --upgrade pip
-        #pip install poetry
-        # Trying to install with poetry's preferred method
         curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+        source $HOME/.poetry/env  
         poetry install
     - name: Lint with flake8
       run: |
