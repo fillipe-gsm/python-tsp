@@ -1,11 +1,11 @@
 """Auxiliar functions that may be used in most modules"""
-from typing import List
+import typing
 
 import numpy as np
 
 
 def compute_permutation_distance(
-    distance_matrix: np.ndarray, permutation: List[int]
+    distance_matrix: np.ndarray, permutation: typing.List[int]
 ) -> float:
     """Compute distance of a given permutation
 
