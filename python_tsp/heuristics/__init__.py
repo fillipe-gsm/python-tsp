@@ -3,4 +3,4 @@
 ===========================
 """
 
-from .two_opt import solve_tsp_two_opt  # noqa
+from .local_search import solve_local_search  # noqa
