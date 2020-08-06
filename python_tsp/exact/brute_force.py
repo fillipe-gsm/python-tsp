@@ -1,7 +1,6 @@
 """Module with a brute force TSP solver"""
-
 from itertools import permutations
-from typing import Any, List, Optional, Tuple
+import typing
 
 import numpy as np
 
@@ -10,7 +9,7 @@ from python_tsp.utils import compute_permutation_distance
 
 def solve_tsp_brute_force(
     distance_matrix: np.ndarray
-) -> Tuple[Optional[List], Any]:
+) -> typing.Tuple[typing.Optional[typing.List], typing.Any]:
     """Solve TSP to optimality with a brute force approach
 
     Parameters
