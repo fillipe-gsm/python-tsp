@@ -58,7 +58,7 @@ class TestSimulatedAnnealing:
         just checks if it is valid and has all nodes
         """
 
-        x, _ = simulated_annealing.solve_simulated_annealing(
+        x, _ = simulated_annealing.solve_tsp_simulated_annealing(
             distance_matrix, perturbation_scheme=scheme
         )
 

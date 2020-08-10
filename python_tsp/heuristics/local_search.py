@@ -7,7 +7,7 @@ import numpy as np
 from python_tsp.utils import compute_permutation_distance
 
 
-def solve_local_search(
+def solve_tsp_local_search(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
     perturbation_scheme: str = "ps3",

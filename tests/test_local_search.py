@@ -16,7 +16,7 @@ class TestImportModule:
         package
         """
         from python_tsp.heuristics import (  # noqa
-            solve_local_search
+            solve_tsp_local_search
         )
 
 
@@ -104,7 +104,7 @@ class TestLocalSearch:
         x = [0, 4, 2, 3, 1]
         fx = compute_permutation_distance(distance_matrix, x)
 
-        xopt, fopt = local_search.solve_local_search(
+        xopt, fopt = local_search.solve_tsp_local_search(
             distance_matrix, x, perturbation_scheme=scheme
         )
 
@@ -128,7 +128,7 @@ class TestLocalSearch:
         """
         x = optimal_permutation
         fx = optimal_distance
-        xopt, fopt = local_search.solve_local_search(
+        xopt, fopt = local_search.solve_tsp_local_search(
             distance_matrix, x, perturbation_scheme=scheme
         )
 

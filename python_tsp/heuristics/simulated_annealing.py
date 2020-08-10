@@ -6,7 +6,7 @@ from python_tsp.heuristics import local_search
 from python_tsp.utils import compute_permutation_distance
 
 
-def solve_simulated_annealing(
+def solve_tsp_simulated_annealing(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
     perturbation_scheme: str = "ps3",

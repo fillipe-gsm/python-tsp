@@ -2,7 +2,7 @@
 Python TSP Solver
 =================
 
-``python-tsp`` is a library written in pure Python for solving typical Traveling 
+``python-tsp`` is a library written in pure Python for solving typical Traveling
 Salesperson Problems (TSP).
 
 Examples
@@ -14,7 +14,7 @@ Suppose the following problem:
 We can determine a Hamiltonian path with least cost simply using:
 
 .. code:: python
-   
+
    import numpy as np
    from python_tsp.exact import solve_tsp_dynamic_programming
 
@@ -29,7 +29,7 @@ We can determine a Hamiltonian path with least cost simply using:
 The solution will be ``[0, 1, 3, 2]``, with total distance 17. Notice it is
 always a closed path, so after node 2 we go back to 0.
 
-If you opt for an open TSP version (it is not required to go back to the 
+If you opt for an open TSP version (it is not required to go back to the
 origin), just make all elements of the first column of the distance matrix to
 zero:
 
@@ -44,14 +44,14 @@ Methods available
 =================
 There are two types of solvers available:
 
-:Exact: Methods that always return the optimal solution of a problem. 
+:Exact: Methods that always return the optimal solution of a problem.
         Use these solvers in relatively small instances (wherein "small" is
         relative to your requirements).
 
         - ``exact.solve_tsp_brute_force``: checks all permutations and returns
           the best one;
 
-        - ``exact.solve_dynamic_programming``: uses a Dynamic Programming 
+        - ``exact.solve_tsp_dynamic_programming``: uses a Dynamic Programming
           approach. It tends to be faster than the previous one, but it may
           demand more memory.
 
@@ -59,19 +59,19 @@ There are two types of solvers available:
              but usually return a good enough candidate in a more reasonable
              time for larger problems.
 
-             - ``heuristics.solve_local_search``: local search heuristic. Fast,
-               but it can get stuck in a local minimum;
+             - ``heuristics.solve_tsp_local_search``: local search heuristic.
+               Fast, but it can get stuck in a local minimum;
 
-             - ``heuristics.solve_simulated_annealing``: the Simulated Annealing
-               metaheuristic. It may be slower, but it has better chances of 
-               avoiding getting trapped in local minima.
+             - ``heuristics.solve_tsp_simulated_annealing``: the Simulated
+               Annealing metaheuristic. It may be slower, but it has better
+               chances of avoiding getting trapped in local minima.
 
 
 For developers
 ==============
-The project uses `Python Poetry <https://python-poetry.org/>`_ to manage 
+The project uses `Python Poetry <https://python-poetry.org/>`_ to manage
 dependencies. Check the website for installation instructions, or simply
-install it with 
+install it with
 
 .. code:: bash
 
@@ -79,7 +79,7 @@ install it with
 
 After that, install all dependencies with ``poetry install``.
 
-Here are the detailed steps that should be followed before making a pull 
+Here are the detailed steps that should be followed before making a pull
 request:
 
 .. code:: bash
@@ -97,3 +97,9 @@ You can also run all of these steps at once with the check-up bash script:
 .. code:: bash
 
    bash ./.scripts/checkup_scripts.sh
+
+Finally (and of course), make sure all tests pass:
+
+.. code:: bash
+
+   poetry run pytest tests/
