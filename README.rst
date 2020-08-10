@@ -40,6 +40,26 @@ zero:
 
 and in this case we obtain ``[0, 2, 3, 1]``, with distance 12.
 
+If you don't have a distance matrix, the ``distances`` module has functions to
+compute an Euclidean distance matrix or the
+`Great Circle Distance <https://en.wikipedia.org/wiki/Great-circle_distance>`_.
+
+For example, if you have an array where each row has the latitude and longitude
+of a point,
+
+.. code:: python
+
+   import numpy as np
+   from python_tsp.distances import great_circle_distance_matrix
+
+   sources = np.array([
+       [ 40.73024833, -73.79440675],
+       [ 41.47362495, -73.92783272],
+       [ 41.26591   , -73.21026228],
+       [ 41.3249908 , -73.507788  ]
+   ])
+   distance_matrix = great_circle_distance_matrix(sources)
+
 Methods available
 =================
 There are two types of solvers available:
