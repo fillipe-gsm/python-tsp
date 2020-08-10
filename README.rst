@@ -5,6 +5,11 @@ Python TSP Solver
 ``python-tsp`` is a library written in pure Python for solving typical Traveling
 Salesperson Problems (TSP).
 
+
+Installation
+============
+TODO
+
 Examples
 ========
 Suppose the following problem:
@@ -30,7 +35,7 @@ The solution will be ``[0, 1, 3, 2]``, with total distance 17. Notice it is
 always a closed path, so after node 2 we go back to 0.
 
 If you opt for an open TSP version (it is not required to go back to the
-origin), just make all elements of the first column of the distance matrix to
+origin), just set all elements of the first column of the distance matrix to
 zero:
 
 .. code:: python
@@ -97,7 +102,7 @@ install it with
 
    pip install poetry
 
-After that, install all dependencies with ``poetry install``.
+After that, clone the repo and install dependencies with ``poetry install``.
 
 Here are the detailed steps that should be followed before making a pull
 request:
@@ -109,6 +114,7 @@ request:
   poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
   poetry run flake8 . --count --exit-zero --max-complexity=10 \
   --max-line-length=79 --statistics
+
   # Mypy for proper type hints
   poetry run mypy --ignore-missing-imports .
 
