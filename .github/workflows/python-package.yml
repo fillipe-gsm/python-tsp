@@ -44,6 +44,7 @@ jobs:
     - name: Check type hints with mypy
       run: |
         poetry run mypy --ignore-missing-imports .
-    - name: Test with pytest
+    - name: Run tests and check coverage
       run: |
-        poetry run pytest tests/
+        # Fail if total coverage is below 95%
+        poetry run pytest --cov=. --cov-fail-under=95 tests/

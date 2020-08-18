@@ -112,8 +112,7 @@ request:
   # Autopep8 and flake8 to be conformant with PEP8
   poetry run autopep8 --recursive --aggressive --in-place .
   poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-  poetry run flake8 . --count --exit-zero --max-complexity=10 \
-  --max-line-length=79 --statistics
+  poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=79 --statistics
 
   # Mypy for proper type hints
   poetry run mypy --ignore-missing-imports .
@@ -124,8 +123,9 @@ You can also run all of these steps at once with the check-up bash script:
 
    bash ./.scripts/checkup_scripts.sh
 
-Finally (and of course), make sure all tests pass:
+Finally (and of course), make sure all tests pass and you get at least 95% of
+coverage:
 
 .. code:: bash
 
-   poetry run pytest tests/
+  poetry run pytest --cov=. --cov-report=term-missing --cov-fail-under=95 tests/
