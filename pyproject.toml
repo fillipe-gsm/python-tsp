@@ -15,6 +15,7 @@ ipdb = "^0.13.2"
 mypy = "^0.782"
 autopep8 = "^1.5.3"
 flake8 = "^3.8.3"
+pytest-cov = "^2.10.1"
 
 [tool.autopep8]
 max_line_length = 79
