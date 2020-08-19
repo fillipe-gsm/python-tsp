@@ -68,7 +68,7 @@ def solve_tsp_local_search(
             if fn < fx:
                 improvement = True
                 x, fx = xn, fn
-                break  # first improvement local search
+                break  # early stop due to first improvement local search
 
     return x, fx
 

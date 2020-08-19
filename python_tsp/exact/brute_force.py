@@ -1,6 +1,6 @@
 """Module with a brute force TSP solver"""
 from itertools import permutations
-import typing
+from typing import Any, List, Optional, Tuple
 
 import numpy as np
 
@@ -9,7 +9,7 @@ from python_tsp.utils import compute_permutation_distance
 
 def solve_tsp_brute_force(
     distance_matrix: np.ndarray
-) -> typing.Tuple[typing.Optional[typing.List], typing.Any]:
+) -> Tuple[Optional[List], Any]:
     """Solve TSP to optimality with a brute force approach
 
     Parameters
@@ -35,12 +35,12 @@ def solve_tsp_brute_force(
     reducing the possibilities to (n - 1)!.
     """
 
-    # Get all points from 1 to n (fix 0 as mentioned in the notes)
+    # Exclude 0 from the range since it is fixed as starting point
     points = range(1, distance_matrix.shape[0])
     best_distance = np.inf
     best_solution = None
     for partial_permutation in permutations(points):
-        # Add 0 node to the partial permutation and convert to a list
+        # Remember to add the starting node before evaluating it
         permutation = [0] + list(partial_permutation)
         distance = compute_permutation_distance(distance_matrix, permutation)
         if distance < best_distance:

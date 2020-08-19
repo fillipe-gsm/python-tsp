@@ -1,13 +1,13 @@
 from functools import lru_cache
-import typing
+from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 
 
 def solve_tsp_dynamic_programming(
     distance_matrix: np.ndarray,
-    maxsize: typing.Optional[int] = None
-) -> typing.Tuple[typing.List, float]:
+    maxsize: Optional[int] = None
+) -> Tuple[List, float]:
     """
     Solve TSP to optimality with dynamic programming.
 
@@ -90,10 +90,10 @@ def solve_tsp_dynamic_programming(
     ---------
     https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm#cite_note-5
     """
-    # Get initial set {1, 2, ..., tsp_size}. Notice it needs to be a tuple
-    # since @lru_cache requires a hashable type
+    # Get initial set {1, 2, ..., tsp_size} as a frozenset because since
+    # @lru_cache requires a hashable type
     N = frozenset(range(1, distance_matrix.shape[0]))
-    memo: typing.Dict[typing.Tuple, int] = {}
+    memo: Dict[Tuple, int] = {}
 
     # Step 1: get minimum distance
     @lru_cache(maxsize=maxsize)
@@ -106,7 +106,6 @@ def solve_tsp_dynamic_programming(
             (nj, distance_matrix[ni, nj] + dist(nj, N.difference({nj})))
             for nj in N
         ]
-        # Get node with smallest cost and store in the memo
         nmin, min_cost = min(costs, key=lambda x: x[1])
         memo[(ni, N)] = nmin
         return min_cost

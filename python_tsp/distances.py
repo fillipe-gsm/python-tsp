@@ -1,13 +1,13 @@
 """Contains typical distance matrices"""
-import typing
+from typing import Optional, Tuple
 
 import numpy as np
 
-EARTH_RADIUS_M = 6371000  # Earth radius in meters
+EARTH_RADIUS_METERS = 6371000
 
 
 def euclidean_distance_matrix(
-    sources: np.ndarray, destinations: typing.Optional[np.ndarray] = None
+    sources: np.ndarray, destinations: Optional[np.ndarray] = None
 ) -> np.ndarray:
     """Distance matrix using the Euclidean distance
 
@@ -41,7 +41,7 @@ def euclidean_distance_matrix(
 
 
 def great_circle_distance_matrix(
-    sources: np.ndarray, destinations: typing.Optional[np.ndarray] = None
+    sources: np.ndarray, destinations: Optional[np.ndarray] = None
 ) -> np.ndarray:
     """Distance matrix using the Great Circle distance
     This is an Euclidean-like distance but on spheres [1]. In this case it is
@@ -72,7 +72,6 @@ def great_circle_distance_matrix(
     sources_rad = np.radians(sources)
     dests_rad = np.radians(destinations)
 
-    # Define variables for better readability
     delta_lambda = sources_rad[:, [1]] - dests_rad[:, 1]  # (N x M) lng
     phi1 = sources_rad[:, [0]]  # (N x 1) array of source latitudes
     phi2 = dests_rad[:, 0]  # (1 x M) array of destination latitudes
@@ -87,12 +86,12 @@ def great_circle_distance_matrix(
          np.cos(phi1) * np.cos(phi2) * np.cos(delta_lambda))
     )
 
-    return EARTH_RADIUS_M * delta_sigma
+    return EARTH_RADIUS_METERS * delta_sigma
 
 
 def _process_input(
-    sources: np.ndarray, destinations: typing.Optional[np.ndarray] = None
-) -> typing.Tuple[np.ndarray, np.ndarray]:
+    sources: np.ndarray, destinations: Optional[np.ndarray] = None
+) -> Tuple[np.ndarray, np.ndarray]:
     """Pre-process input
     This function ensures ``sources`` and ``destinations`` have at least two
     dimensions, and if ``destinations`` is `None`, set it equal to ``sources``.
@@ -100,7 +99,6 @@ def _process_input(
     if destinations is None:
         destinations = sources
 
-    # Ensure at least two dimensions for the following vectorized code work
     sources = np.atleast_2d(sources)
     destinations = np.atleast_2d(destinations)
 
