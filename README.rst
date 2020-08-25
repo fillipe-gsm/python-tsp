@@ -8,15 +8,23 @@ Salesperson Problems (TSP).
 
 Installation
 ============
-TODO
+.. code:: bash
+
+  pip install python-tsp
+
 
 Examples
 ========
-Suppose the following problem:
+
+Regular TSP problem
+-------------------
+
+Suppose we wish to find a Hamiltonian path with least cost for the following 
+problem:
 
 .. image:: figures/python_tsp_example.png
 
-We can determine a Hamiltonian path with least cost simply using:
+We can find an optimal path using a Dynamic Programming method with:
 
 .. code:: python
 
@@ -34,6 +42,23 @@ We can determine a Hamiltonian path with least cost simply using:
 The solution will be ``[0, 1, 3, 2]``, with total distance 17. Notice it is
 always a closed path, so after node 2 we go back to 0.
 
+There are also heuristic-based approaches to solve the same problem. For
+instance, to use a local search method:
+
+.. code:: python
+
+   from python_tsp.heuristics import solve_tsp_local_search
+
+   permutation, distance = solve_tsp_local_search(distance_matrix)
+   
+In this case there is generally no guarantee of optimality, but in this small
+instance the answer is normally a permutation with total distance 17 as well
+(notice in this case there are many permutations with the same optimal
+distance).
+
+Open TSP problem
+----------------
+
 If you opt for an open TSP version (it is not required to go back to the
 origin), just set all elements of the first column of the distance matrix to
 zero:
@@ -45,8 +70,12 @@ zero:
 
 and in this case we obtain ``[0, 2, 3, 1]``, with distance 12.
 
-If you don't have a distance matrix, the ``distances`` module has functions to
-compute an Euclidean distance matrix or the
+Computing a distance matrix
+---------------------------
+
+The previous examples assumed you already had a distance matrix. If that is not
+the case, the ``distances`` module has prepared some functions to compute an 
+Euclidean distance matrix or a
 `Great Circle Distance <https://en.wikipedia.org/wiki/Great-circle_distance>`_.
 
 For example, if you have an array where each row has the latitude and longitude
