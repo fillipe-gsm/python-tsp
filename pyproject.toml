@@ -1,8 +1,11 @@
 [tool.poetry]
 name = "python_tsp"
-version = "0.1.0"
-description = ""
-authors = ["Fillipe Goulart <fillipe.gsm@gmail.com>"]
+version = "0.1.2"
+description = "Simple library to solve the Traveling Salesman Problem in pure Python."
+readme = "README.rst"
+authors = ["Fillipe Goulart <fillipe.gsm@tutanota.com>"]
+repository = "https://github.com/fillipe-gsm/python-tsp"
+license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.8"
