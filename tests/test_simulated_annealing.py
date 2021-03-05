@@ -6,11 +6,13 @@ from .data import (
     distance_matrix1, distance_matrix2, distance_matrix3,
 )
 
+perturbation_schemes = ["ps1", "ps2", "ps3"]
+
 
 class TestSimulatedAnnealing:
     x = [0, 1, 2, 3, 4]
 
-    @pytest.mark.parametrize("scheme", ["ps1", "ps2", "ps3"])
+    @pytest.mark.parametrize("scheme", perturbation_schemes)
     def test_perturbation_generates_appropriate_neighbor(self, scheme):
         """
         Check if the generated neighbor has the same nodes as the input in any
@@ -27,7 +29,7 @@ class TestSimulatedAnnealing:
         "distance_matrix",
         [distance_matrix1, distance_matrix2, distance_matrix3]
     )
-    @pytest.mark.parametrize("scheme", ["ps1", "ps2", "ps3"])
+    @pytest.mark.parametrize("scheme", perturbation_schemes)
     def test_initial_temperature(self, distance_matrix, scheme):
         """
         The initial temperature is mostly random, so simply check if it is
@@ -35,7 +37,7 @@ class TestSimulatedAnnealing:
         """
 
         fx = compute_permutation_distance(distance_matrix, self.x)
-        temp = simulated_annealing.initial_temperature(
+        temp = simulated_annealing._initial_temperature(
             distance_matrix, self.x, fx, perturbation_scheme=scheme
         )
 
@@ -44,14 +46,14 @@ class TestSimulatedAnnealing:
     def test_acceptance_rule_improvement(self):
         """If fn < fx, the acceptance rule must return True"""
 
-        flag = simulated_annealing.acceptance_rule(2, 1, 1)
+        flag = simulated_annealing._acceptance_rule(2, 1, 1)
         assert flag
 
     @pytest.mark.parametrize(
         "distance_matrix",
         [distance_matrix1, distance_matrix2, distance_matrix3]
     )
-    @pytest.mark.parametrize("scheme", ["ps1", "ps2", "ps3"])
+    @pytest.mark.parametrize("scheme", perturbation_schemes)
     def test_simulated_annealing_solution(self, distance_matrix, scheme):
         """
         It is not possible to determine the returned solution, so this function
