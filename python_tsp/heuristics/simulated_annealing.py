@@ -1,8 +1,9 @@
-from typing import Callable, Dict, Generator, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 import numpy as np
 
-from python_tsp.heuristics import local_search
+from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
+from python_tsp.heuristics.local_search import setup
 from python_tsp.utils import compute_permutation_distance
 
 
@@ -57,7 +58,7 @@ def solve_tsp_simulated_annealing(
     339-355.
     """
 
-    x, fx = local_search._setup(distance_matrix, x0)
+    x, fx = setup(distance_matrix, x0)
     temp = initial_temperature(distance_matrix, x, fx, perturbation_scheme)
 
     n = len(x)
@@ -140,14 +141,6 @@ def _perturbation(x: List[int], perturbation_scheme: str = "ps3"):
     module, and pick the first solution. Since the neighborhood is randomized,
     it is the same as creating a random perturbation.
     """
-    neighborhood_gen: Dict[
-        str, Callable[[List[int]], Generator[List[int], List[int], None]]
-    ] = {
-        "ps1": local_search.ps1_gen,
-        "ps2": local_search.ps2_gen,
-        "ps3": local_search.ps3_gen,
-    }
-
     return next(neighborhood_gen[perturbation_scheme](x))
 
 

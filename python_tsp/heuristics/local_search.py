@@ -1,10 +1,11 @@
-"""Module with a 2-opt local search solver"""
-from typing import Callable, Dict, Generator, List, Optional, Tuple
+"""Simple local search solver"""
+from typing import List, Optional, Tuple
 import random
 
 import numpy as np
 
 from python_tsp.utils import compute_permutation_distance
+from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 
 
 def solve_tsp_local_search(
@@ -52,13 +53,7 @@ def solve_tsp_local_search(
     International Journal of Electrical Power & Energy Systems 101 (2018):
     339-355.
     """
-    neighborhood_gen: Dict[
-        str, Callable[[List[int]], Generator[List[int], List[int], None]]
-    ] = {
-        "ps1": ps1_gen, "ps2": ps2_gen, "ps3": ps3_gen,
-    }
-
-    x, fx = _setup(distance_matrix, x0)
+    x, fx = setup(distance_matrix, x0)
 
     improvement = True
     while improvement:
@@ -73,7 +68,7 @@ def solve_tsp_local_search(
     return x, fx
 
 
-def _setup(
+def setup(
     distance_matrix: np.ndarray, x0: Optional[List] = None
 ) -> Tuple[List[int], float]:
     """Return initial solution and its objective value
@@ -104,47 +99,3 @@ def _setup(
 
     fx0 = compute_permutation_distance(distance_matrix, x0)
     return x0, fx0
-
-
-def ps1_gen(x: List[int]) -> Generator[List[int], List[int], None]:
-    """PS1 perturbation scheme: Swap two adjacent terms
-    This scheme has at most n - 1 swaps.
-    """
-
-    n = len(x)
-    i_range = range(1, n - 1)
-    for i in random.sample(i_range, len(i_range)):
-        xn = x.copy()
-        xn[i], xn[i + 1] = x[i + 1], xn[i]
-        yield xn
-
-
-def ps2_gen(x: List[int]) -> Generator[List[int], List[int], None]:
-    """PS2 perturbation scheme: Swap any two elements
-    This scheme has n * (n - 1) / 2 swaps.
-    """
-
-    n = len(x)
-    i_range = range(1, n - 1)
-    for i in random.sample(i_range, len(i_range)):
-        j_range = range(i + 1, n)
-        for j in random.sample(j_range, len(j_range)):
-            xn = x.copy()
-            xn[i], xn[j] = xn[j], xn[i]
-            yield xn
-
-
-def ps3_gen(x: List[int]) -> Generator[List[int], List[int], None]:
-    """PS3 perturbation scheme: A single term is moved
-    This scheme has n * (n - 1) swaps.
-    """
-
-    n = len(x)
-    i_range = range(1, n)
-    for i in random.sample(i_range, len(i_range)):
-        j_range = [j for j in range(1, n) if j != i]
-        for j in random.sample(j_range, len(j_range)):
-            xn = x.copy()
-            node = xn.pop(i)
-            xn.insert(j, node)
-            yield xn
