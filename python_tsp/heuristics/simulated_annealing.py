@@ -59,7 +59,7 @@ def solve_tsp_simulated_annealing(
     """
 
     x, fx = setup(distance_matrix, x0)
-    temp = initial_temperature(distance_matrix, x, fx, perturbation_scheme)
+    temp = _initial_temperature(distance_matrix, x, fx, perturbation_scheme)
 
     n = len(x)
     k_inner_min = 12 * n  # min inner iterations
@@ -72,7 +72,7 @@ def solve_tsp_simulated_annealing(
             xn = _perturbation(x, perturbation_scheme)
             fn = compute_permutation_distance(distance_matrix, xn)
 
-            if acceptance_rule(fx, fn, temp):
+            if _acceptance_rule(fx, fn, temp):
                 x, fx = xn, fn
                 k_accepted += 1
                 k_noimprovements = 0
@@ -96,7 +96,7 @@ def solve_tsp_simulated_annealing(
     return x, fx
 
 
-def initial_temperature(
+def _initial_temperature(
     distance_matrix: np.ndarray,
     x: List[int],
     fx: float,
@@ -144,7 +144,7 @@ def _perturbation(x: List[int], perturbation_scheme: str = "ps3"):
     return next(neighborhood_gen[perturbation_scheme](x))
 
 
-def acceptance_rule(fx: float, fn: float, temp: float) -> bool:
+def _acceptance_rule(fx: float, fn: float, temp: float) -> bool:
     """Metropolis acceptance rule"""
 
     dfx = fn - fx
