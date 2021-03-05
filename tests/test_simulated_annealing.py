@@ -6,7 +6,7 @@ from .data import (
     distance_matrix1, distance_matrix2, distance_matrix3,
 )
 
-perturbation_schemes = ["ps1", "ps2", "ps3"]
+perturbation_schemes = ["ps1", "ps2", "ps3", "ps4", "ps5", "ps6"]
 
 
 class TestSimulatedAnnealing:
