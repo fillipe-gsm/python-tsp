@@ -11,7 +11,7 @@ from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 def solve_tsp_local_search(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
-    perturbation_scheme: str = "ps3",
+    perturbation_scheme: str = "ps6",
 ) -> Tuple[List, float]:
     """Solve a TSP problem with a local search heuristic
 
@@ -24,14 +24,14 @@ def solve_tsp_local_search(
     x0
         Initial permutation. If not provided, it uses a random value
 
-    perturbation_scheme {"ps1", "ps2", ["ps3"]}
-        Mechanism used to generate new solutions. Defaults to PS3. See [1] for
+    perturbation_scheme {"ps1", "ps2", "ps3", "ps4", "ps5", ["ps6"]}
+        Mechanism used to generate new solutions. Defaults to PS6. See [1] for
         a quick explanation on these schemes.
 
     Returns
     -------
-    A permutation of nodes from 0 to n that produces the least total distance
-    obtained (not necessarily optimal).
+    A permutation of nodes from 0 to n - 1 that produces the least total
+    distance obtained (not necessarily optimal).
 
     The total distance the returned permutation produces.
 

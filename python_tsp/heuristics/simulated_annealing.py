@@ -10,7 +10,7 @@ from python_tsp.utils import compute_permutation_distance
 def solve_tsp_simulated_annealing(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
-    perturbation_scheme: str = "ps3",
+    perturbation_scheme: str = "ps6",
     alpha: float = 0.9,
     verbose: bool = False,
 ) -> Tuple[List, float]:
@@ -26,8 +26,8 @@ def solve_tsp_simulated_annealing(
     x0
         Initial permutation. If not provided, it uses a random value
 
-    perturbation_scheme {"ps1", "ps2", ["ps3"]}
-        Mechanism used to generate new solutions. Defaults to PS3. See [2] for
+    perturbation_scheme {"ps1", "ps2", "ps3", "ps4", "ps5", ["ps6"]}
+        Mechanism used to generate new solutions. Defaults to PS6. See [1] for
         a quick explanation on these schemes.
 
     alpha
@@ -42,8 +42,8 @@ def solve_tsp_simulated_annealing(
 
     Returns
     -------
-    A permutation of nodes from 0 to n that produces the least total distance
-    obtained (not necessarily optimal).
+    A permutation of nodes from 0 to n - 1 that produces the least total
+    distance obtained (not necessarily optimal).
 
     The total distance the returned permutation produces.
 
@@ -100,7 +100,7 @@ def _initial_temperature(
     distance_matrix: np.ndarray,
     x: List[int],
     fx: float,
-    perturbation_scheme: str = "ps3"
+    perturbation_scheme: str,
 ) -> float:
     """Compute initial temperature
     Instead of relying on problem-dependent parameters, this function estimates
@@ -135,7 +135,7 @@ def _initial_temperature(
     return -dfx_mean / np.log(tau0)
 
 
-def _perturbation(x: List[int], perturbation_scheme: str = "ps3"):
+def _perturbation(x: List[int], perturbation_scheme: str):
     """Generate a random neighbor of a current solution ``x``
     In this case, we can use the generators created in the `local_search`
     module, and pick the first solution. Since the neighborhood is randomized,
