@@ -24,9 +24,8 @@ def solve_tsp_local_search(
     x0
         Initial permutation. If not provided, it uses a random value
 
-    perturbation_scheme {"ps1", "ps2", "ps3", "ps4", "ps5", ["ps6"]}
-        Mechanism used to generate new solutions. Defaults to PS6. See [1] for
-        a quick explanation on these schemes.
+    perturbation_scheme {"ps1", "ps2", "ps3", "ps4", "ps5", ["ps6"], "two_opt"}
+        Mechanism used to generate new solutions. Defaults to PS6.
 
     Returns
     -------
@@ -45,13 +44,6 @@ def solve_tsp_local_search(
             and stop;
         3. Repeat step 2 until all neighbors of `x` are tried and there is no
         improvement. Return `x`, `fx` as solution.
-
-    References
-    ----------
-    [1] Goulart, Fillipe, et al. "Permutation-based optimization for the load
-    restoration problem with improved time estimation of maneuvers."
-    International Journal of Electrical Power & Energy Systems 101 (2018):
-    339-355.
     """
     x, fx = setup(distance_matrix, x0)
 

@@ -26,9 +26,8 @@ def solve_tsp_simulated_annealing(
     x0
         Initial permutation. If not provided, it uses a random value
 
-    perturbation_scheme {"ps1", "ps2", "ps3", "ps4", "ps5", ["ps6"]}
-        Mechanism used to generate new solutions. Defaults to PS6. See [1] for
-        a quick explanation on these schemes.
+    perturbation_scheme {"ps1", "ps2", "ps3", "ps4", "ps5", ["ps6"], "two_opt"}
+        Mechanism used to generate new solutions. Defaults to PS6.
 
     alpha
         Reduction factor (``alpha`` < 1) used to reduce the temperature. As a
@@ -51,11 +50,6 @@ def solve_tsp_simulated_annealing(
     ----------
     [1] Dréo, Johann, et al. Metaheuristics for hard optimization: methods and
     case studies. Springer Science & Business Media, 2006.
-
-    [2] Goulart, Fillipe, et al. "Permutation-based optimization for the load
-    restoration problem with improved time estimation of maneuvers."
-    International Journal of Electrical Power & Energy Systems 101 (2018):
-    339-355.
     """
 
     x, fx = setup(distance_matrix, x0)
