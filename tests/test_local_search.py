@@ -9,7 +9,7 @@ from .data import (
 )
 
 
-perturbation_schemes = ["ps1", "ps2", "ps3", "ps4", "ps5", "ps6"]
+perturbation_schemes = ["ps1", "ps2", "ps3", "ps4", "ps5", "ps6", "two_opt"]
 
 
 class TestImportModule:

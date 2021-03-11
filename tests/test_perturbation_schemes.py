@@ -54,3 +54,10 @@ class TestPerturbationSchemes:
 
         all_neighbors = list(perturbation_schemes.ps6_gen(self.x))
         assert len(all_neighbors) == 20
+
+    def test_two_opt_returns_correct_num_neighbors(self):
+        """2-top has the same number of perturbations as PS5.
+        Thus, in this case with 4 items (the one fixed), we get 6 neighbors.
+        """
+        all_neighbors = list(perturbation_schemes.two_opt_gen(self.x))
+        assert len(all_neighbors) == 6
