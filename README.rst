@@ -50,7 +50,7 @@ instance, to use a local search method:
    from python_tsp.heuristics import solve_tsp_local_search
 
    permutation, distance = solve_tsp_local_search(distance_matrix)
-   
+
 In this case there is generally no guarantee of optimality, but in this small
 instance the answer is normally a permutation with total distance 17 as well
 (notice in this case there are many permutations with the same optimal
@@ -150,7 +150,8 @@ You can also run all of these steps at once with the check-up bash script:
 
 .. code:: bash
 
-   bash ./.scripts/checkup_scripts.sh
+   ./.scripts/checkup_scripts.sh
+   bash ./.scripts/checkup_scripts.sh  # if the previous one fails
 
 Finally (and of course), make sure all tests pass and you get at least 95% of
 coverage:
@@ -158,3 +159,32 @@ coverage:
 .. code:: bash
 
   poetry run pytest --cov=. --cov-report=term-missing --cov-fail-under=95 tests/
+
+
+Release Notes and Changelog
+===========================
+
+Release 0.1.1
+-------------
+
+Improved Python versions support.
+
+Python support:
+
+* Python >= 3.6
+
+
+Release 0.1.0
+-------------
+
+Initial version. Support for the following solvers:
+
+* Exact (Brute force and Dynamic Programming);
+* Heuristics (Local Search and Simulated Annealing).
+
+The local search-based algorithms can be run with neighborhoods PS1, PS2 and
+PS3.
+
+Python support:
+
+* Python >= 3.8
