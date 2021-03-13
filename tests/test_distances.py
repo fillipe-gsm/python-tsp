@@ -111,3 +111,34 @@ class TestGreatCircleDistanceMatrix:
         destination = destinations[0]
 
         distances.great_circle_distance_matrix(source, destination)
+
+
+class TestTSPLIBDistanceMatrix:
+    symmetric_tsplib_file = "tests/tsplib_data/symmetric_test_file.tsp"
+    asymmetric_tsplib_file = "tests/tsplib_data/asymmetric_test_file.atsp"
+
+    def test_symmetric_tsplib_matrix_conversion(self):
+        """
+        The symmetric test problem corresponds to a280, with 280 nodes.
+        Check its dimensions and whether it contains only integer values (as
+        specified by the TSPLIB documentation).
+        """
+        distance_matrix = distances.tsplib_distance_matrix(
+            self.symmetric_tsplib_file
+        )
+
+        assert distance_matrix.shape == (280, 280)
+        assert distance_matrix.dtype == int
+
+    def test_asymmetric_tsplib_matrix_conversion(self):
+        """
+        The asymmetric test problem corresponds to br17, with 17 nodes.
+        Check its dimensions and set the main diagonal to 0 as opposed to a
+        large number as in most instances.
+        """
+        distance_matrix = distances.tsplib_distance_matrix(
+            self.asymmetric_tsplib_file
+        )
+
+        assert distance_matrix.shape == (17, 17)
+        assert np.array_equal(distance_matrix.diagonal(), np.zeros(17))
