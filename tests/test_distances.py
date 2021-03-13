@@ -141,3 +141,4 @@ class TestTSPLIBDistanceMatrix:
         )
 
         assert distance_matrix.shape == (17, 17)
+        assert np.array_equal(distance_matrix.diagonal(), np.zeros(17))
