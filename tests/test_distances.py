@@ -111,3 +111,20 @@ class TestGreatCircleDistanceMatrix:
         destination = destinations[0]
 
         distances.great_circle_distance_matrix(source, destination)
+
+
+class TestTSPLIBDistanceMatrix:
+    tsplib_file = "tests/tsplib_data/tsplib_test_file.tsp"
+
+    def test_symmetric_tsplib_matrix_conversion(self):
+        """
+        The `tsplib_file` corresponds to a280, with 280 nodes.
+        Check its dimensions and whether it contains only integer values (as
+        specified by the TSPLIB documentation).
+        """
+        distance_matrix = distances.tsplib_distance_matrix(
+            self.tsplib_file
+        )
+
+        assert distance_matrix.shape == (280, 280)
+        assert distance_matrix.dtype == int

@@ -103,3 +103,22 @@ def _process_input(
     destinations = np.atleast_2d(destinations)
 
     return sources, destinations
+
+
+def tsplib_distance_matrix(tsplib_file: str) -> np.ndarray:
+    f = open(tsplib_file, "r")
+
+    # Discard lines until we get to the coordinates section
+    for line in f:
+        if line.startswith("NODE_COORD_SECTION"):
+            break
+
+    def read_node_coordinates(line):
+        _, xstr, ystr = line.split()
+        return (int(xstr), int(ystr))
+
+    coordinates = np.array([
+        read_node_coordinates(line) for line in f if not line.startswith("EOF")
+    ])
+
+    return euclidean_distance_matrix(coordinates).astype(int)
