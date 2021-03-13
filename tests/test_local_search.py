@@ -9,6 +9,9 @@ from .data import (
 )
 
 
+perturbation_schemes = ["ps1", "ps2", "ps3", "ps4", "ps5", "ps6", "two_opt"]
+
+
 class TestImportModule:
     def test_can_import_local_search_solver(self):
         """
@@ -58,7 +61,7 @@ class TestLocalSearch:
         assert set(x) == set(range(distance_matrix.shape[0]))
         assert fx
 
-    @pytest.mark.parametrize("scheme", ["ps1", "ps2", "ps3"])
+    @pytest.mark.parametrize("scheme", perturbation_schemes)
     @pytest.mark.parametrize(
         "distance_matrix",
         [distance_matrix1, distance_matrix2, distance_matrix3]
@@ -79,7 +82,7 @@ class TestLocalSearch:
 
         assert fopt < fx
 
-    @pytest.mark.parametrize("scheme", ["ps1", "ps2", "ps3"])
+    @pytest.mark.parametrize("scheme", perturbation_schemes)
     @pytest.mark.parametrize(
         "distance_matrix, optimal_permutation, optimal_distance",
         [

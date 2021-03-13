@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "python_tsp"
-version = "0.1.1"
+version = "0.2.0"
 description = "Simple library to solve the Traveling Salesperson Problem in pure Python."
 readme = "README_pypi.rst"
 authors = ["Fillipe Goulart <fillipe.gsm@tutanota.com>"]
@@ -19,6 +19,7 @@ mypy = "^0.782"
 autopep8 = "^1.5.3"
 flake8 = "^3.8.3"
 pytest-cov = "^2.10.1"
+jedi = "<0.18"
 
 [tool.autopep8]
 max_line_length = 79
