@@ -106,6 +106,20 @@ def _process_input(
 
 
 def tsplib_distance_matrix(tsplib_file: str) -> np.ndarray:
+    """Distance matrix from a TSPLIB file
+    Currently, this function can handle files with types "TSP" and "ATSP".
+
+    Parameters
+    ----------
+    tsplib_file
+        A string with the complete path of the TSPLIB file (or just its name if
+        it is the in current path)
+
+    Returns
+    -------
+    distance_matrix
+        A ND-array with the equivalent distance matrix of the input file
+    """
     with open(tsplib_file, "r") as f:
         # Determine the type of the file
         for line in f:
@@ -121,6 +135,7 @@ def tsplib_distance_matrix(tsplib_file: str) -> np.ndarray:
 def _symmetric_tsplib_distance_matrix(
     f: TextIO, tsplib_file: str
 ) -> np.ndarray:
+    """Handles TSPLIB files of the type TSP (symmetric instances)"""
     # Discard lines until we get to the coordinates section
     for line in f:
         if line.startswith("NODE_COORD_SECTION"):
@@ -140,6 +155,7 @@ def _symmetric_tsplib_distance_matrix(
 def _asymmetric_tsplib_distance_matrix(
     f: TextIO, tsplib_file: str
 ) -> np.ndarray:
+    """Handles TSPLIB files of the type ATSP (asymmetric instances)"""
     # Discard lines until we get to the edges section
     for line in f:
         if line.startswith("DIMENSION"):
