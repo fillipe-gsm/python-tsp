@@ -1,5 +1,5 @@
 """Contains typical distance matrices"""
-from typing import Optional, Tuple
+from typing import Optional, TextIO, Tuple
 
 import numpy as np
 
@@ -106,8 +106,21 @@ def _process_input(
 
 
 def tsplib_distance_matrix(tsplib_file: str) -> np.ndarray:
-    f = open(tsplib_file, "r")
+    with open(tsplib_file, "r") as f:
+        # Determine the type of the file
+        for line in f:
+            if line.startswith("TYPE"):
+                _, tsp_type = line.split(":")
+                break
 
+        if tsp_type.strip() == "ATSP":  # strip() to remove \n and spaces
+            return _asymmetric_tsplib_distance_matrix(f, tsplib_file)
+        return _symmetric_tsplib_distance_matrix(f, tsplib_file)
+
+
+def _symmetric_tsplib_distance_matrix(
+    f: TextIO, tsplib_file: str
+) -> np.ndarray:
     # Discard lines until we get to the coordinates section
     for line in f:
         if line.startswith("NODE_COORD_SECTION"):
@@ -122,3 +135,36 @@ def tsplib_distance_matrix(tsplib_file: str) -> np.ndarray:
     ])
 
     return euclidean_distance_matrix(coordinates).astype(int)
+
+
+def _asymmetric_tsplib_distance_matrix(
+    f: TextIO, tsplib_file: str
+) -> np.ndarray:
+    # Discard lines until we get to the edges section
+    for line in f:
+        if line.startswith("DIMENSION"):
+            _, nstr = line.split(":")
+            n = int(nstr)
+        if line.startswith("EDGE_WEIGHT_SECTION"):
+            break
+
+    def read_cells_line(line):
+        return np.array([int(cell) for cell in line.split()])
+
+    # Read each line in f and get the matrix cells until all elements of a row
+    # are gathered (i.e., the row has `n` elements)
+    row = []
+    rows = []
+    for line in f:
+        if line.startswith("EOF"):
+            break
+
+        row.extend(read_cells_line(line))
+        if len(row) == n:
+            rows.append(row)
+            row = []
+
+    distance_matrix = np.array(rows)
+    np.fill_diagonal(distance_matrix, 0)
+
+    return distance_matrix
