@@ -143,7 +143,7 @@ def _symmetric_tsplib_distance_matrix(
 
     def read_node_coordinates(line):
         _, xstr, ystr = line.split()
-        return (int(xstr), int(ystr))
+        return (float(xstr), float(ystr))
 
     coordinates = np.array([
         read_node_coordinates(line) for line in f if not line.startswith("EOF")

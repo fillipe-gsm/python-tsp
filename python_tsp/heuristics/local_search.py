@@ -1,5 +1,6 @@
 """Simple local search solver"""
 from random import sample
+from timeit import default_timer
 from typing import List, Optional, Tuple
 
 import numpy as np
@@ -12,6 +13,7 @@ def solve_tsp_local_search(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
     perturbation_scheme: str = "ps6",
+    max_processing_time: float = None,
 ) -> Tuple[List, float]:
     """Solve a TSP problem with a local search heuristic
 
@@ -47,10 +49,19 @@ def solve_tsp_local_search(
     """
     x, fx = setup(distance_matrix, x0)
 
+    tic = default_timer()
+    stop_early = False
     improvement = True
-    while improvement:
+    while improvement and (not stop_early):
         improvement = False
         for xn in neighborhood_gen[perturbation_scheme](x):
+            if (
+                max_processing_time
+                and default_timer() - tic > max_processing_time
+            ):
+                stop_early = True
+                break
+
             fn = compute_permutation_distance(distance_matrix, xn)
             if fn < fx:
                 improvement = True

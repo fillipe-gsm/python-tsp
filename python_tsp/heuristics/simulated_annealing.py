@@ -1,3 +1,4 @@
+from timeit import default_timer
 from typing import List, Optional, Tuple
 
 import numpy as np
@@ -12,7 +13,8 @@ def solve_tsp_simulated_annealing(
     x0: Optional[List[int]] = None,
     perturbation_scheme: str = "ps6",
     alpha: float = 0.9,
-    verbose: bool = False,
+    verbose: bool = True,
+    max_processing_time: float = None,
 ) -> Tuple[List, float]:
     """Solve a TSP problem using a Simulated Annealing
     The approach used here is the one proposed in [1].
@@ -56,13 +58,24 @@ def solve_tsp_simulated_annealing(
     temp = _initial_temperature(distance_matrix, x, fx, perturbation_scheme)
 
     n = len(x)
-    k_inner_min = 12 * n  # min inner iterations
-    k_inner_max = 100 * n  # max inner iterations
+    k_inner_min = n  # min inner iterations
+    k_inner_max = 10 * n  # max inner iterations
     k_noimprovements = 0  # number of inner loops without improvement
 
-    while k_noimprovements < 3:
+    tic = default_timer()
+    stop_early = False
+    while (k_noimprovements < 3) and (not stop_early):
         k_accepted = 0  # number of accepted perturbations
         for k in range(k_inner_max):
+            if (
+                max_processing_time
+                and default_timer() - tic > max_processing_time
+            ):
+                if verbose:
+                    print("\nStopping early due to time constraints")
+                stop_early = True
+                break
+
             xn = _perturbation(x, perturbation_scheme)
             fn = compute_permutation_distance(distance_matrix, xn)
 
