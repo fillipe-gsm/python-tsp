@@ -57,7 +57,7 @@ class TestSimulatedAnnealing:
     def test_simulated_annealing_solution(self, distance_matrix, scheme):
         """
         It is not possible to determine the returned solution, so this function
-        just checks if it is valid and has all nodes
+        just checks if it is valid: it has all nodes and begins at the root 0.
         """
 
         x, _ = simulated_annealing.solve_tsp_simulated_annealing(
@@ -65,3 +65,4 @@ class TestSimulatedAnnealing:
         )
 
         assert set(x) == set(range(5))
+        assert x[0] == 0

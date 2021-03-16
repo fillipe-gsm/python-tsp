@@ -167,6 +167,16 @@ coverage:
 Release Notes and Changelog
 ===========================
 
+=======
+Release 0.1.2
+-------------
+- Local search and Simulated Annealing random solution now begins at root node
+  0 just like the exact methods.
+
+Python support:
+
+* Python >= 3.6
+
 Release 0.1.1
 -------------
 
