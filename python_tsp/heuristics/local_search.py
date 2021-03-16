@@ -1,6 +1,6 @@
 """Simple local search solver"""
+from random import sample
 from typing import List, Optional, Tuple
-import random
 
 import numpy as np
 
@@ -95,7 +95,7 @@ def setup(
 
     if not x0:
         n = distance_matrix.shape[0]  # number of nodes
-        x0 = random.sample(range(n), n)
+        x0 = [0] + sample(range(1, n), n - 1)  # ensure 0 is the first node
 
     fx0 = compute_permutation_distance(distance_matrix, x0)
     return x0, fx0

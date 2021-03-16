@@ -49,13 +49,15 @@ class TestLocalSearch:
     )
     def test_setup_return_random_valid_solution(self, distance_matrix):
         """
-        The setup outputs a random valid permutation if no
-        initial solution is provided
+        The setup outputs a random valid permutation if no initial solution
+        is provided. This permutation must contain all nodes from 0 to n - 1
+        and start at 0 (the root).
         """
 
         x, fx = local_search.setup(distance_matrix)
 
         assert set(x) == set(range(distance_matrix.shape[0]))
+        assert x[0] == 0
         assert fx
 
     @pytest.mark.parametrize("scheme", ["ps1", "ps2", "ps3"])

@@ -158,3 +158,41 @@ coverage:
 .. code:: bash
 
   poetry run pytest --cov=. --cov-report=term-missing --cov-fail-under=95 tests/
+
+
+Release Notes and Changelog
+===========================
+
+Release 0.1.2
+-------------
+- Local search and Simulated Annealing random solution now begins at root node
+  0 just like the exact methods.
+
+Python support:
+
+* Python >= 3.6
+
+Release 0.1.1
+-------------
+
+Improved Python versions support.
+
+Python support:
+
+* Python >= 3.6
+
+
+Release 0.1.0
+-------------
+
+Initial version. Support for the following solvers:
+
+* Exact (Brute force and Dynamic Programming);
+* Heuristics (Local Search and Simulated Annealing).
+
+The local search-based algorithms can be run with neighborhoods PS1, PS2 and
+PS3.
+
+Python support:
+
+* Python >= 3.8
