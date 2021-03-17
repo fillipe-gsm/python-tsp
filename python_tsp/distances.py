@@ -180,6 +180,7 @@ def _geo_tsplib_distance_matrix(lines: List[str]) -> np.ndarray:
 
 def _get_coordinates(lines: List[str]) -> np.ndarray:
     """Get the coordinates in case of files without an explicit matrix"""
+    dimension = int(_find_file_attribute(lines, "DIMENSION"))
     # Get the index of the line starting with the nodes information
     node_section_index = next(
         (
@@ -192,8 +193,8 @@ def _get_coordinates(lines: List[str]) -> np.ndarray:
         return [float(coordinate) for coordinate in line.split()[1:]]
 
     return np.array([
-        read_node_coordinates(line) for line in lines[node_section_index:]
-        if not line.startswith("EOF")
+        read_node_coordinates(line)
+        for line in lines[node_section_index:node_section_index + dimension]
     ])
 
 

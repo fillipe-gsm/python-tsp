@@ -116,7 +116,7 @@ class TestGreatCircleDistanceMatrix:
 class TestTSPLIBDistanceMatrix:
     euc_2d_file = "tests/tsplib_data/a280.tsp"
     ceil_2d_file = "tests/tsplib_data/dsj1000ceil.tsp"
-    geo_file = "tests/tsplib_data/gr666.tsp"
+    geo_file = "tests/tsplib_data/ulysses22.tsp"
     explicit_full_matrix_file = "tests/tsplib_data/br17.atsp"
     explicit_lower_diag_row_file = "tests/tsplib_data/gr48.tsp"
     explicit_upper_row_file = "tests/tsplib_data/brazil58.tsp"
@@ -143,7 +143,7 @@ class TestTSPLIBDistanceMatrix:
     def test_geo_tsplib_file(self):
         """
         """
-        dimension = 666
+        dimension = 22
         distance_matrix = distances.tsplib_distance_matrix(self.geo_file)
 
         assert distance_matrix.shape == (dimension, dimension)
