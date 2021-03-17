@@ -129,6 +129,8 @@ def tsplib_distance_matrix(tsplib_file: str) -> np.ndarray:
 
     if edge_weigth_type in ("EUC_2D", "CEIL_2D"):
         return _euc_2d_tsplib_distance_matrix(lines, edge_weigth_type)
+    elif edge_weigth_type == "GEO":
+        return _geo_tsplib_distance_matrix(lines)
     elif (
         edge_weigth_type == "EXPLICIT" and edge_weigth_format == "FULL_MATRIX"
     ):
@@ -159,6 +161,25 @@ def _euc_2d_tsplib_distance_matrix(
     lines: List[str], edge_weigth_type: str
 ) -> np.ndarray:
 
+    coordinates = _get_coordinates(lines)
+
+    distance_matrix = euclidean_distance_matrix(coordinates)
+    if edge_weigth_type == "CEIL_2D":
+        distance_matrix = np.ceil(distance_matrix)
+
+    return distance_matrix.astype(int)
+
+
+def _geo_tsplib_distance_matrix(lines: List[str]) -> np.ndarray:
+
+    coordinates = _get_coordinates(lines)
+    distance_matrix = great_circle_distance_matrix(coordinates)
+
+    return distance_matrix.astype(int)
+
+
+def _get_coordinates(lines: List[str]) -> np.ndarray:
+    """Get the coordinates in case of files without an explicit matrix"""
     # Get the index of the line starting with the nodes information
     node_section_index = next(
         (
@@ -170,16 +191,10 @@ def _euc_2d_tsplib_distance_matrix(
     def read_node_coordinates(line):
         return [float(coordinate) for coordinate in line.split()[1:]]
 
-    coordinates = np.array([
+    return np.array([
         read_node_coordinates(line) for line in lines[node_section_index:]
         if not line.startswith("EOF")
     ])
-
-    distance_matrix = euclidean_distance_matrix(coordinates)
-    if edge_weigth_type == "CEIL_2D":
-        distance_matrix = np.ceil(distance_matrix)
-
-    return distance_matrix.astype(int)
 
 
 def _explicit_full_matrix_tsplib_distance_matrix(
