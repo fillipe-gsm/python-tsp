@@ -1,0 +1,3 @@
+instance,solver,perturbation_scheme,replication,distance,processing_time
+u2152.tsp,solve_tsp_simulated_annealing,ps1,0,1942338,10.117266107998148
+u2152.tsp,solve_tsp_local_search,ps1,0,1918014,6.281180868005322
