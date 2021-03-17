@@ -18,7 +18,12 @@ if __name__ == "__main__":
     symmetric_data = []
 
     for instance_file in symmetric_instances:
+        print(instance_file)
         distance_matrix = tsplib_distance_matrix(instance_file)
+        if distance_matrix.shape[0] == 1:
+            print(instance_file)
+            break
+
         if distance_matrix.shape[0] == 1:
             continue
         for perturbation_scheme in perturbation_schemes:

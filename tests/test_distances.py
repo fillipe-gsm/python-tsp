@@ -114,31 +114,66 @@ class TestGreatCircleDistanceMatrix:
 
 
 class TestTSPLIBDistanceMatrix:
-    symmetric_tsplib_file = "tests/tsplib_data/symmetric_test_file.tsp"
-    asymmetric_tsplib_file = "tests/tsplib_data/asymmetric_test_file.atsp"
+    euc_2d_file = "tests/tsplib_data/a280.tsp"
+    ceil_2d_file = "tests/tsplib_data/dsj1000ceil.tsp"
+    explicit_full_matrix_file = "tests/tsplib_data/br17.atsp"
+    explicit_lower_diag_row_file = "tests/tsplib_data/gr48.tsp"
+    explicit_upper_row_file = "tests/tsplib_data/brazil58.tsp"
+    explicit_upper_diag_row_file = "tests/tsplib_data/si1032.tsp"
 
-    def test_symmetric_tsplib_matrix_conversion(self):
-        """
-        The symmetric test problem corresponds to a280, with 280 nodes.
-        Check its dimensions and whether it contains only integer values (as
-        specified by the TSPLIB documentation).
-        """
-        distance_matrix = distances.tsplib_distance_matrix(
-            self.symmetric_tsplib_file
-        )
+    def test_euc_2d_tsplib_file(self):
+        """The symmetric test problem corresponds to a280, with 280 nodes"""
+        dimension = 280
+        distance_matrix = distances.tsplib_distance_matrix(self.euc_2d_file)
 
-        assert distance_matrix.shape == (280, 280)
+        assert distance_matrix.shape == (dimension, dimension)
         assert distance_matrix.dtype == int
 
-    def test_asymmetric_tsplib_matrix_conversion(self):
+    def test_ceil_2d_tsplib_file(self):
         """
-        The asymmetric test problem corresponds to br17, with 17 nodes.
-        Check its dimensions and set the main diagonal to 0 as opposed to a
-        large number as in most instances.
+        The symmetric test problem corresponds to dsf1000ceil, with 1000 nodes
         """
+        dimension = 1000
+        distance_matrix = distances.tsplib_distance_matrix(self.ceil_2d_file)
+
+        assert distance_matrix.shape == (dimension, dimension)
+        assert distance_matrix.dtype == int
+
+    def test_explicit_full_matrix_tsplib_file(self):
+        """The asymmetric test problem corresponds to br17, with 17 nodes """
+        dimension = 17
         distance_matrix = distances.tsplib_distance_matrix(
-            self.asymmetric_tsplib_file
+            self.explicit_full_matrix_file
         )
 
-        assert distance_matrix.shape == (17, 17)
-        assert np.array_equal(distance_matrix.diagonal(), np.zeros(17))
+        assert distance_matrix.shape == (dimension, dimension)
+        assert np.array_equal(distance_matrix.diagonal(), np.zeros(dimension))
+
+    def test_explicit_lower_diag_row_tsplib_file(self):
+        """The symmetric test problem corresponds to gr48, with 48 nodes"""
+        dimension = 48
+        distance_matrix = distances.tsplib_distance_matrix(
+            self.explicit_lower_diag_row_file
+        )
+
+        assert distance_matrix.shape == (dimension, dimension)
+        assert np.array_equal(distance_matrix.diagonal(), np.zeros(dimension))
+
+    def test_explicit_upper_row_tsplib_file(self):
+        """The symmetric test problem corresponds to brazil58, with 58 nodes"""
+        dimension = 58
+        distance_matrix = distances.tsplib_distance_matrix(
+            self.explicit_upper_row_file
+        )
+
+        assert distance_matrix.shape == (dimension, dimension)
+        assert np.array_equal(distance_matrix.diagonal(), np.zeros(dimension))
+
+    def test_explicit_upper_diag_row_tsplib_file(self):
+        """The symmetric test problem corresponds to si1032, with 1032 nodes"""
+        dimension = 1032
+        distance_matrix = distances.tsplib_distance_matrix(
+            self.explicit_upper_diag_row_file
+        )
+
+        assert distance_matrix.shape == (dimension, dimension)
