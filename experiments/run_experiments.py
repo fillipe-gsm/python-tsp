@@ -7,6 +7,11 @@ from python_tsp.heuristics import (
 from python_tsp.distances import tsplib_distance_matrix
 
 
+# Files ignored for being too large or having weird distance matrices
+IGNORED_FILES = (
+    "att48.tsp", "d18512.tsp", "att532.tsp", "pla33810.tsp", "pla85900.tsp",
+)
+
 symmetric_instances = Path("experiments/tsp/").rglob("*.tsp")
 asymmetric_instances = Path("experiments/atsp/").rglob("*.atsp")
 
@@ -18,14 +23,9 @@ if __name__ == "__main__":
     symmetric_data = []
 
     for instance_file in symmetric_instances:
-        print(instance_file)
-        distance_matrix = tsplib_distance_matrix(instance_file)
-        if distance_matrix.shape[0] == 1:
-            print(instance_file)
-            break
-
-        if distance_matrix.shape[0] == 1:
+        if instance_file.name in IGNORED_FILES:
             continue
+        distance_matrix = tsplib_distance_matrix(instance_file)
         for perturbation_scheme in perturbation_schemes:
             for solver in solvers:
                 for i in range(num_replications):
@@ -62,3 +62,20 @@ if __name__ == "__main__":
             write_line(data_row) for data_row in symmetric_data
         ]
         f.writelines(lines)
+
+# IGNORED_FILES = (
+    # "att48.tsp", "d18512.tsp", "att532.tsp", "pla33810.tsp", "pla85900.tsp",
+# )
+# from python_tsp.distances import tsplib_distance_matrix
+# from pathlib import Path
+# symmetric_instances = Path("experiments/tsp/").rglob("*.tsp")
+
+# for instance_file in symmetric_instances:
+    # if instance_file.name in IGNORED_FILES:
+        # print(f"Ignoring {instance_file.name}")
+        # continue
+    # print(instance_file)
+    # distance_matrix = tsplib_distance_matrix(instance_file)
+    # if distance_matrix.shape[0] == 1:
+        # print(instance_file)
+        # break
