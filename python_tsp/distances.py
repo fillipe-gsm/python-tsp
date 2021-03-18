@@ -107,7 +107,6 @@ def _process_input(
 
 def tsplib_distance_matrix(tsplib_file: str) -> np.ndarray:
     """Distance matrix from a TSPLIB file
-    Currently, this function can handle files with types "TSP" and "ATSP".
 
     Parameters
     ----------
@@ -119,6 +118,18 @@ def tsplib_distance_matrix(tsplib_file: str) -> np.ndarray:
     -------
     distance_matrix
         A ND-array with the equivalent distance matrix of the input file
+
+    Raises
+    ------
+    NotImplementedError
+        In case a not supported file is provided.
+
+    Notes
+    -----
+    This function is able to handle the following types of TSPLIB files:
+        - EDGE_WEIGHT_TYPE: "EUC_2D", "CEIL_", "GEO" and "EXPLICIT"
+        - EDGE_WEIGHT_FORMAT: "FULL_MATRIX", "LOWER_ROW", "LOWER_DIAG_ROW",
+        "UPPER_ROW" and "UPPER_DIAG_ROW".
     """
     with open(tsplib_file, "r") as f:
         lines = f.readlines()

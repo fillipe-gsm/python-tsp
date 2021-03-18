@@ -123,7 +123,6 @@ class TestTSPLIBDistanceMatrix:
     explicit_upper_diag_row_file = "tests/tsplib_data/si1032.tsp"
 
     def test_euc_2d_tsplib_file(self):
-        """The symmetric test problem corresponds to a280, with 280 nodes"""
         dimension = 280
         distance_matrix = distances.tsplib_distance_matrix(self.euc_2d_file)
 
@@ -131,9 +130,6 @@ class TestTSPLIBDistanceMatrix:
         assert distance_matrix.dtype == int
 
     def test_ceil_2d_tsplib_file(self):
-        """
-        The symmetric test problem corresponds to dsf1000ceil, with 1000 nodes
-        """
         dimension = 1000
         distance_matrix = distances.tsplib_distance_matrix(self.ceil_2d_file)
 
@@ -141,8 +137,6 @@ class TestTSPLIBDistanceMatrix:
         assert distance_matrix.dtype == int
 
     def test_geo_tsplib_file(self):
-        """
-        """
         dimension = 22
         distance_matrix = distances.tsplib_distance_matrix(self.geo_file)
 
@@ -150,7 +144,6 @@ class TestTSPLIBDistanceMatrix:
         assert distance_matrix.dtype == int
 
     def test_explicit_full_matrix_tsplib_file(self):
-        """The asymmetric test problem corresponds to br17, with 17 nodes """
         dimension = 17
         distance_matrix = distances.tsplib_distance_matrix(
             self.explicit_full_matrix_file
@@ -160,7 +153,6 @@ class TestTSPLIBDistanceMatrix:
         assert np.array_equal(distance_matrix.diagonal(), np.zeros(dimension))
 
     def test_explicit_lower_diag_row_tsplib_file(self):
-        """The symmetric test problem corresponds to gr48, with 48 nodes"""
         dimension = 48
         distance_matrix = distances.tsplib_distance_matrix(
             self.explicit_lower_diag_row_file
@@ -170,7 +162,6 @@ class TestTSPLIBDistanceMatrix:
         assert np.array_equal(distance_matrix.diagonal(), np.zeros(dimension))
 
     def test_explicit_upper_row_tsplib_file(self):
-        """The symmetric test problem corresponds to brazil58, with 58 nodes"""
         dimension = 58
         distance_matrix = distances.tsplib_distance_matrix(
             self.explicit_upper_row_file
@@ -180,10 +171,10 @@ class TestTSPLIBDistanceMatrix:
         assert np.array_equal(distance_matrix.diagonal(), np.zeros(dimension))
 
     def test_explicit_upper_diag_row_tsplib_file(self):
-        """The symmetric test problem corresponds to si1032, with 1032 nodes"""
         dimension = 1032
         distance_matrix = distances.tsplib_distance_matrix(
             self.explicit_upper_diag_row_file
         )
 
         assert distance_matrix.shape == (dimension, dimension)
+        assert np.array_equal(distance_matrix.diagonal(), np.zeros(dimension))
