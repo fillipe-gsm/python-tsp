@@ -166,6 +166,7 @@ def _find_file_attribute(lines: List[str], attribute: str) -> str:
     line = next((line for line in lines if line.startswith(attribute)), None)
     if line:
         return line.split(":")[1].strip()
+    return ""
 
 
 def _euc_2d_tsplib_distance_matrix(
@@ -250,7 +251,7 @@ def _explicit_upper_row_tsplib_distance_matrix(
     return distance_matrix
 
 
-def _get_distance_matrix_flattened(lines: str) -> List[int]:
+def _get_distance_matrix_flattened(lines: List[str]) -> List[int]:
     """Return all cells of the distance matrix in the TSPLIB file"""
 
     # Get the index of the line starting with the edges information
