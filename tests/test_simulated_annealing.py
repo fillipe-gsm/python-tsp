@@ -1,5 +1,3 @@
-from timeit import default_timer
-
 import numpy as np
 import pytest
 
@@ -71,23 +69,39 @@ class TestSimulatedAnnealing:
         assert x[0] == 0
 
     @pytest.mark.parametrize("scheme", perturbation_schemes)
-    def test_simulated_annealing_respects_time_constraint(self, scheme):
+    def test_simulated_annealing_with_time_constraints(self, scheme, caplog):
         """
-        Check if the given time contraint is respected (within some limits)
-        despite the distance matrix size
+        Just like in the local search test, the actual time execution tends to
+        respect the provided limits, but it seems to vary a bit between
+        platforms. For instance, locally it may take a few milisseconds more,
+        but on Github it may be a few whole seconds.
+        Thus, this test checks if a proper warning log is created if the time
+        constraint stopped execution early.
         """
 
         max_processing_time = 1  # 1 second
         np.random.seed(1)  # for repeatability with the same distance matrix
         distance_matrix = np.random.rand(5000, 5000)  # very large matrix
 
-        tic = default_timer()
         simulated_annealing.solve_tsp_simulated_annealing(
             distance_matrix,
             perturbation_scheme=scheme,
             max_processing_time=max_processing_time,
         )
-        total_time = default_timer() - tic
 
-        # Give a tolerance of 1s
-        assert total_time <= max_processing_time + 1.0
+        assert "Stopping early due to time constraints" in caplog.text
+
+    def test_log_file_is_created_if_required(self, tmp_path):
+        """
+        If a log_file is provided, it contains information about the execution.
+        """
+
+        log_file = tmp_path / "tmp_log_file.log"
+
+        simulated_annealing.solve_tsp_simulated_annealing(
+            distance_matrix1, log_file=log_file
+        )
+
+        assert log_file.exists()
+        assert "Temperature" in log_file.read_text()
+        assert "Current value" in log_file.read_text()
