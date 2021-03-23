@@ -13,7 +13,8 @@ def solve_tsp_local_search(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
     perturbation_scheme: str = "ps6",
-    max_processing_time: float = None,
+    max_processing_time: Optional[float] = None,
+    verbose: bool = False,
 ) -> Tuple[List, float]:
     """Solve a TSP problem with a local search heuristic
 
@@ -24,10 +25,17 @@ def solve_tsp_local_search(
         distance from node i to j
 
     x0
-        Initial permutation. If not provided, it uses a random value
+        Initial permutation. If not provided, it starts with a random path
 
-    perturbation_scheme {"ps1", "ps2", "ps3", "ps4", "ps5", ["ps6"], "two_opt"}
-        Mechanism used to generate new solutions. Defaults to PS6.
+    perturbation_scheme {"ps1", "ps2", "ps3", "ps4", "ps5", "ps6", ["two_opt"]}
+        Mechanism used to generate new solutions. Defaults to "two_opt"
+
+    max_processing_time {None}
+        Maximum processing time in seconds. If not provided, the method stops
+        only when a local minimum is obtained
+
+    verbose
+        `True` to display information about the process
 
     Returns
     -------
@@ -48,25 +56,32 @@ def solve_tsp_local_search(
         improvement. Return `x`, `fx` as solution.
     """
     x, fx = setup(distance_matrix, x0)
+    max_processing_time = max_processing_time or np.inf
 
     tic = default_timer()
     stop_early = False
     improvement = True
     while improvement and (not stop_early):
         improvement = False
-        for xn in neighborhood_gen[perturbation_scheme](x):
-            if (
-                max_processing_time
-                and default_timer() - tic > max_processing_time
-            ):
+        for n_index, xn in enumerate(neighborhood_gen[perturbation_scheme](x)):
+            if default_timer() - tic > max_processing_time:
+                if verbose:
+                    print("\nStopping early due to time constraints")
                 stop_early = True
                 break
 
             fn = compute_permutation_distance(distance_matrix, xn)
+
+            if verbose:
+                print(f"Current value: {fx}; Neighbor: {n_index}", end="\r")
+
             if fn < fx:
                 improvement = True
                 x, fx = xn, fn
                 break  # early stop due to first improvement local search
+
+        if verbose:
+            print("")  # line break
 
     return x, fx
 

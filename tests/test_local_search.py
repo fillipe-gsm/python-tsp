@@ -1,3 +1,6 @@
+from timeit import default_timer
+
+import numpy as np
 import pytest
 
 from python_tsp.heuristics import local_search
@@ -108,3 +111,25 @@ class TestLocalSearch:
 
         assert xopt == x
         assert fopt == fx
+
+    @pytest.mark.parametrize("scheme", perturbation_schemes)
+    def test_local_search_respects_time_constraint(self, scheme):
+        """
+        Check if the given time contraint is respected (within some limits)
+        despite the distance matrix size
+        """
+
+        max_processing_time = 1  # 1 second
+        np.random.seed(1)  # for repeatability with the same distance matrix
+        distance_matrix = np.random.rand(5000, 5000)  # very large matrix
+
+        tic = default_timer()
+        local_search.solve_tsp_local_search(
+            distance_matrix,
+            perturbation_scheme=scheme,
+            max_processing_time=max_processing_time,
+        )
+        total_time = default_timer() - tic
+
+        # Give a tolerance of 0.5s
+        assert total_time <= max_processing_time + 0.5
