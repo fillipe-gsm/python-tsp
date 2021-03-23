@@ -11,10 +11,10 @@ from python_tsp.utils import compute_permutation_distance
 def solve_tsp_simulated_annealing(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
-    perturbation_scheme: str = "ps6",
+    perturbation_scheme: str = "two_opt",
     alpha: float = 0.9,
-    verbose: bool = True,
     max_processing_time: float = None,
+    verbose: bool = False,
 ) -> Tuple[List, float]:
     """Solve a TSP problem using a Simulated Annealing
     The approach used here is the one proposed in [1].
@@ -26,10 +26,10 @@ def solve_tsp_simulated_annealing(
         distance from node i to j
 
     x0
-        Initial permutation. If not provided, it uses a random value
+        Initial permutation. If not provided, it starts with a random path
 
-    perturbation_scheme {"ps1", "ps2", "ps3", "ps4", "ps5", ["ps6"], "two_opt"}
-        Mechanism used to generate new solutions. Defaults to PS6.
+    perturbation_scheme {"ps1", "ps2", "ps3", "ps4", "ps5", "ps6", ["two_opt"]}
+        Mechanism used to generate new solutions. Defaults to "two_opt"
 
     alpha
         Reduction factor (``alpha`` < 1) used to reduce the temperature. As a
@@ -37,6 +37,10 @@ def solve_tsp_simulated_annealing(
         0.9 is faster but may not be as good. A good approach is to use 0.9
         (as default) and if required run the returned solution with a local
         search.
+
+    max_processing_time {None}
+        Maximum processing time in seconds. If not provided, the method stops
+        only when there were 3 temperature cycles with no improvement.
 
     verbose
         `True` to display information about the process.
@@ -56,6 +60,7 @@ def solve_tsp_simulated_annealing(
 
     x, fx = setup(distance_matrix, x0)
     temp = _initial_temperature(distance_matrix, x, fx, perturbation_scheme)
+    max_processing_time = max_processing_time or np.inf
 
     n = len(x)
     k_inner_min = n  # min inner iterations
@@ -67,10 +72,7 @@ def solve_tsp_simulated_annealing(
     while (k_noimprovements < 3) and (not stop_early):
         k_accepted = 0  # number of accepted perturbations
         for k in range(k_inner_max):
-            if (
-                max_processing_time
-                and default_timer() - tic > max_processing_time
-            ):
+            if default_timer() - tic > max_processing_time:
                 if verbose:
                     print("\nStopping early due to time constraints")
                 stop_early = True
@@ -85,12 +87,13 @@ def solve_tsp_simulated_annealing(
                 k_noimprovements = 0
 
             if verbose:
-                print((
+                print(
                     f"Temperature {temp}. Current value: {fx} "
                     f"k: {k + 1}/{k_inner_max} "
                     f"k_accepted: {k_accepted}/{k_inner_min} "
-                    f"k_noimprovements: {k_noimprovements} "
-                ), end="\r")
+                    f"k_noimprovements: {k_noimprovements}",
+                    end="\r"
+                )
 
             if k_accepted >= k_inner_min:
                 break

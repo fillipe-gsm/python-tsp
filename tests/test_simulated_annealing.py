@@ -1,3 +1,6 @@
+from timeit import default_timer
+
+import numpy as np
 import pytest
 
 from python_tsp.heuristics import simulated_annealing
@@ -66,3 +69,25 @@ class TestSimulatedAnnealing:
 
         assert set(x) == set(range(5))
         assert x[0] == 0
+
+    @pytest.mark.parametrize("scheme", perturbation_schemes)
+    def test_simulated_annealing_respects_time_constraint(self, scheme):
+        """
+        Check if the given time contraint is respected (within some limits)
+        despite the distance matrix size
+        """
+
+        max_processing_time = 1  # 1 second
+        np.random.seed(1)  # for repeatability with the same distance matrix
+        distance_matrix = np.random.rand(5000, 5000)  # very large matrix
+
+        tic = default_timer()
+        simulated_annealing.solve_tsp_simulated_annealing(
+            distance_matrix,
+            perturbation_scheme=scheme,
+            max_processing_time=max_processing_time,
+        )
+        total_time = default_timer() - tic
+
+        # Give a tolerance of 1s
+        assert total_time <= max_processing_time + 1.0
