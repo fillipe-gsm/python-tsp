@@ -12,7 +12,7 @@ from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 def solve_tsp_local_search(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
-    perturbation_scheme: str = "ps6",
+    perturbation_scheme: str = "two_opt",
     max_processing_time: Optional[float] = None,
     verbose: bool = False,
 ) -> Tuple[List, float]:
