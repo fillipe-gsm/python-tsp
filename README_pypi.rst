@@ -3,7 +3,7 @@ Python TSP Solver
 =================
 
 ``python-tsp`` is a library written in pure Python for solving typical Traveling
-Salesperson Problems (TSP).
+Salesperson Problems (TSP). It can work with symmetric and asymmetric versions.
 
 
 Installation
@@ -56,8 +56,9 @@ zero:
    distance_matrix[:, 0] = 0
    permutation, distance = solve_tsp_dynamic_programming(distance_matrix)
 
-and in this case we obtain ``[0, 2, 3, 1]``, with distance 12.
-
+and in this case we obtain ``[0, 2, 3, 1]``, with distance 12. Notice that in
+this case the distance matrix is actually asymmetric, and the methods here are
+applicable as well.
 
 The previous examples assumed you already had a distance matrix. If that is not
 the case, the ``distances`` module has prepared some functions to compute an 

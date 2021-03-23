@@ -1,5 +1,7 @@
 """Simple local search solver"""
+import logging
 from random import sample
+from timeit import default_timer
 from typing import List, Optional, Tuple
 
 import numpy as np
@@ -8,10 +10,18 @@ from python_tsp.utils import compute_permutation_distance
 from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 
 
+logger = logging.getLogger(__name__)
+ch = logging.StreamHandler()
+ch.setLevel(level=logging.WARNING)
+logger.addHandler(ch)
+
+
 def solve_tsp_local_search(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
-    perturbation_scheme: str = "ps3",
+    perturbation_scheme: str = "two_opt",
+    max_processing_time: Optional[float] = None,
+    log_file: Optional[str] = None,
 ) -> Tuple[List, float]:
     """Solve a TSP problem with a local search heuristic
 
@@ -22,16 +32,23 @@ def solve_tsp_local_search(
         distance from node i to j
 
     x0
-        Initial permutation. If not provided, it uses a random value
+        Initial permutation. If not provided, it starts with a random path
 
-    perturbation_scheme {"ps1", "ps2", ["ps3"]}
-        Mechanism used to generate new solutions. Defaults to PS3. See [1] for
-        a quick explanation on these schemes.
+    perturbation_scheme {"ps1", "ps2", "ps3", "ps4", "ps5", "ps6", ["two_opt"]}
+        Mechanism used to generate new solutions. Defaults to "two_opt"
+
+    max_processing_time {None}
+        Maximum processing time in seconds. If not provided, the method stops
+        only when a local minimum is obtained
+
+    log_file
+        If not `None`, creates a log file with details about the whole
+        execution
 
     Returns
     -------
-    A permutation of nodes from 0 to n that produces the least total distance
-    obtained (not necessarily optimal).
+    A permutation of nodes from 0 to n - 1 that produces the least total
+    distance obtained (not necessarily optimal).
 
     The total distance the returned permutation produces.
 
@@ -45,21 +62,29 @@ def solve_tsp_local_search(
             and stop;
         3. Repeat step 2 until all neighbors of `x` are tried and there is no
         improvement. Return `x`, `fx` as solution.
-
-    References
-    ----------
-    [1] Goulart, Fillipe, et al. "Permutation-based optimization for the load
-    restoration problem with improved time estimation of maneuvers."
-    International Journal of Electrical Power & Energy Systems 101 (2018):
-    339-355.
     """
     x, fx = setup(distance_matrix, x0)
+    max_processing_time = max_processing_time or np.inf
+    if log_file:
+        fh = logging.FileHandler(log_file)
+        fh.setLevel(logging.INFO)
+        logger.addHandler(fh)
+        logger.setLevel(logging.INFO)
 
+    tic = default_timer()
+    stop_early = False
     improvement = True
-    while improvement:
+    while improvement and (not stop_early):
         improvement = False
-        for xn in neighborhood_gen[perturbation_scheme](x):
+        for n_index, xn in enumerate(neighborhood_gen[perturbation_scheme](x)):
+            if default_timer() - tic > max_processing_time:
+                logger.warning("Stopping early due to time constraints")
+                stop_early = True
+                break
+
             fn = compute_permutation_distance(distance_matrix, xn)
+            logger.info(f"Current value: {fx}; Neighbor: {n_index}")
+
             if fn < fx:
                 improvement = True
                 x, fx = xn, fn

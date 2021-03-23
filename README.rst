@@ -3,7 +3,7 @@ Python TSP Solver
 =================
 
 ``python-tsp`` is a library written in pure Python for solving typical Traveling
-Salesperson Problems (TSP).
+Salesperson Problems (TSP). It can work with symmetric and asymmetric versions.
 
 
 Installation
@@ -13,13 +13,13 @@ Installation
   pip install python-tsp
 
 
-Examples
-========
+Quickstart
+==========
 
 Regular TSP problem
 -------------------
 
-Suppose we wish to find a Hamiltonian path with least cost for the following 
+Suppose we wish to find a Hamiltonian path with least cost for the following
 problem:
 
 .. image:: figures/python_tsp_example.png
@@ -50,7 +50,7 @@ instance, to use a local search method:
    from python_tsp.heuristics import solve_tsp_local_search
 
    permutation, distance = solve_tsp_local_search(distance_matrix)
-   
+
 In this case there is generally no guarantee of optimality, but in this small
 instance the answer is normally a permutation with total distance 17 as well
 (notice in this case there are many permutations with the same optimal
@@ -68,13 +68,16 @@ zero:
    distance_matrix[:, 0] = 0
    permutation, distance = solve_tsp_dynamic_programming(distance_matrix)
 
-and in this case we obtain ``[0, 2, 3, 1]``, with distance 12.
+and we obtain ``[0, 2, 3, 1]``, with distance 12. Notice that in
+this case the distance matrix is actually asymmetric, and the methods here are
+applicable as well.
+
 
 Computing a distance matrix
 ---------------------------
 
 The previous examples assumed you already had a distance matrix. If that is not
-the case, the ``distances`` module has prepared some functions to compute an 
+the case, the ``distances`` module has prepared some functions to compute an
 Euclidean distance matrix or a
 `Great Circle Distance <https://en.wikipedia.org/wiki/Great-circle_distance>`_.
 
@@ -93,6 +96,121 @@ of a point,
        [ 41.3249908 , -73.507788  ]
    ])
    distance_matrix = great_circle_distance_matrix(sources)
+
+
+This module also has support for many TSPLIB-type files of ``TSP`` and
+``ATSP`` format. Just enter the file and a proper distance matrix is returned.
+
+.. code:: python
+
+    from python_tsp.distances import tsplib_distance_matrix
+
+    tsplib_file = "tests/tsplib_data/br17.atsp"  # replace with the path to your TSPLIB file
+    distance_matrix = tsplib_distance_matrix(tsplib_file)
+    # outputs a 17 x 17 array
+
+
+A more intricate example
+------------------------
+
+Let us attempt to solve the ``a280.tsp`` TSPLIB file. It has 280 nodes, so an exact
+approach may take too long. Hence, let us start with a Local Search (LS) solver:
+
+
+.. code:: python
+
+    from python_tsp.distances import tsplib_distance_matrix
+    from python_tsp.heuristics import solve_tsp_local_search, solve_tsp_simulated_annealing
+
+    # Get corresponding distance matrix
+    tsplib_file = "tests/tsplib_data/a280.tsp"
+    distance_matrix = tsplib_distance_matrix(tsplib_file)
+
+    # Solve with Local Search using default parameters
+    permutation, distance = solve_tsp_local_search(distance_matrix)
+    # distance: 3064
+
+
+When calling ``solve_tsp_local_search`` like this, we are starting with a
+random permutation, using the 2-opt scheme as neighborhood, and running it until
+a local optimum is obtained. It is the same as this:
+
+.. code:: python
+
+    permutation, distance = solve_tsp_local_search(
+        distance_matrix,
+        x0=None,
+        perturbation_scheme="two_opt",
+        max_processing_time=None,
+        log_file=None,
+    )
+
+Each input variable is probably self-explanatory, but you can run
+``help solve_tsp_local_search`` for more information.
+
+In my specific run, I obtained a permutation with total distance 3064. The
+actual best solution for this instance is 2579, so our solution has a 18.8%
+gap. Remember this solver is a heuristic, and thus it has no business in
+finding the actual optimum. Moreover, you can get different results trying
+distinct perturbation schemes and starting points.
+
+Since the local search solver only obtains local minima, maybe we can get more
+lucky with a metaheuristic such as the Simulated Annealing (SA):
+
+.. code:: python
+
+    permutation2, distance2 = solve_tsp_simulated_annealing(distance_matrix)
+    # distance: 2830
+
+In my execution, I got a 2830 as distance, representing a 9.7% gap, a great
+improvement over the local search. The SA input parameters are basically the
+same as the LS, but you can check ``help solve_tsp_simulated_annealing`` for
+more details as well.
+
+If you are familiar with metaheuristics, you would know that the SA does not
+guarantee a local minimum, despite its solution being better than the LS in
+this case. Thus, maybe we can squeeze some improvement by running a local
+search starting with its returned solution:
+
+.. code:: python
+
+    permutation3, distance3 = solve_tsp_local_search(distance_matrix, x0=permutation2)
+    # distance: 2825
+
+So, that was o.k., nothing groundbreaking, but a nice combo to try in some
+situations. Nevertheless, if we change the perturbation scheme to, say, PS3:
+
+.. code:: python
+
+    permutation4, distance4 = solve_tsp_local_search(
+        distance_matrix, x0=permutation2, perturbation_scheme="ps3"
+    )
+    # distance: 2746
+
+and there we go, a distance of 2746 or a 6.5% gap of the optimum.
+
+The PSX schemes work directly in the permutation space as shown in the figure
+below. Among these, the well-known 2-opt is very close to the PS5 and it works very
+well in most instances, but sometimes other schemes may yield better results because their
+neighborhoods are different.
+
+.. image:: figures/perturbation_schemes.png
+
+In this case, PS3 and PS6 have larger neighborhood sizes, so we may get a better
+chance of improvement by switching to them in the LS step. Test other schemes
+and see if you can get different results.
+
+Finally, if you don't feel like fine-tunning the solvers for each problem, a
+rule of thumb that worked relatively well for me is to run the SA with a
+2-opt and follow it by a LS with PS3 or PS6, like
+
+.. code:: python
+
+    permutation, distance = solve_tsp_simulated_annealing(distance_matrix)
+    permutation2, distance2 = solve_tsp_local_search(
+        distance_matrix, x0=permutation, perturbation_scheme="ps3"
+    )
+
 
 Methods available
 =================
@@ -150,7 +268,8 @@ You can also run all of these steps at once with the check-up bash script:
 
 .. code:: bash
 
-   bash ./.scripts/checkup_scripts.sh
+   ./.scripts/checkup_scripts.sh
+   bash ./.scripts/checkup_scripts.sh  # if the previous one fails
 
 Finally (and of course), make sure all tests pass and you get at least 95% of
 coverage:
@@ -163,36 +282,47 @@ coverage:
 Release Notes and Changelog
 ===========================
 
+Releases 0.2.X
+--------------
+
+Release 0.2.0
+~~~~~~~~~~~~~
+
+- Add distance matrix support for TSPLIB files (symmetric and asymmetric instances);
+- Add new neighborhood types for local search based methods: PS4, PS5, PS6 and 2-opt;
+- Local Search and Simulated Annealing use 2-opt scheme as default;
+- Both local search based methods now respect a maximum processing time if provided;
+- The primitive `print`  to display iterations information is replaced by a proper log.
+
+Python support: Python >= 3.6
+
+Releases 0.1.X
+--------------
+
 Release 0.1.2
--------------
+~~~~~~~~~~~~~
+
 - Local search and Simulated Annealing random solution now begins at root node
   0 just like the exact methods.
 
-Python support:
-
-* Python >= 3.6
+Python support: Python >= 3.6
 
 Release 0.1.1
--------------
+~~~~~~~~~~~~~
 
-Improved Python versions support.
+- Improve Python versions support.
 
-Python support:
-
-* Python >= 3.6
+Python support: Python >= 3.6
 
 
 Release 0.1.0
--------------
+~~~~~~~~~~~~~
 
-Initial version. Support for the following solvers:
+* Initial version. Support for the following solvers:
 
-* Exact (Brute force and Dynamic Programming);
-* Heuristics (Local Search and Simulated Annealing).
+  * Exact (Brute force and Dynamic Programming);
+  * Heuristics (Local Search and Simulated Annealing).
 
-The local search-based algorithms can be run with neighborhoods PS1, PS2 and
-PS3.
+* The local search-based algorithms can be run with neighborhoods PS1, PS2 and PS3.
 
-Python support:
-
-* Python >= 3.8
+Python support: Python >= 3.8

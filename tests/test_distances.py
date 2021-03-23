@@ -111,3 +111,70 @@ class TestGreatCircleDistanceMatrix:
         destination = destinations[0]
 
         distances.great_circle_distance_matrix(source, destination)
+
+
+class TestTSPLIBDistanceMatrix:
+    euc_2d_file = "tests/tsplib_data/a280.tsp"
+    ceil_2d_file = "tests/tsplib_data/dsj1000ceil.tsp"
+    geo_file = "tests/tsplib_data/ulysses22.tsp"
+    explicit_full_matrix_file = "tests/tsplib_data/br17.atsp"
+    explicit_lower_diag_row_file = "tests/tsplib_data/gr48.tsp"
+    explicit_upper_row_file = "tests/tsplib_data/brazil58.tsp"
+    explicit_upper_diag_row_file = "tests/tsplib_data/si1032.tsp"
+
+    def test_euc_2d_tsplib_file(self):
+        dimension = 280
+        distance_matrix = distances.tsplib_distance_matrix(self.euc_2d_file)
+
+        assert distance_matrix.shape == (dimension, dimension)
+        assert distance_matrix.dtype == int
+
+    def test_ceil_2d_tsplib_file(self):
+        dimension = 1000
+        distance_matrix = distances.tsplib_distance_matrix(self.ceil_2d_file)
+
+        assert distance_matrix.shape == (dimension, dimension)
+        assert distance_matrix.dtype == int
+
+    def test_geo_tsplib_file(self):
+        dimension = 22
+        distance_matrix = distances.tsplib_distance_matrix(self.geo_file)
+
+        assert distance_matrix.shape == (dimension, dimension)
+        assert distance_matrix.dtype == int
+
+    def test_explicit_full_matrix_tsplib_file(self):
+        dimension = 17
+        distance_matrix = distances.tsplib_distance_matrix(
+            self.explicit_full_matrix_file
+        )
+
+        assert distance_matrix.shape == (dimension, dimension)
+        assert np.array_equal(distance_matrix.diagonal(), np.zeros(dimension))
+
+    def test_explicit_lower_diag_row_tsplib_file(self):
+        dimension = 48
+        distance_matrix = distances.tsplib_distance_matrix(
+            self.explicit_lower_diag_row_file
+        )
+
+        assert distance_matrix.shape == (dimension, dimension)
+        assert np.array_equal(distance_matrix.diagonal(), np.zeros(dimension))
+
+    def test_explicit_upper_row_tsplib_file(self):
+        dimension = 58
+        distance_matrix = distances.tsplib_distance_matrix(
+            self.explicit_upper_row_file
+        )
+
+        assert distance_matrix.shape == (dimension, dimension)
+        assert np.array_equal(distance_matrix.diagonal(), np.zeros(dimension))
+
+    def test_explicit_upper_diag_row_tsplib_file(self):
+        dimension = 1032
+        distance_matrix = distances.tsplib_distance_matrix(
+            self.explicit_upper_diag_row_file
+        )
+
+        assert distance_matrix.shape == (dimension, dimension)
+        assert np.array_equal(distance_matrix.diagonal(), np.zeros(dimension))
