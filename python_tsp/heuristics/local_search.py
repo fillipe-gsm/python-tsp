@@ -1,4 +1,5 @@
 """Simple local search solver"""
+import logging
 from random import sample
 from timeit import default_timer
 from typing import List, Optional, Tuple
@@ -9,12 +10,18 @@ from python_tsp.utils import compute_permutation_distance
 from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 
 
+logger = logging.getLogger(__name__)
+ch = logging.StreamHandler()
+ch.setLevel(level=logging.WARNING)
+logger.addHandler(ch)
+
+
 def solve_tsp_local_search(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
     perturbation_scheme: str = "two_opt",
     max_processing_time: Optional[float] = None,
-    verbose: bool = False,
+    log_file: Optional[str] = None,
 ) -> Tuple[List, float]:
     """Solve a TSP problem with a local search heuristic
 
@@ -34,8 +41,9 @@ def solve_tsp_local_search(
         Maximum processing time in seconds. If not provided, the method stops
         only when a local minimum is obtained
 
-    verbose
-        `True` to display information about the process
+    log_file
+        If not `None`, creates a log file with details about the whole
+        execution
 
     Returns
     -------
@@ -57,6 +65,11 @@ def solve_tsp_local_search(
     """
     x, fx = setup(distance_matrix, x0)
     max_processing_time = max_processing_time or np.inf
+    if log_file:
+        fh = logging.FileHandler(log_file)
+        fh.setLevel(logging.INFO)
+        logger.addHandler(fh)
+        logger.setLevel(logging.INFO)
 
     tic = default_timer()
     stop_early = False
@@ -65,23 +78,17 @@ def solve_tsp_local_search(
         improvement = False
         for n_index, xn in enumerate(neighborhood_gen[perturbation_scheme](x)):
             if default_timer() - tic > max_processing_time:
-                if verbose:
-                    print("\nStopping early due to time constraints")
+                logger.warning("Stopping early due to time constraints")
                 stop_early = True
                 break
 
             fn = compute_permutation_distance(distance_matrix, xn)
-
-            if verbose:
-                print(f"Current value: {fx}; Neighbor: {n_index}", end="\r")
+            logger.info(f"Current value: {fx}; Neighbor: {n_index}")
 
             if fn < fx:
                 improvement = True
                 x, fx = xn, fn
                 break  # early stop due to first improvement local search
-
-        if verbose:
-            print("")  # line break
 
     return x, fx
 
