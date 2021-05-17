@@ -6,7 +6,7 @@ import numpy as np
 
 def solve_tsp_dynamic_programming(
     distance_matrix: np.ndarray,
-    maxsize: Optional[int] = None
+    maxsize: Optional[int] = None,
 ) -> Tuple[List, float]:
     """
     Solve TSP to optimality with dynamic programming.
@@ -90,8 +90,8 @@ def solve_tsp_dynamic_programming(
     ---------
     https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm#cite_note-5
     """
-    # Get initial set {1, 2, ..., tsp_size} as a frozenset because since
-    # @lru_cache requires a hashable type
+    # Get initial set {1, 2, ..., tsp_size} as a frozenset because @lru_cache
+    # requires a hashable type
     N = frozenset(range(1, distance_matrix.shape[0]))
     memo: Dict[Tuple, int] = {}
 

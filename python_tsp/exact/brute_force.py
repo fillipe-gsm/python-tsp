@@ -8,7 +8,7 @@ from python_tsp.utils import compute_permutation_distance
 
 
 def solve_tsp_brute_force(
-    distance_matrix: np.ndarray
+    distance_matrix: np.ndarray,
 ) -> Tuple[Optional[List], Any]:
     """Solve TSP to optimality with a brute force approach
 
@@ -20,12 +20,10 @@ def solve_tsp_brute_force(
 
     Returns
     -------
-    permutation
-        A permutation of nodes from 0 to n that produces the least total
-        distance
-
+    A permutation of nodes from 0 to n that produces the least total
     distance
-        The total distance the optimal permutation produces
+
+    The total distance the optimal permutation produces
 
     Notes
     ----
@@ -38,13 +36,13 @@ def solve_tsp_brute_force(
     # Exclude 0 from the range since it is fixed as starting point
     points = range(1, distance_matrix.shape[0])
     best_distance = np.inf
-    best_solution = None
+    best_permutation = None
     for partial_permutation in permutations(points):
         # Remember to add the starting node before evaluating it
         permutation = [0] + list(partial_permutation)
         distance = compute_permutation_distance(distance_matrix, permutation)
         if distance < best_distance:
             best_distance = distance
-            best_solution = permutation
+            best_permutation = permutation
 
-    return best_solution, best_distance
+    return best_permutation, best_distance
