@@ -285,6 +285,13 @@ Release Notes and Changelog
 Releases 0.2.X
 --------------
 
+Release 0.2.1
+~~~~~~~~~~~~~
+
+- Improve TSLIB support by using the `TSPLIB95 library <https://pypi.org/project/tsplib95/>`_ .
+
+Python support: Python >= 3.6
+
 Release 0.2.0
 ~~~~~~~~~~~~~
 
