@@ -16,13 +16,13 @@ def euclidean_distance_matrix(
     sources, destinations
         Arrays with each row containing the coordinates of a point. If
         ``destinations`` is None, compute the distance between each source in
-        ``sources``.
+        ``sources`` and outputs a square distance matrix.
 
     Returns
     -------
     distance_matrix
-        Array with the (i. j) entry indicating the Euclidean distance between
-        the i-th row in `sources` and the j-th row in `destinations`.
+        Array with the (i, j) entry indicating the Euclidean distance between
+        the i-th row in ``sources`` and the j-th row in ``destinations``.
 
     Notes
     -----
@@ -32,11 +32,11 @@ def euclidean_distance_matrix(
         sqrt((y1 - x1)**2 + (y2 - x2)**2 + ... + (yn - xn)**2)
 
     If the user requires the distance between each point in a single array,
-    call this this function with `sources` = `destinations`.
+    call this this function with ``destinations`` set to `None`.
     """
     sources, destinations = _process_input(sources, destinations)
     return np.sqrt(
-        ((sources[:, :, None] - destinations[:, :, None].T) ** 2).sum(1)
+        ((sources[:, :, None] - destinations[:, :, None].T) ** 2).sum(axis=1)
     )
 
 
@@ -58,9 +58,9 @@ def great_circle_distance_matrix(
     Returns
     -------
     distance_matrix
-        Array with the (i. j) entry indicating the Great Circle distance (in
-        meters) between the i-th row in `sources` and the j-th row in
-        `destinations`.
+        Array with the (i, j) entry indicating the Great Circle distance (in
+        meters) between the i-th row in ``sources`` and the j-th row in
+        ``destinations``.
 
     References
     ----------
