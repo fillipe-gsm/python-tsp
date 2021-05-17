@@ -10,6 +10,7 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.6"
 numpy = "^1.18.5"
+tsplib95 = "^0.7.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

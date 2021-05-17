@@ -1,7 +1,9 @@
 """Contains typical distance matrices"""
-from typing import List, Optional, Tuple
+from typing import Optional, Tuple
 
 import numpy as np
+import tsplib95
+
 
 EARTH_RADIUS_METERS = 6371000
 
@@ -119,161 +121,22 @@ def tsplib_distance_matrix(tsplib_file: str) -> np.ndarray:
     distance_matrix
         A ND-array with the equivalent distance matrix of the input file
 
-    Raises
-    ------
-    NotImplementedError
-        In case a not supported file is provided.
-
     Notes
     -----
-    This function is able to handle the following types of TSPLIB files:
-        - EDGE_WEIGHT_TYPE: "EUC_2D", "CEIL_", "GEO" and "EXPLICIT"
-        - EDGE_WEIGHT_FORMAT: "FULL_MATRIX", "LOWER_ROW", "LOWER_DIAG_ROW",
-        "UPPER_ROW" and "UPPER_DIAG_ROW".
+    This function can handle any file supported by the `tsplib95` lib.
     """
-    with open(tsplib_file, "r") as f:
-        lines = f.readlines()
 
-    # Get file relevant attributes
-    edge_weigth_type = _find_file_attribute(lines, "EDGE_WEIGHT_TYPE")
-    edge_weigth_format = _find_file_attribute(lines, "EDGE_WEIGHT_FORMAT")
-
-    if edge_weigth_type in ("EUC_2D", "CEIL_2D"):
-        return _euc_2d_tsplib_distance_matrix(lines, edge_weigth_type)
-    elif edge_weigth_type == "GEO":
-        return _geo_tsplib_distance_matrix(lines)
-    elif (
-        edge_weigth_type == "EXPLICIT" and edge_weigth_format == "FULL_MATRIX"
-    ):
-        return _explicit_full_matrix_tsplib_distance_matrix(lines)
-    elif (
-        edge_weigth_type == "EXPLICIT"
-        and edge_weigth_format in ("LOWER_ROW", "LOWER_DIAG_ROW")
-    ):
-        offset = 0 if edge_weigth_format == "LOWER_DIAG_ROW" else 1
-        return _explicit_lower_row_tsplib_distance_matrix(lines, offset=offset)
-    elif (
-        edge_weigth_type == "EXPLICIT"
-        and edge_weigth_format in ("UPPER_ROW", "UPPER_DIAG_ROW")
-    ):
-        offset = 0 if edge_weigth_format == "UPPER_DIAG_ROW" else 1
-        return _explicit_upper_row_tsplib_distance_matrix(lines, offset=offset)
-    else:
-        raise NotImplementedError("tsplib file not supported")
-
-
-def _find_file_attribute(lines: List[str], attribute: str) -> str:
-    line = next((line for line in lines if line.startswith(attribute)), None)
-    if line:
-        return line.split(":")[1].strip()
-    return ""
-
-
-def _euc_2d_tsplib_distance_matrix(
-    lines: List[str], edge_weigth_type: str
-) -> np.ndarray:
-
-    coordinates = _get_coordinates(lines)
-
-    distance_matrix = euclidean_distance_matrix(coordinates)
-    if edge_weigth_type == "CEIL_2D":
-        distance_matrix = np.ceil(distance_matrix)
-
-    return distance_matrix.astype(int)
-
-
-def _geo_tsplib_distance_matrix(lines: List[str]) -> np.ndarray:
-
-    coordinates = _get_coordinates(lines)
-    distance_matrix = great_circle_distance_matrix(coordinates)
-
-    return distance_matrix.astype(int)
-
-
-def _get_coordinates(lines: List[str]) -> np.ndarray:
-    """Get the coordinates in case of files without an explicit matrix"""
-    dimension = int(_find_file_attribute(lines, "DIMENSION"))
-    # Get the index of the line starting with the nodes information
-    node_section_index = next(
-        (
-            i for i, line in enumerate(lines)
-            if line.startswith("NODE_COORD_SECTION")
-        )
-    ) + 1
-
-    def read_node_coordinates(line):
-        return [float(coordinate) for coordinate in line.split()[1:]]
-
-    return np.array([
-        read_node_coordinates(line)
-        for line in lines[node_section_index:node_section_index + dimension]
+    tsp_problem = tsplib95.load(tsplib_file)
+    distance_matrix_flattened = np.array([
+        tsp_problem.get_weight(*edge) for edge in tsp_problem.get_edges()
     ])
-
-
-def _explicit_full_matrix_tsplib_distance_matrix(
-    lines: List[str]
-) -> np.ndarray:
-    dimension = int(_find_file_attribute(lines, "DIMENSION"))
-    distance_matrix_flattened = _get_distance_matrix_flattened(lines)
-
     distance_matrix = np.reshape(
-        distance_matrix_flattened, (dimension, dimension)
+        distance_matrix_flattened,
+        (tsp_problem.dimension, tsp_problem.dimension),
     )
+
+    # Some problems with EXPLICIT matrix have a large number in the distance
+    # from a node to itself, which makes no sense for our problems. Thus,
+    # always ensure a diagonal filled with zeros
     np.fill_diagonal(distance_matrix, 0)
     return distance_matrix
-
-
-def _explicit_lower_row_tsplib_distance_matrix(
-    lines: List[str], offset: int = 0
-) -> np.ndarray:
-    dimension = int(_find_file_attribute(lines, "DIMENSION"))
-    distance_matrix_flattened = _get_distance_matrix_flattened(lines)
-
-    # Construct the lower part of the distance matrix
-    distance_matrix = np.zeros((dimension, dimension))
-    tril_indices = np.tril_indices(dimension, k=offset, m=dimension)
-    distance_matrix[tril_indices] = distance_matrix_flattened
-    distance_matrix += distance_matrix.transpose()
-    return distance_matrix
-
-
-def _explicit_upper_row_tsplib_distance_matrix(
-    lines: List[str], offset: int = 0
-) -> np.ndarray:
-    dimension = int(_find_file_attribute(lines, "DIMENSION"))
-    distance_matrix_flattened = _get_distance_matrix_flattened(lines)
-
-    # Construct the upper part of the distance matrix
-    distance_matrix = np.zeros((dimension, dimension))
-    triu_indices = np.triu_indices(dimension, k=offset, m=dimension)
-    distance_matrix[triu_indices] = distance_matrix_flattened
-    distance_matrix += distance_matrix.transpose()
-    return distance_matrix
-
-
-def _get_distance_matrix_flattened(lines: List[str]) -> List[int]:
-    """Return all cells of the distance matrix in the TSPLIB file"""
-
-    # Get the index of the line starting with the edges information
-    edge_section_index = next(
-        (
-            i for i, line in enumerate(lines)
-            if line.startswith("EDGE_WEIGHT_SECTION")
-        )
-    ) + 1
-
-    # Each file line does not necessarily contains one matrix row. Thus, read
-    # all matrix data at once first and then reshape the array later
-    def read_line_data(line):
-        return [int(cell) for cell in line.split()]
-
-    distance_matrix_flattened = []
-    for line in lines[edge_section_index:]:
-        # Try reading the current line and stop if a non-integer pops up (such
-        # as "EOF" or another section)
-        try:
-            distance_matrix_flattened.extend(read_line_data(line))
-        except ValueError:
-            break
-
-    return distance_matrix_flattened

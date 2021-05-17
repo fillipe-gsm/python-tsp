@@ -32,7 +32,7 @@ class TestEuclideanDistanceMatrix:
     def test_distance_is_euclidean(self):
         """It must return an actual Euclidean distance
         In this case, it is easy to see that the distance from [1, 1] to [4, 5]
-        is::
+        is:
             sqrt((4 - 1)**2 + (5 - 1)**2) = sqrt(3**2 + 4**2) = 5
         """
         sources = np.array([1, 1])
@@ -144,6 +144,7 @@ class TestTSPLIBDistanceMatrix:
         assert distance_matrix.dtype == int
 
     def test_explicit_full_matrix_tsplib_file(self):
+        """Note that this test file is asymetric"""
         dimension = 17
         distance_matrix = distances.tsplib_distance_matrix(
             self.explicit_full_matrix_file
@@ -151,6 +152,7 @@ class TestTSPLIBDistanceMatrix:
 
         assert distance_matrix.shape == (dimension, dimension)
         assert np.array_equal(distance_matrix.diagonal(), np.zeros(dimension))
+        assert not np.array_equal(distance_matrix, distance_matrix.T)
 
     def test_explicit_lower_diag_row_tsplib_file(self):
         dimension = 48
