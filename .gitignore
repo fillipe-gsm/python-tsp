@@ -1,3 +1,6 @@
+# Linter files for specific editors or IDEs
+.pylintrc
+
 # README in pdf
 README.pdf
 
