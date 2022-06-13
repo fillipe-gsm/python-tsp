@@ -61,7 +61,6 @@ def test_osrm_distance_call_square_matrix(mocked_osrm_valid_call):
 
     osrm_distance_matrix(
         sources,
-        sources,
         osrm_server_address=osrm_server_address,
         cost_type="distances",
     )

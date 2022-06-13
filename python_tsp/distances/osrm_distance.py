@@ -1,12 +1,15 @@
 from math import ceil
+from typing import Optional
 
 import numpy as np
 import requests
 
+from .data_processing import process_input
+
 
 def osrm_distance_matrix(
     sources: np.ndarray,
-    destinations: np.ndarray,
+    destinations: Optional[np.ndarray] = None,
     osrm_server_address: str = "http://localhost:5000",
     osrm_batch_size: int = 500,
     cost_type: str = "distances",
@@ -17,6 +20,8 @@ def osrm_distance_matrix(
     ----------
     sources, destinations
         2D Arrays of coordinates in the form [lat, lng] for each row
+        Also, if ``destinations`` is `None`, compute the distance between each
+        source in ``sources``.
 
     osrm_server_address
         Base address of the OSRM server instance
@@ -34,6 +39,8 @@ def osrm_distance_matrix(
     -------
     Distance (or duration) matrix of size `num_sources x num_destinations`
     """
+    sources, destinations = process_input(sources, destinations)
+
     num_sources = sources.shape[0]
     num_destinations = destinations.shape[0]
     cost_matrix = np.zeros((num_sources, num_destinations))
