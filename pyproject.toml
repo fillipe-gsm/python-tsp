@@ -11,6 +11,7 @@ license = "MIT"
 python = "^3.7.1"
 tsplib95 = "^0.7.1"
 numpy = "*"
+requests = "^2.28.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.1"
@@ -19,6 +20,7 @@ mypy = "^0.782"
 autopep8 = "^1.6.0"
 flake8 = "^4.0.1"
 pytest-cov = "^3.0.0"
+mock = "^4.0.3"
 
 [tool.autopep8]
 max_line_length = 79
