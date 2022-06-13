@@ -76,38 +76,7 @@ applicable as well.
 Computing a distance matrix
 ---------------------------
 
-The previous examples assumed you already had a distance matrix. If that is not
-the case, the ``distances`` module has prepared some functions to compute an
-Euclidean distance matrix or a
-`Great Circle Distance <https://en.wikipedia.org/wiki/Great-circle_distance>`_.
-
-For example, if you have an array where each row has the latitude and longitude
-of a point,
-
-.. code:: python
-
-   import numpy as np
-   from python_tsp.distances import great_circle_distance_matrix
-
-   sources = np.array([
-       [ 40.73024833, -73.79440675],
-       [ 41.47362495, -73.92783272],
-       [ 41.26591   , -73.21026228],
-       [ 41.3249908 , -73.507788  ]
-   ])
-   distance_matrix = great_circle_distance_matrix(sources)
-
-
-This module also has support for many TSPLIB-type files of ``TSP`` and
-``ATSP`` format. Just enter the file and a proper distance matrix is returned.
-
-.. code:: python
-
-    from python_tsp.distances import tsplib_distance_matrix
-
-    tsplib_file = "tests/tsplib_data/br17.atsp"  # replace with the path to your TSPLIB file
-    distance_matrix = tsplib_distance_matrix(tsplib_file)
-    # outputs a 17 x 17 array
+The previous examples assumed you already had a distance matrix. If that is not the case, the ``distances`` module has prepared some functions to compute an Euclidean distance matrix, a Great Circle Distance, street distances (via OSRM) and support for TSPLIB-type files. Check the `docs folder <docs/distances.rst>`_ for some examples.
 
 
 A more intricate example
