@@ -251,6 +251,17 @@ coverage:
 Release Notes and Changelog
 ===========================
 
+Releases 0.3.X
+--------------
+
+Release 0.3.0
+~~~~~~~~~~~~~
+
+- Add support for street distance matrix calculation via an OSRM server.
+
+Python support: Python >= 3.7.1
+
+
 Releases 0.2.X
 --------------
 
