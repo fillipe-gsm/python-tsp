@@ -1,5 +1,7 @@
 import numpy as np
 import pytest
+from io import StringIO
+import sys
 
 from python_tsp.heuristics import simulated_annealing
 from python_tsp.utils import compute_permutation_distance
@@ -69,7 +71,7 @@ class TestSimulatedAnnealing:
         assert x[0] == 0
 
     @pytest.mark.parametrize("scheme", perturbation_schemes)
-    def test_simulated_annealing_with_time_constraints(self, scheme, caplog):
+    def test_simulated_annealing_with_time_constraints(self, scheme):
         """
         Just like in the local search test, the actual time execution tends to
         respect the provided limits, but it seems to vary a bit between
@@ -83,25 +85,14 @@ class TestSimulatedAnnealing:
         np.random.seed(1)  # for repeatability with the same distance matrix
         distance_matrix = np.random.rand(5000, 5000)  # very large matrix
 
+        captured_output = StringIO()  # Create StringIO object
+        sys.stdout = captured_output  # and redirect stdout.
+
         simulated_annealing.solve_tsp_simulated_annealing(
             distance_matrix,
             perturbation_scheme=scheme,
             max_processing_time=max_processing_time,
         )
 
-        assert "Stopping early due to time constraints" in caplog.text
-
-    def test_log_file_is_created_if_required(self, tmp_path):
-        """
-        If a log_file is provided, it contains information about the execution.
-        """
-
-        log_file = tmp_path / "tmp_log_file.log"
-
-        simulated_annealing.solve_tsp_simulated_annealing(
-            distance_matrix1, log_file=log_file
-        )
-
-        assert log_file.exists()
-        assert "Temperature" in log_file.read_text()
-        assert "Current value" in log_file.read_text()
+        assert "WARNING: Stopping early due to time constraints" in \
+               captured_output.getvalue()

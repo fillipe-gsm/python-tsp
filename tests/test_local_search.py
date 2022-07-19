@@ -1,5 +1,7 @@
 import numpy as np
 import pytest
+from io import StringIO
+import sys
 
 from python_tsp.heuristics import local_search
 from python_tsp.utils import compute_permutation_distance
@@ -111,7 +113,7 @@ class TestLocalSearch:
         assert fopt == fx
 
     @pytest.mark.parametrize("scheme", perturbation_schemes)
-    def test_local_search_with_time_constraints(self, scheme, caplog):
+    def test_local_search_with_time_constraints(self, scheme):
         """
         The actual time execution tends to respect the provided limits, but
         it seems to vary a bit between platforms. For instance, locally it may
@@ -125,24 +127,14 @@ class TestLocalSearch:
         np.random.seed(1)  # for repeatability with the same distance matrix
         distance_matrix = np.random.rand(5000, 5000)  # very large matrix
 
+        captured_output = StringIO()  # Create StringIO object
+        sys.stdout = captured_output  # and redirect stdout.
+
         local_search.solve_tsp_local_search(
             distance_matrix,
             perturbation_scheme=scheme,
             max_processing_time=max_processing_time,
         )
 
-        assert "Stopping early due to time constraints" in caplog.text
-
-    def test_log_file_is_created_if_required(self, tmp_path):
-        """
-        If a log_file is provided, it contains information about the execution.
-        """
-
-        log_file = tmp_path / "tmp_log_file.log"
-
-        local_search.solve_tsp_local_search(
-            distance_matrix1, log_file=log_file
-        )
-
-        assert log_file.exists()
-        assert "Current value" in log_file.read_text()
+        assert "WARNING: Stopping early due to time constraints" in \
+               captured_output.getvalue()
