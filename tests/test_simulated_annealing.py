@@ -1,7 +1,8 @@
+import sys
+from io import StringIO
+
 import numpy as np
 import pytest
-from io import StringIO
-import sys
 
 from python_tsp.heuristics import simulated_annealing
 from python_tsp.utils import compute_permutation_distance
