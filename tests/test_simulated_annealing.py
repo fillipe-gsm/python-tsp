@@ -78,7 +78,7 @@ class TestSimulatedAnnealing:
         respect the provided limits, but it seems to vary a bit between
         platforms. For instance, locally it may take a few milisseconds more,
         but on Github it may be a few whole seconds.
-        Thus, this test checks if a proper warning log is created if the time
+        Thus, this test checks if a proper warning is printed if the time
         constraint stopped execution early.
         """
 
@@ -97,3 +97,18 @@ class TestSimulatedAnnealing:
 
         assert "WARNING: Stopping early due to time constraints" in \
                captured_output.getvalue()
+
+    def test_log_file_is_created_if_required(self, tmp_path):
+        """
+        If a log_file is provided, it contains information about the execution.
+        """
+
+        log_file = tmp_path / "tmp_log_file.log"
+
+        simulated_annealing.solve_tsp_simulated_annealing(
+            distance_matrix1, log_file=log_file
+        )
+
+        assert log_file.exists()
+        assert "Temperature" in log_file.read_text()
+        assert "Current value" in log_file.read_text()
