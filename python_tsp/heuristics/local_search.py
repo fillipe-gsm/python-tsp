@@ -22,6 +22,7 @@ def solve_tsp_local_search(
     perturbation_scheme: str = "two_opt",
     max_processing_time: Optional[float] = None,
     log_file: Optional[str] = None,
+    verbose: bool = False,
 ) -> Tuple[List, float]:
     """Solve a TSP problem with a local search heuristic
 
@@ -44,6 +45,9 @@ def solve_tsp_local_search(
     log_file
         If not `None`, creates a log file with details about the whole
         execution
+
+    verbose
+        If true, prints algorithm status every iteration
 
     Returns
     -------
@@ -90,7 +94,8 @@ def solve_tsp_local_search(
             msg = f"Current value: {fx}; Neighbor: {n_index}"
             if log_file:
                 logger.info(msg)
-            print(msg)
+            if verbose:
+                print(msg)
 
             if fn < fx:
                 improvement = True

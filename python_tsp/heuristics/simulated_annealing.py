@@ -22,6 +22,7 @@ def solve_tsp_simulated_annealing(
     alpha: float = 0.9,
     max_processing_time: float = None,
     log_file: Optional[str] = None,
+    verbose: bool = False
 ) -> Tuple[List, float]:
     """Solve a TSP problem using a Simulated Annealing
     The approach used here is the one proposed in [1].
@@ -52,6 +53,9 @@ def solve_tsp_simulated_annealing(
     log_file
         If not `None`, creates a log file with details about the whole
         execution
+
+    verbose
+        If true, prints algorithm status every iteration
 
     Returns
     -------
@@ -109,7 +113,8 @@ def solve_tsp_simulated_annealing(
             )
             if log_file:
                 logger.info(msg)
-            print(msg)
+            if verbose:
+                print(msg)
 
             if k_accepted >= k_inner_min:
                 break
