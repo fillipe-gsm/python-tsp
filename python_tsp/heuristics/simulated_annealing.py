@@ -1,4 +1,3 @@
-import logging
 from timeit import default_timer
 from typing import List, Optional, Tuple
 
@@ -7,12 +6,6 @@ import numpy as np
 from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 from python_tsp.heuristics.local_search import setup
 from python_tsp.utils import compute_permutation_distance
-
-
-logger = logging.getLogger(__name__)
-ch = logging.StreamHandler()
-ch.setLevel(level=logging.WARNING)
-logger.addHandler(ch)
 
 
 def solve_tsp_simulated_annealing(
@@ -74,10 +67,7 @@ def solve_tsp_simulated_annealing(
     temp = _initial_temperature(distance_matrix, x, fx, perturbation_scheme)
     max_processing_time = max_processing_time or np.inf
     if log_file:
-        fh = logging.FileHandler(log_file)
-        fh.setLevel(logging.INFO)
-        logger.addHandler(fh)
-        logger.setLevel(logging.INFO)
+        log_file_handler = open(log_file, "w", encoding="utf-8")
 
     n = len(x)
     k_inner_min = n  # min inner iterations
@@ -90,10 +80,10 @@ def solve_tsp_simulated_annealing(
         k_accepted = 0  # number of accepted perturbations
         for k in range(k_inner_max):
             if default_timer() - tic > max_processing_time:
-                warning_msg = "Stopping early due to time constraints"
+                warning_msg = "WARNING: Stopping early due to time constraints"
                 if log_file:
-                    logger.warning(warning_msg)
-                print(f"WARNING: {warning_msg}")
+                    print(warning_msg, file=log_file_handler)
+                print(warning_msg)
                 stop_early = True
                 break
 
@@ -112,7 +102,7 @@ def solve_tsp_simulated_annealing(
                 f"k_noimprovements: {k_noimprovements}"
             )
             if log_file:
-                logger.info(msg)
+                print(msg, file=log_file_handler)
             if verbose:
                 print(msg)
 

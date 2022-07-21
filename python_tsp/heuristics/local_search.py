@@ -1,5 +1,4 @@
 """Simple local search solver"""
-import logging
 from random import sample
 from timeit import default_timer
 from typing import List, Optional, Tuple
@@ -8,12 +7,6 @@ import numpy as np
 
 from python_tsp.utils import compute_permutation_distance
 from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
-
-
-logger = logging.getLogger(__name__)
-ch = logging.StreamHandler()
-ch.setLevel(level=logging.WARNING)
-logger.addHandler(ch)
 
 
 def solve_tsp_local_search(
@@ -70,10 +63,7 @@ def solve_tsp_local_search(
     x, fx = setup(distance_matrix, x0)
     max_processing_time = max_processing_time or np.inf
     if log_file:
-        fh = logging.FileHandler(log_file)
-        fh.setLevel(logging.INFO)
-        logger.addHandler(fh)
-        logger.setLevel(logging.INFO)
+        log_file_handler = open(log_file, "w", encoding="utf-8")
 
     tic = default_timer()
     stop_early = False
@@ -82,10 +72,10 @@ def solve_tsp_local_search(
         improvement = False
         for n_index, xn in enumerate(neighborhood_gen[perturbation_scheme](x)):
             if default_timer() - tic > max_processing_time:
-                warning_msg = "Stopping early due to time constraints"
+                warning_msg = "WARNING: Stopping early due to time constraints"
                 if log_file:
-                    logger.warning(warning_msg)
-                print(f"WARNING: {warning_msg}")
+                    print(warning_msg, file=log_file_handler)
+                print(warning_msg)
                 stop_early = True
                 break
 
@@ -93,7 +83,7 @@ def solve_tsp_local_search(
 
             msg = f"Current value: {fx}; Neighbor: {n_index}"
             if log_file:
-                logger.info(msg)
+                print(msg, file=log_file_handler)
             if verbose:
                 print(msg)
 
