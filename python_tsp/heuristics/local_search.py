@@ -75,7 +75,8 @@ def solve_tsp_local_search(
                 warning_msg = "WARNING: Stopping early due to time constraints"
                 if log_file:
                     print(warning_msg, file=log_file_handler)
-                print(warning_msg)
+                if verbose:
+                    print(warning_msg)
                 stop_early = True
                 break
 

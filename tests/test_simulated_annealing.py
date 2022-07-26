@@ -93,6 +93,7 @@ class TestSimulatedAnnealing:
             distance_matrix,
             perturbation_scheme=scheme,
             max_processing_time=max_processing_time,
+            verbose=True
         )
 
         assert "WARNING: Stopping early due to time constraints" in \
