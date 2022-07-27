@@ -1,4 +1,3 @@
-import logging
 from timeit import default_timer
 from typing import List, Optional, Tuple
 
@@ -9,12 +8,6 @@ from python_tsp.heuristics.local_search import setup
 from python_tsp.utils import compute_permutation_distance
 
 
-logger = logging.getLogger(__name__)
-ch = logging.StreamHandler()
-ch.setLevel(level=logging.WARNING)
-logger.addHandler(ch)
-
-
 def solve_tsp_simulated_annealing(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
@@ -22,6 +15,7 @@ def solve_tsp_simulated_annealing(
     alpha: float = 0.9,
     max_processing_time: float = None,
     log_file: Optional[str] = None,
+    verbose: bool = False
 ) -> Tuple[List, float]:
     """Solve a TSP problem using a Simulated Annealing
     The approach used here is the one proposed in [1].
@@ -53,6 +47,9 @@ def solve_tsp_simulated_annealing(
         If not `None`, creates a log file with details about the whole
         execution
 
+    verbose
+        If true, prints algorithm status every iteration
+
     Returns
     -------
     A permutation of nodes from 0 to n - 1 that produces the least total
@@ -70,10 +67,7 @@ def solve_tsp_simulated_annealing(
     temp = _initial_temperature(distance_matrix, x, fx, perturbation_scheme)
     max_processing_time = max_processing_time or np.inf
     if log_file:
-        fh = logging.FileHandler(log_file)
-        fh.setLevel(logging.INFO)
-        logger.addHandler(fh)
-        logger.setLevel(logging.INFO)
+        log_file_handler = open(log_file, "w", encoding="utf-8")
 
     n = len(x)
     k_inner_min = n  # min inner iterations
@@ -86,7 +80,11 @@ def solve_tsp_simulated_annealing(
         k_accepted = 0  # number of accepted perturbations
         for k in range(k_inner_max):
             if default_timer() - tic > max_processing_time:
-                logger.warning("Stopping early due to time constraints")
+                warning_msg = "WARNING: Stopping early due to time constraints"
+                if log_file:
+                    print(warning_msg, file=log_file_handler)
+                if verbose:
+                    print(warning_msg)
                 stop_early = True
                 break
 
@@ -98,12 +96,16 @@ def solve_tsp_simulated_annealing(
                 k_accepted += 1
                 k_noimprovements = 0
 
-            logger.info(
+            msg = (
                 f"Temperature {temp}. Current value: {fx} "
                 f"k: {k + 1}/{k_inner_max} "
                 f"k_accepted: {k_accepted}/{k_inner_min} "
                 f"k_noimprovements: {k_noimprovements}"
             )
+            if log_file:
+                print(msg, file=log_file_handler)
+            if verbose:
+                print(msg)
 
             if k_accepted >= k_inner_min:
                 break

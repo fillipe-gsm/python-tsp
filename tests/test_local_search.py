@@ -1,3 +1,6 @@
+import sys
+from io import StringIO
+
 import numpy as np
 import pytest
 
@@ -111,13 +114,13 @@ class TestLocalSearch:
         assert fopt == fx
 
     @pytest.mark.parametrize("scheme", perturbation_schemes)
-    def test_local_search_with_time_constraints(self, scheme, caplog):
+    def test_local_search_with_time_constraints(self, scheme):
         """
         The actual time execution tends to respect the provided limits, but
         it seems to vary a bit between platforms. For instance, locally it may
         take a few milisseconds more, but on Github it may be a few whole
         seconds.
-        Thus, this test checks if a proper warning log is created if the time
+        Thus, this test checks if a proper warning is printed if the time
         constraint stopped execution early.
         """
 
@@ -125,13 +128,18 @@ class TestLocalSearch:
         np.random.seed(1)  # for repeatability with the same distance matrix
         distance_matrix = np.random.rand(5000, 5000)  # very large matrix
 
+        captured_output = StringIO()  # Create StringIO object
+        sys.stdout = captured_output  # and redirect stdout.
+
         local_search.solve_tsp_local_search(
             distance_matrix,
             perturbation_scheme=scheme,
             max_processing_time=max_processing_time,
+            verbose=True
         )
 
-        assert "Stopping early due to time constraints" in caplog.text
+        assert "WARNING: Stopping early due to time constraints" in \
+               captured_output.getvalue()
 
     def test_log_file_is_created_if_required(self, tmp_path):
         """

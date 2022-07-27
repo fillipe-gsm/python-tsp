@@ -1,3 +1,6 @@
+import sys
+from io import StringIO
+
 import numpy as np
 import pytest
 
@@ -69,13 +72,13 @@ class TestSimulatedAnnealing:
         assert x[0] == 0
 
     @pytest.mark.parametrize("scheme", perturbation_schemes)
-    def test_simulated_annealing_with_time_constraints(self, scheme, caplog):
+    def test_simulated_annealing_with_time_constraints(self, scheme):
         """
         Just like in the local search test, the actual time execution tends to
         respect the provided limits, but it seems to vary a bit between
         platforms. For instance, locally it may take a few milisseconds more,
         but on Github it may be a few whole seconds.
-        Thus, this test checks if a proper warning log is created if the time
+        Thus, this test checks if a proper warning is printed if the time
         constraint stopped execution early.
         """
 
@@ -83,13 +86,18 @@ class TestSimulatedAnnealing:
         np.random.seed(1)  # for repeatability with the same distance matrix
         distance_matrix = np.random.rand(5000, 5000)  # very large matrix
 
+        captured_output = StringIO()  # Create StringIO object
+        sys.stdout = captured_output  # and redirect stdout.
+
         simulated_annealing.solve_tsp_simulated_annealing(
             distance_matrix,
             perturbation_scheme=scheme,
             max_processing_time=max_processing_time,
+            verbose=True
         )
 
-        assert "Stopping early due to time constraints" in caplog.text
+        assert "WARNING: Stopping early due to time constraints" in \
+               captured_output.getvalue()
 
     def test_log_file_is_created_if_required(self, tmp_path):
         """
