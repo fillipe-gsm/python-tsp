@@ -112,6 +112,7 @@ a local optimum is obtained. It is the same as this:
         perturbation_scheme="two_opt",
         max_processing_time=None,
         log_file=None,
+        verbose=False,
     )
 
 Each input variable is probably self-explanatory, but you can run
@@ -254,6 +255,16 @@ Release Notes and Changelog
 Releases 0.3.X
 --------------
 
+Release 0.3.1
+~~~~~~~~~~~~~
+- Replace heuristic log messages with regular prints. The logs could be compromised with outer level configurations and start to pollute the stdout. Prints are easier to manipulate.
+- Add a ``verbose`` parameter to heuristics to print execution messages in the stdout.
+
+  Thanks for @FrickTobias for pointing this issue and providing a fix.
+
+
+Python support: Python >= 3.7.1
+
 Release 0.3.0
 ~~~~~~~~~~~~~
 
@@ -313,3 +324,9 @@ Release 0.1.0
 * The local search-based algorithms can be run with neighborhoods PS1, PS2 and PS3.
 
 Python support: Python >= 3.8
+
+
+Contributors
+============
+
+- @FrickTobias
