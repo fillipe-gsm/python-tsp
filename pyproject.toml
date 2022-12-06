@@ -16,11 +16,15 @@ numpy = "^1.23.5"
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.1"
 ipdb = "^0.13.9"
-mypy = "^0.782"
 autopep8 = "^1.6.0"
 flake8 = "^4.0.1"
 pytest-cov = "^3.0.0"
 mock = "^4.0.3"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^0.991"
+types-requests = "^2.28.11.5"
+types-mock = "^4.0.15.2"
 
 [tool.autopep8]
 max_line_length = 79

@@ -1,3 +1,4 @@
+from math import inf
 from timeit import default_timer
 from typing import List, Optional, Tuple, TextIO
 
@@ -19,7 +20,7 @@ def solve_tsp_simulated_annealing(
     x0: Optional[List[int]] = None,
     perturbation_scheme: str = "two_opt",
     alpha: float = 0.9,
-    max_processing_time: float = None,
+    max_processing_time: Optional[float] = None,
     log_file: Optional[str] = None,
     verbose: bool = False
 ) -> Tuple[List, float]:
@@ -71,7 +72,7 @@ def solve_tsp_simulated_annealing(
 
     x, fx = setup_initial_solution(distance_matrix, x0)
     temp = _initial_temperature(distance_matrix, x, fx, perturbation_scheme)
-    max_processing_time = max_processing_time or np.inf
+    max_processing_time = max_processing_time or inf
     log_file_handler = (
         open(log_file, "w", encoding="utf-8") if log_file else None
     )
