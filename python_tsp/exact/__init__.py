@@ -28,5 +28,5 @@ large. If that becomes an issue and you still need a provably optimal solution,
 use the ``solve_tsp_brute_force``.
 """
 
-from .brute_force import solve_tsp_brute_force  # noqa
-from .dynamic_programming import solve_tsp_dynamic_programming  # noqa
+from .brute_force import solve_tsp_brute_force  # noqa: F401
+from .dynamic_programming import solve_tsp_dynamic_programming  # noqa: F401

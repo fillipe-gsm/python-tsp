@@ -1,5 +1,5 @@
 from timeit import default_timer
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, TextIO
 
 import numpy as np
 
@@ -87,7 +87,7 @@ def solve_tsp_simulated_annealing(
         for k in range(k_inner_max):
             if default_timer() - tic > max_processing_time:
                 _print_message(
-                    TIME_LIMIT_MSG, verbose, log_file, log_file_handler
+                    TIME_LIMIT_MSG, verbose, log_file_handler
                 )
                 stop_early = True
                 break
@@ -106,7 +106,7 @@ def solve_tsp_simulated_annealing(
                 f"k_accepted: {k_accepted}/{k_inner_min} "
                 f"k_noimprovements: {k_noimprovements}"
             )
-            _print_message(msg, verbose, log_file, log_file_handler)
+            _print_message(msg, verbose, log_file_handler)
 
             if k_accepted >= k_inner_min:
                 break
@@ -114,16 +114,16 @@ def solve_tsp_simulated_annealing(
         temp *= alpha  # temperature update
         k_noimprovements += k_accepted == 0
 
-    if log_file:
+    if log_file_handler:
         log_file_handler.close()
 
     return x, fx
 
 
 def _print_message(
-    msg: str, verbose: bool, log_file: Optional[str], log_file_handler: str
+    msg: str, verbose: bool, log_file_handler: Optional[TextIO]
 ) -> None:
-    if log_file:
+    if log_file_handler:
         print(msg, file=log_file_handler)
 
     if verbose:
