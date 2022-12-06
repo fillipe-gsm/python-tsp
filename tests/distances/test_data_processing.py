@@ -7,9 +7,7 @@ def test_1d_array_becomes_2d():
     source = np.array([1, -1])
     destination = np.array([5, -5])
 
-    sources_out, destinations_out = process_input(
-        source, destination
-    )
+    sources_out, destinations_out = process_input(source, destination)
 
     assert sources_out.shape == (1, 2)
     assert destinations_out.shape == (1, 2)

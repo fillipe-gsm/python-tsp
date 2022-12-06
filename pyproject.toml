@@ -33,12 +33,6 @@ max_line_length = 79
 [tool.black]
 line-length = 79
 
-[tool.flake8]
-max-line-length = 50
-extend-ignore = ["E203"]
-max-complexity = 2
-select = ["E9", "F63", "F7", "F82"]
-
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"

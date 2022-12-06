@@ -2,17 +2,15 @@ import pytest
 
 from python_tsp.utils import compute_permutation_distance
 from tests.data import (
-    distance_matrix1, distance_matrix2, distance_matrix3,
+    distance_matrix1,
+    distance_matrix2,
+    distance_matrix3,
 )
 
 
 @pytest.mark.parametrize(
     "distance_matrix, expected_distance",
-    [
-        (distance_matrix1, 28),
-        (distance_matrix2, 26),
-        (distance_matrix3, 20)
-    ]
+    [(distance_matrix1, 28), (distance_matrix2, 26), (distance_matrix3, 20)],
 )
 def test_return_correct_permutation_distance(
     distance_matrix, expected_distance
@@ -29,11 +27,7 @@ def test_return_correct_permutation_distance(
 
 @pytest.mark.parametrize(
     "distance_matrix, expected_distance",
-    [
-        (distance_matrix1, 28),
-        (distance_matrix2, 26),
-        (distance_matrix3, 20)
-    ]
+    [(distance_matrix1, 28), (distance_matrix2, 26), (distance_matrix3, 20)],
 )
 def test_return_correct_permutation_distance_initial_node_not_zero(
     distance_matrix, expected_distance

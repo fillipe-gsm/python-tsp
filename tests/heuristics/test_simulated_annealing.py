@@ -7,7 +7,9 @@ import pytest
 from python_tsp.heuristics import simulated_annealing
 from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 from tests.data import (
-    distance_matrix1, distance_matrix2, distance_matrix3,
+    distance_matrix1,
+    distance_matrix2,
+    distance_matrix3,
 )
 
 
@@ -20,8 +22,7 @@ def permutation():
 
 
 @pytest.mark.parametrize(
-    "distance_matrix",
-    [distance_matrix1, distance_matrix2, distance_matrix3]
+    "distance_matrix", [distance_matrix1, distance_matrix2, distance_matrix3]
 )
 @pytest.mark.parametrize("scheme", PERTURBATION_SCHEMES)
 def test_simulated_annealing_solution_is_valid(
@@ -62,7 +63,7 @@ def test_simulated_annealing_with_time_constraints(permutation, scheme):
         distance_matrix,
         perturbation_scheme=scheme,
         max_processing_time=max_processing_time,
-        verbose=True
+        verbose=True,
     )
 
     assert simulated_annealing.TIME_LIMIT_MSG in captured_output.getvalue()

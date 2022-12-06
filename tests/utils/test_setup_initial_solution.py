@@ -2,17 +2,15 @@ import pytest
 
 from python_tsp.utils import setup_initial_solution
 from tests.data import (
-    distance_matrix1, distance_matrix2, distance_matrix3,
+    distance_matrix1,
+    distance_matrix2,
+    distance_matrix3,
 )
 
 
 @pytest.mark.parametrize(
     "distance_matrix, expected_distance",
-    [
-        (distance_matrix1, 28),
-        (distance_matrix2, 26),
-        (distance_matrix3, 20)
-    ]
+    [(distance_matrix1, 28), (distance_matrix2, 26), (distance_matrix3, 20)],
 )
 def test_setup_return_same_setup(distance_matrix, expected_distance):
     """
@@ -28,8 +26,7 @@ def test_setup_return_same_setup(distance_matrix, expected_distance):
 
 
 @pytest.mark.parametrize(
-    "distance_matrix",
-    [distance_matrix1, distance_matrix2, distance_matrix3]
+    "distance_matrix", [distance_matrix1, distance_matrix2, distance_matrix3]
 )
 def test_setup_return_random_valid_solution(distance_matrix):
     """

@@ -8,9 +8,15 @@ from python_tsp.heuristics import local_search
 from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 from python_tsp.utils import compute_permutation_distance
 from tests.data import (
-    distance_matrix1, distance_matrix2, distance_matrix3,
-    optimal_permutation1, optimal_permutation2, optimal_permutation3,
-    optimal_distance1, optimal_distance2, optimal_distance3
+    distance_matrix1,
+    distance_matrix2,
+    distance_matrix3,
+    optimal_permutation1,
+    optimal_permutation2,
+    optimal_permutation3,
+    optimal_distance1,
+    optimal_distance2,
+    optimal_distance3,
 )
 
 
@@ -19,8 +25,7 @@ PERTURBATION_SCHEMES = neighborhood_gen.keys()
 
 @pytest.mark.parametrize("scheme", PERTURBATION_SCHEMES)
 @pytest.mark.parametrize(
-    "distance_matrix",
-    [distance_matrix1, distance_matrix2, distance_matrix3]
+    "distance_matrix", [distance_matrix1, distance_matrix2, distance_matrix3]
 )
 def test_local_search_returns_better_neighbor(scheme, distance_matrix):
     """
@@ -44,7 +49,7 @@ def test_local_search_returns_better_neighbor(scheme, distance_matrix):
         (distance_matrix1, optimal_permutation1, optimal_distance1),
         (distance_matrix2, optimal_permutation2, optimal_distance2),
         (distance_matrix3, optimal_permutation3, optimal_distance3),
-    ]
+    ],
 )
 def test_local_search_returns_equal_optimal_solution(
     scheme, distance_matrix, optimal_permutation, optimal_distance
@@ -85,7 +90,7 @@ def test_local_search_with_time_constraints(scheme):
         distance_matrix,
         perturbation_scheme=scheme,
         max_processing_time=max_processing_time,
-        verbose=True
+        verbose=True,
     )
 
     assert local_search.TIME_LIMIT_MSG in captured_output.getvalue()
@@ -98,9 +103,7 @@ def test_log_file_is_created_if_required(tmp_path):
 
     log_file = tmp_path / "tmp_log_file.log"
 
-    local_search.solve_tsp_local_search(
-        distance_matrix1, log_file=log_file
-    )
+    local_search.solve_tsp_local_search(distance_matrix1, log_file=log_file)
 
     assert log_file.exists()
     assert "Current value" in log_file.read_text()

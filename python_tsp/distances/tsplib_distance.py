@@ -22,9 +22,9 @@ def tsplib_distance_matrix(tsplib_file: str) -> np.ndarray:
     """
 
     tsp_problem = tsplib95.load(tsplib_file)
-    distance_matrix_flattened = np.array([
-        tsp_problem.get_weight(*edge) for edge in tsp_problem.get_edges()
-    ])
+    distance_matrix_flattened = np.array(
+        [tsp_problem.get_weight(*edge) for edge in tsp_problem.get_edges()]
+    )
     distance_matrix = np.reshape(
         distance_matrix_flattened,
         (tsp_problem.dimension, tsp_problem.dimension),
