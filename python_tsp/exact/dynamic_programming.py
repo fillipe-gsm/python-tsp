@@ -9,7 +9,7 @@ def solve_tsp_dynamic_programming(
     maxsize: Optional[int] = None,
 ) -> Tuple[List, float]:
     """
-    Solve TSP to optimality with dynamic programming.
+    Solve TSP to optimality with dynamic programming
 
     Parameters
     ----------
@@ -85,7 +85,6 @@ def solve_tsp_dynamic_programming(
     Then, since the next step would be memo[2, {}], stop there. The optimal
     path would be 0 -> 1 -> 2 -> 0.
 
-
     Reference
     ---------
     https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm#cite_note-5
@@ -108,6 +107,7 @@ def solve_tsp_dynamic_programming(
         ]
         nmin, min_cost = min(costs, key=lambda x: x[1])
         memo[(ni, N)] = nmin
+
         return min_cost
 
     best_distance = dist(0, N)
@@ -115,6 +115,7 @@ def solve_tsp_dynamic_programming(
     # Step 2: get path with the minimum distance
     ni = 0  # start at the origin
     solution = [0]
+
     while N:
         ni = memo[(ni, N)]
         solution.append(ni)

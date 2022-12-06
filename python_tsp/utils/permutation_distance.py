@@ -1,4 +1,3 @@
-"""Auxiliar functions that may be used in most modules"""
 from typing import List
 
 import numpy as np

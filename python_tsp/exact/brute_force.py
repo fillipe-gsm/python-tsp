@@ -37,10 +37,12 @@ def solve_tsp_brute_force(
     points = range(1, distance_matrix.shape[0])
     best_distance = np.inf
     best_permutation = None
+
     for partial_permutation in permutations(points):
         # Remember to add the starting node before evaluating it
         permutation = [0] + list(partial_permutation)
         distance = compute_permutation_distance(distance_matrix, permutation)
+
         if distance < best_distance:
             best_distance = distance
             best_permutation = permutation

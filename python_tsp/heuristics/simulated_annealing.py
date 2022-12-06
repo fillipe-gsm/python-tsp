@@ -1,11 +1,17 @@
 from timeit import default_timer
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, TextIO
 
 import numpy as np
 
 from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
-from python_tsp.heuristics.local_search import setup
-from python_tsp.utils import compute_permutation_distance
+from python_tsp.utils import (
+    compute_permutation_distance, setup_initial_solution
+)
+
+
+TIME_LIMIT_MSG = "WARNING: Stopping early due to time constraints"
+MAX_NON_IMPROVEMENTS = 3
+MAX_INNER_ITERATIONS_MULTIPLIER = 10
 
 
 def solve_tsp_simulated_annealing(
@@ -34,7 +40,7 @@ def solve_tsp_simulated_annealing(
 
     alpha
         Reduction factor (``alpha`` < 1) used to reduce the temperature. As a
-        rule of thumb, 0.99 takes longer but may return better solutions, whike
+        rule of thumb, 0.99 takes longer but may return better solutions, while
         0.9 is faster but may not be as good. A good approach is to use 0.9
         (as default) and if required run the returned solution with a local
         search.
@@ -43,11 +49,11 @@ def solve_tsp_simulated_annealing(
         Maximum processing time in seconds. If not provided, the method stops
         only when there were 3 temperature cycles with no improvement.
 
-    log_file
+    log_file {None}
         If not `None`, creates a log file with details about the whole
         execution
 
-    verbose
+    verbose {False}
         If true, prints algorithm status every iteration
 
     Returns
@@ -63,28 +69,27 @@ def solve_tsp_simulated_annealing(
     case studies. Springer Science & Business Media, 2006.
     """
 
-    x, fx = setup(distance_matrix, x0)
+    x, fx = setup_initial_solution(distance_matrix, x0)
     temp = _initial_temperature(distance_matrix, x, fx, perturbation_scheme)
     max_processing_time = max_processing_time or np.inf
-    if log_file:
-        log_file_handler = open(log_file, "w", encoding="utf-8")
+    log_file_handler = (
+        open(log_file, "w", encoding="utf-8") if log_file else None
+    )
 
     n = len(x)
-    k_inner_min = n  # min inner iterations
-    k_inner_max = 10 * n  # max inner iterations
+    k_inner_min = n
+    k_inner_max = MAX_INNER_ITERATIONS_MULTIPLIER * n
     k_noimprovements = 0  # number of inner loops without improvement
 
     tic = default_timer()
     stop_early = False
-    while (k_noimprovements < 3) and (not stop_early):
+    while (k_noimprovements < MAX_NON_IMPROVEMENTS) and (not stop_early):
         k_accepted = 0  # number of accepted perturbations
         for k in range(k_inner_max):
             if default_timer() - tic > max_processing_time:
-                warning_msg = "WARNING: Stopping early due to time constraints"
-                if log_file:
-                    print(warning_msg, file=log_file_handler)
-                if verbose:
-                    print(warning_msg)
+                _print_message(
+                    TIME_LIMIT_MSG, verbose, log_file_handler
+                )
                 stop_early = True
                 break
 
@@ -102,10 +107,7 @@ def solve_tsp_simulated_annealing(
                 f"k_accepted: {k_accepted}/{k_inner_min} "
                 f"k_noimprovements: {k_noimprovements}"
             )
-            if log_file:
-                print(msg, file=log_file_handler)
-            if verbose:
-                print(msg)
+            _print_message(msg, verbose, log_file_handler)
 
             if k_accepted >= k_inner_min:
                 break
@@ -113,7 +115,20 @@ def solve_tsp_simulated_annealing(
         temp *= alpha  # temperature update
         k_noimprovements += k_accepted == 0
 
+    if log_file_handler:
+        log_file_handler.close()
+
     return x, fx
+
+
+def _print_message(
+    msg: str, verbose: bool, log_file_handler: Optional[TextIO]
+) -> None:
+    if log_file_handler:
+        print(msg, file=log_file_handler)
+
+    if verbose:
+        print(msg)
 
 
 def _initial_temperature(
