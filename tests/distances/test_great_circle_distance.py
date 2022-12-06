@@ -43,8 +43,7 @@ def test_matrix_has_proper_shape(sources, destinations):
 
 
 def test_distance_works_with_1d_arrays(sources, destinations):
-    """The code is vectorized for 2d arrays, but should work for 1d as well
-    """
+    """The code is vectorized for 2d arrays, but should work for 1d as well"""
     source = sources[0]
     destination = destinations[0]
 

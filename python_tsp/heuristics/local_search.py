@@ -5,7 +5,8 @@ from typing import List, Optional, Tuple, TextIO
 import numpy as np
 
 from python_tsp.utils import (
-    compute_permutation_distance, setup_initial_solution
+    compute_permutation_distance,
+    setup_initial_solution,
 )
 from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 
@@ -79,9 +80,7 @@ def solve_tsp_local_search(
         improvement = False
         for n_index, xn in enumerate(neighborhood_gen[perturbation_scheme](x)):
             if default_timer() - tic > max_processing_time:
-                _print_message(
-                    TIME_LIMIT_MSG, verbose, log_file_handler
-                )
+                _print_message(TIME_LIMIT_MSG, verbose, log_file_handler)
                 stop_early = True
                 break
 

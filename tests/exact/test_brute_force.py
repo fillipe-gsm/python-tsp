@@ -2,9 +2,15 @@ import pytest
 
 from python_tsp.exact import solve_tsp_brute_force
 from tests.data import (
-    distance_matrix1, distance_matrix2, distance_matrix3,
-    optimal_permutation1, optimal_permutation2, optimal_permutation3,
-    optimal_distance1, optimal_distance2, optimal_distance3
+    distance_matrix1,
+    distance_matrix2,
+    distance_matrix3,
+    optimal_permutation1,
+    optimal_permutation2,
+    optimal_permutation3,
+    optimal_distance1,
+    optimal_distance2,
+    optimal_distance3,
 )
 
 
@@ -27,7 +33,7 @@ def test_solution_has_all_nodes(distance_matrix):
         (distance_matrix1, optimal_permutation1, optimal_distance1),
         (distance_matrix2, optimal_permutation2, optimal_distance2),
         (distance_matrix3, optimal_permutation3, optimal_distance3),
-    ]
+    ],
 )
 def test_solution_is_optimal(
     distance_matrix, expected_permutation, expected_distance

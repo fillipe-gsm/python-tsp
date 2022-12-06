@@ -25,7 +25,7 @@ def test_distance_is_euclidean():
 
     distance_matrix = euclidean_distance_matrix(source, destination)
 
-    assert distance_matrix[0] == 5.
+    assert distance_matrix[0] == 5.0
 
 
 def test_all_elements_are_non_negative(sources, destinations):

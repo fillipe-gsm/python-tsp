@@ -46,12 +46,17 @@ def great_circle_distance_matrix(
 
     delta_sigma = np.arctan2(
         np.sqrt(
-            (np.cos(phi2) * np.sin(delta_lambda))**2 +
-            (np.cos(phi1) * np.sin(phi2) -
-             np.sin(phi1) * np.cos(phi2) * np.cos(delta_lambda))**2
+            (np.cos(phi2) * np.sin(delta_lambda)) ** 2
+            + (
+                np.cos(phi1) * np.sin(phi2)
+                - np.sin(phi1) * np.cos(phi2) * np.cos(delta_lambda)
+            )
+            ** 2
         ),
-        (np.sin(phi1) * np.sin(phi2) +
-         np.cos(phi1) * np.cos(phi2) * np.cos(delta_lambda))
+        (
+            np.sin(phi1) * np.sin(phi2)
+            + np.cos(phi1) * np.cos(phi2) * np.cos(delta_lambda)
+        ),
     )
 
     return EARTH_RADIUS_METERS * delta_sigma

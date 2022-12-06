@@ -6,7 +6,8 @@ import numpy as np
 
 from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 from python_tsp.utils import (
-    compute_permutation_distance, setup_initial_solution
+    compute_permutation_distance,
+    setup_initial_solution,
 )
 
 
@@ -22,7 +23,7 @@ def solve_tsp_simulated_annealing(
     alpha: float = 0.9,
     max_processing_time: Optional[float] = None,
     log_file: Optional[str] = None,
-    verbose: bool = False
+    verbose: bool = False,
 ) -> Tuple[List, float]:
     """Solve a TSP problem using a Simulated Annealing
     The approach used here is the one proposed in [1].
@@ -88,9 +89,7 @@ def solve_tsp_simulated_annealing(
         k_accepted = 0  # number of accepted perturbations
         for k in range(k_inner_max):
             if default_timer() - tic > max_processing_time:
-                _print_message(
-                    TIME_LIMIT_MSG, verbose, log_file_handler
-                )
+                _print_message(TIME_LIMIT_MSG, verbose, log_file_handler)
                 stop_early = True
                 break
 

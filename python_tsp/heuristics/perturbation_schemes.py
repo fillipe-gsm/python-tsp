@@ -117,7 +117,7 @@ def two_opt_gen(x: List[int]) -> Generator[List[int], List[int], None]:
         j_range = range(i + 1, n + 1)
         for j in sample(j_range, len(j_range)):
             xn = x.copy()
-            xn = xn[:i - 1] + list(reversed(xn[i - 1:j])) + xn[j:]
+            xn = xn[: i - 1] + list(reversed(xn[i - 1: j])) + xn[j:]
             yield xn
 
 
