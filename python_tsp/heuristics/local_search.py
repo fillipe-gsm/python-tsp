@@ -9,6 +9,9 @@ from python_tsp.utils import compute_permutation_distance
 from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 
 
+TIME_LIMIT_MSG = "WARNING: Stopping early due to time constraints"
+
+
 def solve_tsp_local_search(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
@@ -62,21 +65,22 @@ def solve_tsp_local_search(
     """
     x, fx = setup(distance_matrix, x0)
     max_processing_time = max_processing_time or np.inf
+
     if log_file:
         log_file_handler = open(log_file, "w", encoding="utf-8")
 
     tic = default_timer()
     stop_early = False
     improvement = True
+
     while improvement and (not stop_early):
         improvement = False
         for n_index, xn in enumerate(neighborhood_gen[perturbation_scheme](x)):
             if default_timer() - tic > max_processing_time:
-                warning_msg = "WARNING: Stopping early due to time constraints"
                 if log_file:
-                    print(warning_msg, file=log_file_handler)
+                    print(TIME_LIMIT_MSG, file=log_file_handler)
                 if verbose:
-                    print(warning_msg)
+                    print(TIME_LIMIT_MSG)
                 stop_early = True
                 break
 
