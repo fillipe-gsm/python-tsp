@@ -66,8 +66,9 @@ def solve_tsp_local_search(
     x, fx = setup(distance_matrix, x0)
     max_processing_time = max_processing_time or np.inf
 
-    if log_file:
-        log_file_handler = open(log_file, "w", encoding="utf-8")
+    log_file_handler = (
+        open(log_file, "w", encoding="utf-8") if log_file else None
+    )
 
     tic = default_timer()
     stop_early = False
@@ -77,27 +78,36 @@ def solve_tsp_local_search(
         improvement = False
         for n_index, xn in enumerate(neighborhood_gen[perturbation_scheme](x)):
             if default_timer() - tic > max_processing_time:
-                if log_file:
-                    print(TIME_LIMIT_MSG, file=log_file_handler)
-                if verbose:
-                    print(TIME_LIMIT_MSG)
+                _print_message(
+                    TIME_LIMIT_MSG, verbose, log_file, log_file_handler
+                )
                 stop_early = True
                 break
 
             fn = compute_permutation_distance(distance_matrix, xn)
 
             msg = f"Current value: {fx}; Neighbor: {n_index}"
-            if log_file:
-                print(msg, file=log_file_handler)
-            if verbose:
-                print(msg)
+            _print_message(msg, verbose, log_file, log_file_handler)
 
             if fn < fx:
                 improvement = True
                 x, fx = xn, fn
                 break  # early stop due to first improvement local search
 
+    if log_file:
+        log_file_handler.close()
+
     return x, fx
+
+
+def _print_message(
+    msg: str, verbose: bool, log_file: Optional[str], log_file_handler: str
+) -> None:
+    if log_file:
+        print(msg, file=log_file_handler)
+
+    if verbose:
+        print(msg)
 
 
 def setup(

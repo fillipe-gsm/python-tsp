@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 
 from python_tsp.heuristics import local_search
+from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 from python_tsp.utils import compute_permutation_distance
 from tests.data import (
     distance_matrix1, distance_matrix2, distance_matrix3,
@@ -13,10 +14,10 @@ from tests.data import (
 )
 
 
-perturbation_schemes = ["ps1", "ps2", "ps3", "ps4", "ps5", "ps6", "two_opt"]
+PERTURBATION_SCHEMES = neighborhood_gen.keys()
 
 
-class TestLocalSearch:
+class TestSetup:
     @pytest.mark.parametrize(
         "distance_matrix, expected_distance",
         [
@@ -25,9 +26,7 @@ class TestLocalSearch:
             (distance_matrix3, 20)
         ]
     )
-    def test_setup_return_same_setup(
-        self, distance_matrix, expected_distance
-    ):
+    def test_setup_return_same_setup(self, distance_matrix, expected_distance):
         """
         The setup outputs the same input if provided, together with its
         objective value
@@ -56,7 +55,9 @@ class TestLocalSearch:
         assert x[0] == 0
         assert fx
 
-    @pytest.mark.parametrize("scheme", perturbation_schemes)
+
+class TestLocalSearch:
+    @pytest.mark.parametrize("scheme", PERTURBATION_SCHEMES)
     @pytest.mark.parametrize(
         "distance_matrix",
         [distance_matrix1, distance_matrix2, distance_matrix3]
@@ -71,13 +72,13 @@ class TestLocalSearch:
         x = [0, 4, 2, 3, 1]
         fx = compute_permutation_distance(distance_matrix, x)
 
-        xopt, fopt = local_search.solve_tsp_local_search(
+        _, fopt = local_search.solve_tsp_local_search(
             distance_matrix, x, perturbation_scheme=scheme
         )
 
         assert fopt < fx
 
-    @pytest.mark.parametrize("scheme", perturbation_schemes)
+    @pytest.mark.parametrize("scheme", PERTURBATION_SCHEMES)
     @pytest.mark.parametrize(
         "distance_matrix, optimal_permutation, optimal_distance",
         [
@@ -102,7 +103,7 @@ class TestLocalSearch:
         assert xopt == x
         assert fopt == fx
 
-    @pytest.mark.parametrize("scheme", perturbation_schemes)
+    @pytest.mark.parametrize("scheme", PERTURBATION_SCHEMES)
     def test_local_search_with_time_constraints(self, scheme):
         """
         The actual time execution tends to respect the provided limits, but
@@ -127,8 +128,7 @@ class TestLocalSearch:
             verbose=True
         )
 
-        assert "WARNING: Stopping early due to time constraints" in \
-               captured_output.getvalue()
+        assert local_search.TIME_LIMIT_MSG in captured_output.getvalue()
 
     def test_log_file_is_created_if_required(self, tmp_path):
         """
