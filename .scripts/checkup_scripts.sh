@@ -1,5 +1,5 @@
 # Run autopep8 to fix code
-poetry run autopep8 --recursive --aggressive --in-place .
+poetry run black .
 
 # Check other requirements of PEP8
 poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --ignore=E203,W503
