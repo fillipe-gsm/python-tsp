@@ -8,10 +8,10 @@ repository = "https://github.com/fillipe-gsm/python-tsp"
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.7.1"
+python = "^3.8.1"
 tsplib95 = "^0.7.1"
-numpy = "*"
 requests = "^2.28.0"
+numpy = "^1.23.5"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.1"
