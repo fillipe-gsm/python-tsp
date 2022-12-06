@@ -4,8 +4,9 @@ from typing import List, Optional, Tuple, TextIO
 import numpy as np
 
 from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
-from python_tsp.heuristics.local_search import setup
-from python_tsp.utils import compute_permutation_distance
+from python_tsp.utils import (
+    compute_permutation_distance, setup_initial_solution
+)
 
 
 TIME_LIMIT_MSG = "WARNING: Stopping early due to time constraints"
@@ -39,7 +40,7 @@ def solve_tsp_simulated_annealing(
 
     alpha
         Reduction factor (``alpha`` < 1) used to reduce the temperature. As a
-        rule of thumb, 0.99 takes longer but may return better solutions, whike
+        rule of thumb, 0.99 takes longer but may return better solutions, while
         0.9 is faster but may not be as good. A good approach is to use 0.9
         (as default) and if required run the returned solution with a local
         search.
@@ -48,11 +49,11 @@ def solve_tsp_simulated_annealing(
         Maximum processing time in seconds. If not provided, the method stops
         only when there were 3 temperature cycles with no improvement.
 
-    log_file
+    log_file {None}
         If not `None`, creates a log file with details about the whole
         execution
 
-    verbose
+    verbose {False}
         If true, prints algorithm status every iteration
 
     Returns
@@ -68,7 +69,7 @@ def solve_tsp_simulated_annealing(
     case studies. Springer Science & Business Media, 2006.
     """
 
-    x, fx = setup(distance_matrix, x0)
+    x, fx = setup_initial_solution(distance_matrix, x0)
     temp = _initial_temperature(distance_matrix, x, fx, perturbation_scheme)
     max_processing_time = max_processing_time or np.inf
     log_file_handler = (
