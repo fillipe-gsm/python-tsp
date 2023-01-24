@@ -211,13 +211,7 @@ There are two types of solvers available:
 
 For developers
 ==============
-The project uses `Python Poetry <https://python-poetry.org/>`_ to manage
-dependencies. Check the website for installation instructions, or simply
-install it with
-
-.. code:: bash
-
-   pip install poetry
+The project uses `Python Poetry <https://python-poetry.org/>`_ to manage dependencies. Check the website for installation instructions.
 
 After that, clone the repo and install dependencies with ``poetry install``.
 
@@ -226,9 +220,9 @@ request:
 
 .. code:: bash
 
-  # Autopep8 and flake8 to be conformant with PEP8
-  poetry run autopep8 --recursive --aggressive --in-place .
-  poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+  # Black and flake8 to be conformant with PEP8
+  poetry run black .
+  poetry run flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --ignore=E203,W503
   poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=79 --statistics
 
   # Mypy for proper type hints
