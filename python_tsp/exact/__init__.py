@@ -14,6 +14,7 @@ required and check if the processing time is acceptable.
 
 Functions present in this module are listed below.
 
+    solve_tsp_branch_and_bound
     solve_tsp_brute_force
     solve_tsp_dynamic_programming
 
@@ -28,5 +29,6 @@ large. If that becomes an issue and you still need a provably optimal solution,
 use the ``solve_tsp_brute_force``.
 """
 
+from .branch_and_bound import solve_tsp_branch_and_bound  # noqa: F401
 from .brute_force import solve_tsp_brute_force  # noqa: F401
 from .dynamic_programming import solve_tsp_dynamic_programming  # noqa: F401

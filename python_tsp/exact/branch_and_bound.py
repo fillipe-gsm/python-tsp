@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import List, Tuple
 
 import numpy as np
 
@@ -51,3 +51,11 @@ def compute_reduced_matrix(matrix: np.ndarray) -> Tuple[np.ndarray, int]:
         )
 
     return reduced_matrix, min_rows.sum() + min_cols.sum()
+
+
+def solve_tsp_branch_and_bound(
+    distance_matrix: np.ndarray,
+) -> Tuple[List, float]:
+    matrix = np.copy(distance_matrix)
+    matrix[matrix == 0] = INF
+    return [], 0
