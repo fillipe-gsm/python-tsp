@@ -53,9 +53,51 @@ def compute_reduced_matrix(matrix: np.ndarray) -> Tuple[np.ndarray, int]:
     return reduced_matrix, min_rows.sum() + min_cols.sum()
 
 
+class Node:
+    def __init__(self, parent_node, vertex) -> None:
+        # stores the reduced matrix
+        self.reduced_matrix: np.ndarray = None
+
+        # stores node cost lower bound
+        self.cost: int = INF
+
+        # stores the current city number
+        self.vertex: int = vertex
+
+        # stores the tour path
+        self.path: List[int] = []
+
+        # stores the total number of cities visited so far
+        self.level: int = 0
+
+        # update path, level, reduced matrix and node cost
+        # based on parent node.
+        if parent_node:
+            node_cost_matrix = np.copy(parent_node.reduced_matrix)
+            node_cost_matrix[parent_node.vertex, :] = INF
+            node_cost_matrix[:, self.vertex] = INF
+            node_cost_matrix[self.vertex][0] = INF
+            reduced_matrix, reduction_cost = compute_reduced_matrix(
+                matrix=node_cost_matrix
+            )
+            self.reduced_matrix = reduced_matrix
+            self.cost = (
+                parent_node.cost
+                + reduction_cost
+                + parent_node.reduced_matrix[parent_node.vertex][self.vertex]
+            )
+            self.path = parent_node.path
+            self.level = parent_node.level + 1
+
+        self.path.append(self.vertex)
+
+    def __lt__(self, other):
+        return self.cost < other.cost
+
+
 def solve_tsp_branch_and_bound(
     distance_matrix: np.ndarray,
 ) -> Tuple[List, float]:
-    matrix = np.copy(distance_matrix)
-    matrix[matrix == 0] = INF
+    cost_matrix = np.copy(distance_matrix)
+    cost_matrix[cost_matrix == 0] = INF
     return [], 0

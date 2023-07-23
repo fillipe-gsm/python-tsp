@@ -1,17 +1,14 @@
 import numpy as np
 import pytest
-from python_tsp.exact.branch_and_bound import compute_reduced_matrix
+
+from python_tsp.exact.branch_and_bound import Node, compute_reduced_matrix
 
 INF = np.iinfo(int).max
 
 
 @pytest.fixture
-def matrices():
-    """
-    A tuple containing two matrices. The first matrix is the original matrix,
-    and the second matrix is the already reduced matrix.
-    """
-    matrix = np.array(
+def matrix():
+    return np.array(
         [
             [INF, 20, 30, 10, 11],
             [15, INF, 16, 4, 2],
@@ -20,7 +17,11 @@ def matrices():
             [16, 4, 7, 16, INF],
         ]
     )
-    reduced_matrix = np.array(
+
+
+@pytest.fixture
+def reduced_matrix():
+    return np.array(
         [
             [INF, 10, 17, 0, 1],
             [12, INF, 11, 2, 0],
@@ -29,21 +30,14 @@ def matrices():
             [11, 0, 0, 12, INF],
         ]
     )
-    return matrix, reduced_matrix
 
 
-def test_compute_reduced_matrix(matrices):
+def test_compute_reduced_matrix(matrix, reduced_matrix):
     """
     Test the 'compute_reduced_matrix' function with different matrices.
 
     This test verifies the correctness of the 'compute_reduced_matrix'
     function for both valid and reduced matrices.
-
-    Parameters
-    ----------
-    matrices : Tuple[np.ndarray, np.ndarray]
-        A tuple containing two matrices. The first matrix is the original
-        matrix, and the second matrix is the already reduced matrix.
 
     Test steps:
     1. For each (request_matrix, expected_reduced_matrix, expected_cost)
@@ -56,7 +50,6 @@ def test_compute_reduced_matrix(matrices):
         c. Check if the 'response_cost' is equal to the 'expected_cost',
         ensuring that the function correctly computes the total reduction cost.
     """
-    matrix, reduced_matrix = matrices
     for request_matrix, expected_reduced_matrix, expected_cost in [
         (
             matrix,
@@ -113,3 +106,29 @@ def test_compute_reduced_matrix_with_invalid_matrices():
 
     # Step 4: Check if the 'response_cost' is zero, as no reduction was done.
     assert response_cost == 0
+
+
+def test_create_root_node(matrix, reduced_matrix):
+    response_node = Node(parent_node=None, vertex=0)
+    response_node.reduced_matrix, response_node.cost = compute_reduced_matrix(
+        matrix=matrix
+    )
+
+    assert np.all(response_node.reduced_matrix == reduced_matrix)
+    assert response_node.cost == 25
+    assert response_node.level == 0
+    assert response_node.vertex == 0
+    assert response_node.path == [0]
+
+
+@pytest.mark.parametrize("vertex,expected_cost", [(1, 35), (2, 53), (4, 31)])
+def test_create_child_node(matrix, vertex, expected_cost):
+    root = Node(parent_node=None, vertex=0)
+    root.reduced_matrix, root.cost = compute_reduced_matrix(matrix=matrix)
+    response_child_node = Node(parent_node=root, vertex=vertex)
+
+    assert root < response_child_node
+    assert response_child_node.cost == expected_cost
+    assert response_child_node.level == 1
+    assert response_child_node.vertex == vertex
+    assert response_child_node.path == [root.vertex, vertex]
