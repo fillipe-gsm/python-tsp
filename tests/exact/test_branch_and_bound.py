@@ -40,17 +40,6 @@ def test_compute_reduced_matrix(matrix, reduced_matrix):
 
     This test verifies the correctness of the 'Node.compute_reduced_matrix'
     function for both valid and reduced matrices.
-
-    Test steps:
-    1. For each (request_matrix, expected_reduced_matrix, expected_cost)
-    tuple in the test cases:
-        a. Call the 'Node.compute_reduced_matrix' function with the
-        'request_matrix'.
-        b. Check if the resulting 'response_matrix' is equal to the
-        'expected_reduced_matrix', verifying that the function performs the
-        reduction correctly.
-        c. Check if the 'response_cost' is equal to the 'expected_cost',
-        ensuring that the function correctly computes the total reduction cost.
     """
     for request_matrix, expected_reduced_matrix, expected_cost in [
         (
@@ -64,18 +53,11 @@ def test_compute_reduced_matrix(matrix, reduced_matrix):
             0,
         ),  # Already reduced matrix should remain unchanged with a cost of 0.
     ]:
-        # Step 1a: Call the 'Node.compute_reduced_matrix'
-        # function with the 'request_matrix'.
         response_matrix, response_cost = Node.compute_reduced_matrix(
             matrix=request_matrix
         )
 
-        # Step 1b: Check if the resulting 'response_matrix' is
-        # equal to the 'expected_reduced_matrix'.
         assert np.all(response_matrix == expected_reduced_matrix)
-
-        # Step 1c: Check if the 'response_cost' is equal to the
-        # 'expected_cost'.
         assert response_cost == expected_cost
 
 
@@ -85,29 +67,13 @@ def test_compute_reduced_matrix_with_invalid_matrices():
 
     The function should handle invalid matrices correctly by not reducing
     any rows or columns, and the total reduction cost should be zero.
-
-    Test steps:
-    1. Create an invalid matrix filled with INF values.
-    2. Pass the invalid matrix to the 'Node.compute_reduced_matrix' function.
-    3. Check if the resulting 'response_matrix' is equal to the input
-    'invalid_matrix', indicating that no reduction was performed.
-    4. Check if the 'response_cost' is zero, as no reduction was done.
-
     """
-    # Step 1: Create an invalid matrix filled with INF values.
     invalid_matrix = np.full((5, 5), INF)
-
-    # Step 2: Pass the invalid matrix to the
-    # 'Node.compute_reduced_matrix' function.
     response_matrix, response_cost = Node.compute_reduced_matrix(
         matrix=invalid_matrix
     )
 
-    # Step 3: Check if the resulting 'response_matrix' is
-    # equal to the input 'invalid_matrix'.
     assert np.all(response_matrix == invalid_matrix)
-
-    # Step 4: Check if the 'response_cost' is zero, as no reduction was done.
     assert response_cost == 0
 
 
