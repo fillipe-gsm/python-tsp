@@ -275,37 +275,12 @@ class NodePriorityQueue:
 
     @property
     def empty(self) -> bool:
-        """
-        Check if the priority queue is empty.
-
-        Returns
-        -------
-        bool
-            True if the priority queue is empty, False otherwise.
-        """
         return not self._container
 
     def push(self, item: Node) -> None:
-        """
-        Push a Node object into the priority queue with
-        respect to its priority.
-
-        Parameters
-        ----------
-        item : Node
-            The Node object to be inserted into the priority queue.
-        """
         heappush(self._container, item)
 
     def pop(self) -> Node:
-        """
-        Pop the Node object with the highest priority from the priority queue.
-
-        Returns
-        -------
-        Node
-            The Node object with the highest priority.
-        """
         return heappop(self._container)
 
 
