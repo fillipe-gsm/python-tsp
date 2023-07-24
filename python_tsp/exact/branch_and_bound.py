@@ -46,31 +46,6 @@ class Node:
 
     __lt__(self: Node, other: Node) -> bool:
         Compare nodes based on their cost values.
-
-    Notes
-    -----
-    The Node class represents a vertex in a graph traversal algorithm. It is
-    used to store the necessary information for searching and traversing a
-    graph, such as the level, index, path, cost, and reduced matrix.
-
-    The class includes three class methods for creating nodes:
-    - compute_reduced_matrix: Computes the reduced matrix and the total
-      reduction cost based on an input matrix. This is used for reducing the
-      graph during traversal to improve efficiency.
-    - root_from_cost_matrix: Creates the root node for the graph traversal
-      based on an input cost matrix. The root node serves as the starting
-      point of the search.
-    - from_parent_node: Creates a new node based on a parent node and a
-    specified index (vertex). This is used to explore the graph and generate
-    new nodes during the traversal.
-
-    The __lt__ method is implemented to allow comparison of nodes based
-    on their cost values, which is essential for the priority queue operations
-    in graph traversal algorithms.
-
-    Note that this class assumes the existence of a constant INF
-    (maximum integer value) representing an "infinite" value or an invalid
-    entry in the matrix, which is used in the computation of reduced matrices.
     """
 
     level: int
