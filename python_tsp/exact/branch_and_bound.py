@@ -221,6 +221,9 @@ class Node:
         """
         return self.cost < other.cost
 
+    def __repr__(self: Node):
+        return f"Node(index={self.index}, cost={self.cost})"
+
 
 @dataclass
 class NodePriorityQueue:
@@ -261,7 +264,71 @@ class NodePriorityQueue:
 
 def solve_tsp_branch_and_bound(
     distance_matrix: np.ndarray,
-) -> Tuple[List, float]:
-    cost_matrix = np.copy(distance_matrix)
-    cost_matrix[cost_matrix == 0] = INF
+) -> Tuple[List[int], float]:
+    """
+    Solve the Traveling Salesman Problem (TSP) using
+    the Branch and Bound algorithm.
+
+    Parameters
+    ----------
+    distance_matrix : np.ndarray
+        The distance matrix containing the distances between cities.
+
+    Returns
+    -------
+    Tuple[List[int], float]
+        A tuple containing the optimal path as a list of city
+        indices and the total cost of the path.
+
+    Notes
+    -----
+    The Branch and Bound algorithm is used to find the optimal path for
+    the Traveling Salesman Problem, which aims to find the shortest
+    possible route that visits each city exactly once and returns to the
+    starting city.
+
+    The distance matrix should contain the distances between cities. If
+    there is no direct connection between two cities, the distance value
+    should be set to INF.
+
+    The algorithm works as follows:
+    - Convert the distance matrix into a cost matrix by replacing zeros with
+      INF.
+    - Initialize a priority queue to store nodes (partial
+      paths) for exploration, starting with the root node.
+    - Continuously expand nodes with the lowest cost from the priority
+      queue.
+    - If a complete path (tour) is found (i.e., all cities are
+      visited), return the optimal path and its cost.
+    - Generate child nodes for the current node by considering valid
+      connections between cities.
+    - Add child nodes to the priority queue for further exploration.
+    - Continue until all nodes are explored or the optimal path is found.
+
+    If no feasible path is found, an empty list and cost 0 are returned.
+    """
+    cost_matrix = np.where(distance_matrix == 0, INF, distance_matrix)
+    num_cities = len(cost_matrix)
+    node_indices = range(num_cities)
+    pq = NodePriorityQueue()
+    root = Node.root_from_cost_matrix(cost_matrix=cost_matrix)
+    pq.push(root)
+
+    while not pq.empty:
+        min_cost_node = pq.pop()
+
+        if min_cost_node.level == num_cities - 1:
+            return min_cost_node.path, min_cost_node.cost
+
+        for node_index in node_indices:
+            is_live_node = (
+                min_cost_node.reduced_matrix[min_cost_node.index][node_index]
+                != INF
+            )
+            if is_live_node:
+                live_node = Node.from_parent_node(
+                    parent_node=min_cost_node, node_index=node_index
+                )
+                pq.push(live_node)
+
     return [], 0
