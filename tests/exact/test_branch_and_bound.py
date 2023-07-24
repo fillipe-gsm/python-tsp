@@ -11,26 +11,9 @@ from tests.data import (
     optimal_distance1,
     optimal_distance2,
     optimal_distance3,
-    optimal_permutation1,
-    optimal_permutation2,
-    optimal_permutation3,
 )
 
 INF = np.iinfo(int).max
-
-
-@pytest.fixture
-def distance_matrix():
-    """A distance matrix"""
-    return np.array(
-        [
-            [0, 20, 30, 10, 11],
-            [15, 0, 16, 4, 2],
-            [3, 5, 0, 2, 4],
-            [19, 6, 18, 0, 3],
-            [16, 4, 7, 16, 0],
-        ]
-    )
 
 
 @pytest.fixture
@@ -187,16 +170,14 @@ def test_solution_has_all_nodes(distance_matrix):
 
 
 @pytest.mark.parametrize(
-    "distance_matrix, expected_permutation, expected_distance",
+    "distance_matrix, expected_distance",
     [
-        (distance_matrix1, optimal_permutation1, optimal_distance1),
-        (distance_matrix2, optimal_permutation2, optimal_distance2),
-        (distance_matrix3, optimal_permutation3, optimal_distance3),
+        (distance_matrix1, optimal_distance1),
+        (distance_matrix2, optimal_distance2),
+        (distance_matrix3, optimal_distance3),
     ],
 )
-def test_solution_is_optimal(
-    distance_matrix, expected_permutation, expected_distance
-):
+def test_solution_is_optimal(distance_matrix, expected_distance):
     """This exact method should return an optimal solution"""
     permutation, _ = solve_tsp_branch_and_bound(
         distance_matrix=distance_matrix

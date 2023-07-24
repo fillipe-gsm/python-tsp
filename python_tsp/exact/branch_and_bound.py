@@ -221,9 +221,6 @@ class Node:
         """
         return self.cost < other.cost
 
-    def __repr__(self: Node):
-        return f"Node(index={self.index}, cost={self.cost})"
-
 
 @dataclass
 class NodePriorityQueue:
@@ -306,6 +303,12 @@ def solve_tsp_branch_and_bound(
     - Continue until all nodes are explored or the optimal path is found.
 
     If no feasible path is found, an empty list and cost 0 are returned.
+
+    References
+    ----------
+    .. [1] A. Rastogi, A. K. Shrivastava, N. Payal, and R. Singh. "A Proposed
+    Solution to Travelling Salesman Problem using Branch and Bound."
+    International Journal of Computer Applications 65(5):44-49, Mar. 2013.
     """
     cost_matrix = np.where(distance_matrix == 0, INF, distance_matrix)
     num_cities = len(cost_matrix)
