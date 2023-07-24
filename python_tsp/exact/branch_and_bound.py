@@ -111,14 +111,14 @@ class Node:
         mask = matrix != INF
         reduced_matrix = np.copy(matrix)
 
-        min_rows = reduced_matrix.min(axis=1, keepdims=True)
+        min_rows = np.min(reduced_matrix, axis=1, keepdims=True)
         min_rows[min_rows == INF] = 0
         if np.any(min_rows != 0):
             reduced_matrix = np.where(
                 mask, reduced_matrix - min_rows, reduced_matrix
             )
 
-        min_cols = reduced_matrix.min(axis=0, keepdims=True)
+        min_cols = np.min(reduced_matrix, axis=0, keepdims=True)
         min_cols[min_cols == INF] = 0
         if np.any(min_cols != 0):
             reduced_matrix = np.where(
