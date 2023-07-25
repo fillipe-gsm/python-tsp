@@ -3,7 +3,6 @@ import pytest
 
 from python_tsp.exact import solve_tsp_branch_and_bound
 from python_tsp.exact.branch_and_bound import Node, NodePriorityQueue
-from python_tsp.utils import compute_permutation_distance
 from tests.data import (
     distance_matrix1,
     distance_matrix2,
@@ -179,11 +178,6 @@ def test_solution_has_all_nodes(distance_matrix):
 )
 def test_solution_is_optimal(distance_matrix, expected_distance):
     """This exact method should return an optimal solution"""
-    permutation, _ = solve_tsp_branch_and_bound(
-        distance_matrix=distance_matrix
-    )
+    _, distance = solve_tsp_branch_and_bound(distance_matrix)
 
-    assert (
-        compute_permutation_distance(distance_matrix, permutation)
-        == expected_distance
-    )
+    assert distance == expected_distance

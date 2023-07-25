@@ -310,7 +310,8 @@ def solve_tsp_branch_and_bound(
     Solution to Travelling Salesman Problem using Branch and Bound."
     International Journal of Computer Applications 65(5):44-49, Mar. 2013.
     """
-    cost_matrix = np.where(distance_matrix == 0, INF, distance_matrix)
+    cost_matrix = np.copy(distance_matrix)
+    np.fill_diagonal(cost_matrix, INF)
     num_cities = len(cost_matrix)
     node_indices = range(num_cities)
     pq = NodePriorityQueue()
