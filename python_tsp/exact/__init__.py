@@ -40,7 +40,7 @@ In general, ``solve_tsp_brute_force`` is not recommended for TSPs of
 significant size due to its exponential complexity.
 ``solve_tsp_dynamic_programming`` and ``solve_tsp_branch_and_bound``
 are more efficient approaches to finding the optimal solution, but the
-choice between them will depend on the problem size, available
+choice between them will depend on the problem size and available
 computational resources.
 """
 
