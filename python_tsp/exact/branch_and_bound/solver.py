@@ -24,9 +24,9 @@ def solve_tsp_branch_and_bound(
         total cost. If the TSP cannot be solved, an empty path and cost of 0
         will be returned.
     """
-    inf = np.iinfo(distance_matrix.dtype).max
     num_cities = len(distance_matrix)
     cost_matrix = np.copy(distance_matrix)
+    inf = np.iinfo(cost_matrix.dtype).max
     np.fill_diagonal(cost_matrix, inf)
 
     root = Node.from_cost_matrix(cost_matrix=cost_matrix)
