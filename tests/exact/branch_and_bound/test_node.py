@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from python_tsp.exact.branch_and_bound.node import Node
+from python_tsp.exact.branch_and_bound import Node
 
 INF = np.iinfo(int).max
 
@@ -35,6 +35,17 @@ def reduced_cost_matrix():
 
 
 def test_compute_reduced_matrix(cost_matrix, reduced_cost_matrix):
+    """
+    Test the `compute_reduced_matrix` function of the `Node` class.
+
+    Check if the function correctly calculates the reduced cost matrix and
+    the total reduction cost when provided with an original cost matrix.
+
+    Test cases:
+        1. The original matrix should be reduced with a cost of 25.
+        2. An already reduced matrix should remain unchanged with a
+           cost of 0.
+    """
     for request_matrix, expected_reduced_matrix, expected_cost in [
         (
             cost_matrix,
@@ -56,6 +67,14 @@ def test_compute_reduced_matrix(cost_matrix, reduced_cost_matrix):
 
 
 def test_compute_reduced_matrix_with_invalid_matrices():
+    """
+    Test the `compute_reduced_matrix` function of the `Node` class with
+    invalid matrices.
+
+    Check if the function returns the same invalid matrix and a reduction
+    cost of 0 when provided with an invalid matrix (filled with infinite
+    values).
+    """
     invalid_matrix = np.full((5, 5), INF)
     response_matrix, response_cost = Node.compute_reduced_matrix(
         matrix=invalid_matrix
@@ -66,6 +85,19 @@ def test_compute_reduced_matrix_with_invalid_matrices():
 
 
 def test_create_node_from_cost_matrix(cost_matrix, reduced_cost_matrix):
+    """
+    Test the `from_cost_matrix` function of the `Node` class.
+
+    Check if the function creates a new node correctly from an original
+    cost matrix.
+
+    Verifications:
+        - The new node should have the level (level) equal to 0.
+        - The new node should have the index (index) equal to 0.
+        - The new node should have the cost (cost) equal to 25.
+        - The new node should have the correct reduced cost matrix.
+        - The new node should have the path (path) [0].
+    """
     response = Node.from_cost_matrix(cost_matrix=cost_matrix)
 
     assert response.level == 0
@@ -79,6 +111,21 @@ def test_create_node_from_cost_matrix(cost_matrix, reduced_cost_matrix):
     "index, expected_cost", [(1, 35), (2, 53), (3, 25), (4, 31)]
 )
 def test_create_node_from_parent(cost_matrix, index, expected_cost):
+    """
+    Test the `from_parent` function of the `Node` class.
+
+    Check if the function creates a new node (child) correctly from an
+    existing parent node.
+
+    Verifications:
+        - The new node should have the level (level) equal to 1.
+        - The new node should have the index (index) equal to the
+          provided value.
+        - The new node should have the cost (cost) equal to the
+          expected cost.
+        - The new node should have the correct path, including the parent
+          node index.
+    """
     parent = Node.from_cost_matrix(cost_matrix=cost_matrix)
     response = Node.from_parent(parent=parent, index=index)
 
@@ -90,6 +137,19 @@ def test_create_node_from_parent(cost_matrix, index, expected_cost):
 
 @pytest.mark.parametrize("index, expected_cost", [(1, 35), (2, 53), (4, 31)])
 def test_min_cost_node(cost_matrix, index, expected_cost):
+    """
+    Test the comparison operator `<` between nodes.
+
+    Check if the node with the lowest cost is correctly identified
+    among two nodes.
+
+    Verifications:
+        - The initial parent node should have a cost equal to 25.
+        - The new node created from the initial parent node should have the
+          expected cost.
+        - The initial parent node should be considered smaller than the
+          new node.
+    """
     min_cost_node = Node.from_cost_matrix(cost_matrix=cost_matrix)
     response = Node.from_parent(parent=min_cost_node, index=index)
 

@@ -2,15 +2,14 @@ from typing import List, Tuple
 
 import numpy as np
 
-from python_tsp.exact.branch_and_bound.node import Node
-from python_tsp.exact.branch_and_bound.priority_queue import PriorityQueue
+from python_tsp.exact.branch_and_bound import Node, PriorityQueue
 
 
 def solve_tsp_branch_and_bound(
     distance_matrix: np.ndarray,
 ) -> Tuple[List[int], float]:
     """
-    Solve the Traveling Salesman Problem (TSP) using
+    Solve the Traveling Salesperson Problem (TSP) using
     the Branch and Bound algorithm.
 
     Parameters

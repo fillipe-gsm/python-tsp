@@ -9,7 +9,7 @@ import numpy as np
 @dataclass
 class Node:
     """
-    Represents a node in the search tree for the Traveling Salesman Problem.
+    Represents a node in the search tree for the Traveling Salesperson Problem.
 
     Attributes
     ----------

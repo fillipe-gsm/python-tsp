@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from heapq import heappop, heappush
 from typing import List
 
-from python_tsp.exact.branch_and_bound.node import Node
+from python_tsp.exact.branch_and_bound import Node
 
 
 @dataclass
