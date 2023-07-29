@@ -1,5 +1,3 @@
-from math import inf
-
 import numpy as np
 import pytest
 
@@ -77,6 +75,7 @@ def test_solver_on_an_unfeasible_problem():
         - The permutation of nodes in the solution should be empty.
         - The distance of the solution should be infinity.
     """
+    inf = float("inf")
     distance_matrix = np.array(
         [
             [inf, 10, 15, 20, inf],
