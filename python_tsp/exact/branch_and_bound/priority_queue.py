@@ -20,7 +20,7 @@ class PriorityQueue:
     -------
     empty
         Check if the priority queue is empty.
-    push:
+    push
         Push an item into the priority queue.
     pop
         Pop the item with the highest priority from the priority queue.
