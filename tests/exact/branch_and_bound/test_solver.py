@@ -73,7 +73,7 @@ def test_solver_on_an_unfeasible_problem():
 
     Verifications:
         - The permutation of nodes in the solution should be empty.
-        - The distance of the solution should be infinity.
+        - The distance of the solution should be positive infinity.
     """
     inf = float("inf")
     distance_matrix = np.array(
