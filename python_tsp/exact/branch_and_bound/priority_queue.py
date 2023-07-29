@@ -18,11 +18,11 @@ class PriorityQueue:
 
     Methods
     -------
-    empty() -> bool:
+    empty
         Check if the priority queue is empty.
-    push(item: Node) -> None:
+    push:
         Push an item into the priority queue.
-    pop() -> Node:
+    pop
         Pop the item with the highest priority from the priority queue.
     """
 
