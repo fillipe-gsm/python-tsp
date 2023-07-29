@@ -1,3 +1,5 @@
+from math import inf
+
 import numpy as np
 import pytest
 
@@ -75,7 +77,6 @@ def test_solver_on_an_unfeasible_problem():
         - The permutation of nodes in the solution should be empty.
         - The distance of the solution should be 0.
     """
-    inf = np.iinfo(int).max
     distance_matrix = np.array(
         [
             [inf, 10, 15, 20, inf],
@@ -88,4 +89,4 @@ def test_solver_on_an_unfeasible_problem():
     permutation, distance = solve_tsp_branch_and_bound(distance_matrix)
 
     assert permutation == []
-    assert distance == 0
+    assert distance == inf

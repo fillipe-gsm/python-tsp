@@ -2,8 +2,7 @@ import numpy as np
 import pytest
 
 from python_tsp.exact.branch_and_bound import Node
-
-INF = np.iinfo(int).max
+from math import inf
 
 
 @pytest.fixture
@@ -11,11 +10,11 @@ def cost_matrix():
     """A cost matrix"""
     return np.array(
         [
-            [INF, 20, 30, 10, 11],
-            [15, INF, 16, 4, 2],
-            [3, 5, INF, 2, 4],
-            [19, 6, 18, INF, 3],
-            [16, 4, 7, 16, INF],
+            [inf, 20, 30, 10, 11],
+            [15, inf, 16, 4, 2],
+            [3, 5, inf, 2, 4],
+            [19, 6, 18, inf, 3],
+            [16, 4, 7, 16, inf],
         ]
     )
 
@@ -25,11 +24,11 @@ def reduced_cost_matrix():
     """Reduced matrix corresponding to the cost matrix"""
     return np.array(
         [
-            [INF, 10, 17, 0, 1],
-            [12, INF, 11, 2, 0],
-            [0, 3, INF, 0, 2],
-            [15, 3, 12, INF, 0],
-            [11, 0, 0, 12, INF],
+            [inf, 10, 17, 0, 1],
+            [12, inf, 11, 2, 0],
+            [0, 3, inf, 0, 2],
+            [15, 3, 12, inf, 0],
+            [11, 0, 0, 12, inf],
         ]
     )
 
@@ -75,7 +74,7 @@ def test_compute_reduced_matrix_with_invalid_matrices():
     cost of 0 when provided with an invalid matrix (filled with infinite
     values).
     """
-    invalid_matrix = np.full((5, 5), INF)
+    invalid_matrix = np.full((5, 5), inf)
     response_matrix, response_cost = Node.compute_reduced_matrix(
         matrix=invalid_matrix
     )

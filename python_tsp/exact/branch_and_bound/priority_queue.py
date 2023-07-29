@@ -13,7 +13,7 @@ class PriorityQueue:
 
     Attributes
     ----------
-    _container : List[Node]
+    _container
         The list that holds the elements in the priority queue.
 
     Methods
@@ -46,7 +46,7 @@ class PriorityQueue:
 
         Parameters
         ----------
-        item : Node
+        item
             The item to be pushed into the priority queue.
 
         Returns

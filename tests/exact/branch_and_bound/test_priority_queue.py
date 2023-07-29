@@ -1,5 +1,5 @@
 import numpy as np
-
+from math import inf
 from python_tsp.exact.branch_and_bound import Node, PriorityQueue
 
 
@@ -18,7 +18,6 @@ def test_priority_queue():
         - The priority queue should not be empty after pushing nodes.
         - The cost of the node popped from the priority queue should be 25.
     """
-    inf = np.iinfo(int).max
     cost_matrix = np.array(
         [
             [inf, 20, 30, 10, 11],

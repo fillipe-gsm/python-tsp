@@ -1,3 +1,4 @@
+from math import inf
 from typing import List, Tuple
 
 import numpy as np
@@ -9,24 +10,44 @@ def solve_tsp_branch_and_bound(
     distance_matrix: np.ndarray,
 ) -> Tuple[List[int], float]:
     """
-    Solve the Traveling Salesperson Problem (TSP) using
-    the Branch and Bound algorithm.
+    Solve the Traveling Salesperson Problem (TSP) using the
+    Branch and Bound algorithm.
 
     Parameters
     ----------
-    distance_matrix : numpy.ndarray
+    distance_matrix
         The distance matrix representing the distances between cities.
 
     Returns
     -------
-    Tuple[List[int], float]
+    Tuple
         A tuple containing the optimal path (list of city indices) and its
-        total cost. If the TSP cannot be solved, an empty path and cost of 0
-        will be returned.
+        total cost. If the TSP cannot be solved, an empty path and a cost
+        of positive infinity will be returned.
+
+    Notes
+    -----
+    The `distance_matrix` should be a square matrix with non-negative
+    values. The element `distance_matrix[i][j]` represents the distance from
+    city `i` to city `j`. If two cities are not directly connected, the
+    distance should be set to a float value of positive infinity
+    (float('inf')).
+
+    The path is represented as a list of city indices, and the total cost is a
+    float value indicating the sum of distances in the optimal path.
+
+    If the TSP cannot be solved (e.g., due to disconnected cities), the
+    function will return an empty path ([]) and a cost of positive infinity
+    (float('inf')).
+
+    References
+    ----------
+    .. [1] A. Rastogi, A. K. Shrivastava, N. Payal, and R. Singh. "A Proposed
+           Solution to Travelling Salesman Problem using Branch and Bound."
+           International Journal of Computer Applications 65(5):44-49, 2013.
     """
     num_cities = len(distance_matrix)
-    cost_matrix = np.copy(distance_matrix)
-    inf = np.iinfo(cost_matrix.dtype).max
+    cost_matrix = np.copy(distance_matrix).astype(float)
     np.fill_diagonal(cost_matrix, inf)
 
     root = Node.from_cost_matrix(cost_matrix=cost_matrix)
@@ -44,4 +65,4 @@ def solve_tsp_branch_and_bound(
                 live_node = Node.from_parent(parent=min_node, index=index)
                 pq.push(live_node)
 
-    return [], 0
+    return [], inf

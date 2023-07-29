@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from math import inf
 from typing import List, Tuple
 
 import numpy as np
@@ -13,50 +14,49 @@ class Node:
 
     Attributes
     ----------
-    level : int
+    level
         The level of the node in the search tree.
-    index : int
+    index
         The index of the current city in the path.
-    path : List[int]
+    path
         The list of city indices visited so far.
-    cost : int
+    cost
         The total cost of the path up to this node.
-    cost_matrix : numpy.ndarray
+    cost_matrix
         The cost matrix representing the distances between cities.
 
     Methods
     -------
-    compute_reduced_matrix(matrix: numpy.ndarray) -> Tuple[numpy.ndarray, int]:
+    compute_reduced_matrix
         Compute the reduced matrix and the cost of reducing it.
-    from_cost_matrix(cost_matrix: numpy.ndarray) -> Node:
+    from_cost_matrix
         Create a Node object from a given cost matrix.
-    from_parent(parent: Node, index: int) -> Node:
+    from_parent
         Create a new Node object based on a parent node and a city index.
     """
 
     level: int
     index: int
     path: List[int]
-    cost: int
+    cost: float
     cost_matrix: np.ndarray
 
     @staticmethod
-    def compute_reduced_matrix(matrix: np.ndarray) -> Tuple[np.ndarray, int]:
+    def compute_reduced_matrix(matrix: np.ndarray) -> Tuple[np.ndarray, float]:
         """
         Compute the reduced matrix and the cost of reducing it.
 
         Parameters
         ----------
-        matrix : numpy.ndarray
+        matrix
             The cost matrix to compute the reductions.
 
         Returns
         -------
-        Tuple[numpy.ndarray, int]
+        Tuple
             A tuple containing the reduced matrix and the total
             cost of reductions.
         """
-        inf = np.iinfo(matrix.dtype).max
         mask = matrix != inf
         reduced_matrix = np.copy(matrix)
 
@@ -74,7 +74,7 @@ class Node:
                 mask, reduced_matrix - min_cols, reduced_matrix
             )
 
-        return reduced_matrix, min_rows.sum() + min_cols.sum()
+        return reduced_matrix, np.sum(min_rows) + np.sum(min_cols)
 
     @classmethod
     def from_cost_matrix(cls, cost_matrix: np.ndarray) -> Node:
@@ -83,7 +83,7 @@ class Node:
 
         Parameters
         ----------
-        cost_matrix : numpy.ndarray
+        cost_matrix
             The cost matrix representing the distances between cities.
 
         Returns
@@ -107,9 +107,9 @@ class Node:
 
         Parameters
         ----------
-        parent : Node
+        parent
             The parent node.
-        index : int
+        index
             The index of the new city to be added to the path.
 
         Returns
@@ -118,7 +118,6 @@ class Node:
             A new Node object with the updated path and cost.
         """
         matrix = np.copy(parent.cost_matrix)
-        inf = np.iinfo(matrix.dtype).max
         matrix[parent.index, :] = inf
         matrix[:, index] = inf
         matrix[index][0] = inf
@@ -139,7 +138,7 @@ class Node:
 
         Parameters
         ----------
-        other : Node
+        other
             The other Node object to compare with.
 
         Returns
