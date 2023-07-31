@@ -42,9 +42,9 @@ def solve_tsp_branch_and_bound(
 
     References
     ----------
-    .. [1] A. Rastogi, A. K. Shrivastava, N. Payal, and R. Singh. "A Proposed
-           Solution to Travelling Salesman Problem using Branch and Bound."
-           International Journal of Computer Applications 65(5):44-49, 2013.
+    .. [1] Horowitz, E., Sahni, S., & Rajasekaran, S. (1997).
+           Computer Algorithms. Chapter 8 - Branch and Bound. Section 8.3.
+           W. H. Freeman and Company.
     """
     num_cities = len(distance_matrix)
     cost_matrix = np.copy(distance_matrix).astype(float)
