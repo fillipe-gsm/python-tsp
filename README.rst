@@ -196,7 +196,8 @@ There are two types of solvers available:
         - ``exact.solve_tsp_dynamic_programming``: uses a Dynamic Programming
           approach. It tends to be faster than the previous one, but it may
           demand more memory.
-
+        - ``exact.solve_tsp_branch_and_bound``: uses a Branch and Bound
+          approach, it is more scalable than previous methods.
 :Heuristics: These methods have no guarantees of finding the best solution,
              but usually return a good enough candidate in a more reasonable
              time for larger problems.

@@ -14,6 +14,7 @@ required and check if the processing time is acceptable.
 
 Functions present in this module are listed below.
 
+    solve_tsp_branch_and_bound
     solve_tsp_brute_force
     solve_tsp_dynamic_programming
 
@@ -21,12 +22,28 @@ Functions present in this module are listed below.
 Tips on deciding the solver
 ---------------------------
 
-In general, ``solve_tsp_dynamic_programming`` is faster, specially with an
-appropriate `maxsize` input (the default is fine). However, because of its
-recursion, it may take more memory, particularly if the number of nodes grows
-large. If that becomes an issue and you still need a provably optimal solution,
-use the ``solve_tsp_brute_force``.
+The choice among the three exact methods depends on the specific
+characteristics of the Traveling Salesperson Problem (TSP) you are
+dealing with:
+
+If the TSP has only a few cities and the goal is a quick solution without
+worrying about scalability, ``solve_tsp_brute_force`` may be a simple
+and viable choice, but only for educational purposes or small cases.
+If the TSP is relatively small (with a few cities) and precision is
+essential, ``solve_tsp_dynamic_programming`` may be preferable, as
+long as the required memory and execution time are not prohibitive.
+If the TSP has many cities and an exact solution is required,
+``solve_tsp_branch_and_bound`` is more scalable and, therefore, more
+suitable for such scenarios.
+
+In general, ``solve_tsp_brute_force`` is not recommended for TSPs of
+significant size due to its exponential complexity.
+``solve_tsp_dynamic_programming`` and ``solve_tsp_branch_and_bound``
+are more efficient approaches to finding the optimal solution, but the
+choice between them will depend on the problem size and available
+computational resources.
 """
 
+from .branch_and_bound import solve_tsp_branch_and_bound  # noqa: F401
 from .brute_force import solve_tsp_brute_force  # noqa: F401
 from .dynamic_programming import solve_tsp_dynamic_programming  # noqa: F401
