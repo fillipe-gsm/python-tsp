@@ -13,6 +13,7 @@ PERTURBATION_SCHEMES = tuple(neighborhood_gen.keys())
 def solve_tsp_variable_neighborhood_search(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
+    max_processing_time: Optional[float] = None,
     log_file: Optional[str] = None,
     verbose: bool = False,
 ) -> Tuple[List[int], float]:
@@ -27,6 +28,9 @@ def solve_tsp_variable_neighborhood_search(
     x0
         An optional initial solution for the TSP. If not
         provided, a random initial solution will be generated.
+    max_processing_time
+        Maximum processing time in seconds. If not provided, the method stops
+        only when a local minimum is obtained.
     log_file
         The name of the log file to which the algorithm progress
         will be logged. If not provided, no log file will be generated.
@@ -45,41 +49,33 @@ def solve_tsp_variable_neighborhood_search(
     "Design of Heuristic Algorithms for Hard Optimization",
     Graduate Texts in Operations Research, Springer, 2023.
     """
-    x, fx = setup_initial_solution(distance_matrix, x0)
-    perturbation_index = 0
     log_file_handler = (
         open(log_file, "w", encoding="utf-8") if log_file else None
     )
+
+    x, fx = setup_initial_solution(distance_matrix, x0)
+    perturbation_index = 0
     while perturbation_index < len(PERTURBATION_SCHEMES):
         perturbation_name = PERTURBATION_SCHEMES[perturbation_index]
-        neighbors_gen = neighborhood_gen[perturbation_name](x)
-
-        try:
-            x_neighbor = next(neighbors_gen)
-        except StopIteration:
-            perturbation_index += 1
-            continue
 
         msg = f"Current value: {fx}; Neighborhood scheme: {perturbation_name}"
         _print_message(msg, verbose, log_file_handler)
 
-        xn, fn = solve_tsp_local_search(
-            distance_matrix=distance_matrix,
-            x0=x_neighbor,
-            perturbation_scheme=perturbation_name,
-            verbose=verbose,
-        )
-
-        if fn < fx:
-            x, fx = xn, fn
-            perturbation_index = 0
-            msg = "Improvement found!"
-        else:
-            perturbation_index += 1
-            msg = (
-                "No improvements found! Checking another neighborhood scheme."
+        neighbors_gen = neighborhood_gen[perturbation_name](x)
+        x_neighbor = next(neighbors_gen, None)
+        if x_neighbor:
+            xn, fn = solve_tsp_local_search(
+                distance_matrix=distance_matrix,
+                x0=x_neighbor,
+                perturbation_scheme=perturbation_name,
+                max_processing_time=max_processing_time,
             )
-        _print_message(msg, verbose, log_file_handler)
+            if fn < fx:
+                x, fx = xn, fn
+                perturbation_index = 0
+                continue
+
+        perturbation_index += 1
 
     if log_file_handler:
         log_file_handler.close()
