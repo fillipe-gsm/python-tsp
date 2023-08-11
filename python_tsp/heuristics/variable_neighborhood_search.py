@@ -7,12 +7,23 @@ from python_tsp.heuristics import solve_tsp_local_search
 from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 from python_tsp.utils import setup_initial_solution
 
-PERTURBATION_SCHEMES = tuple(neighborhood_gen.keys())
+# All possible neighborhood structures available to the local search
+# algorithm. The order in this list matters.
+DEFAULT_PERTURBATION_SCHEMES = [
+    "two_opt",
+    "ps3",
+    "ps2",
+    "ps1",
+    "ps4",
+    "ps5",
+    "ps6",
+]
 
 
 def solve_tsp_variable_neighborhood_search(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
+    perturbation_schemes: Optional[List[str]] = None,
     max_processing_time: Optional[float] = None,
     log_file: Optional[str] = None,
     verbose: bool = False,
@@ -25,15 +36,25 @@ def solve_tsp_variable_neighborhood_search(
     ----------
     distance_matrix
         A 2D array representing the distance matrix between cities.
+
     x0
         An optional initial solution for the TSP. If not
         provided, a random initial solution will be generated.
+
+    perturbation_schemes
+        An optional list of perturbation schemes to be used in the VNS
+        algorithm. If not provided, default schemes will be used.
+        The listed neighborhood schemes must be available to the local search
+        algorithm, the order of the list matters.
+
     max_processing_time
-        Maximum processing time in seconds. If not provided, the method stops
-        only when a local minimum is obtained.
+        An optional maximum processing time in seconds. If not provided, the
+        method stops only when a local minimum is obtained.
+
     log_file
         The name of the log file to which the algorithm progress
         will be logged. If not provided, no log file will be generated.
+
     verbose
         If True, the algorithm's progress will be printed to the console.
 
@@ -49,14 +70,17 @@ def solve_tsp_variable_neighborhood_search(
     "Design of Heuristic Algorithms for Hard Optimization",
     Graduate Texts in Operations Research, Springer, 2023.
     """
+    if perturbation_schemes is None:
+        perturbation_schemes = DEFAULT_PERTURBATION_SCHEMES
+
     log_file_handler = (
         open(log_file, "w", encoding="utf-8") if log_file else None
     )
 
     x, fx = setup_initial_solution(distance_matrix, x0)
     perturbation_index = 0
-    while perturbation_index < len(PERTURBATION_SCHEMES):
-        perturbation_name = PERTURBATION_SCHEMES[perturbation_index]
+    while perturbation_index < len(perturbation_schemes):
+        perturbation_name = perturbation_schemes[perturbation_index]
 
         msg = f"Current value: {fx}; Neighborhood scheme: {perturbation_name}"
         _print_message(msg, verbose, log_file_handler)
