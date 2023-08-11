@@ -7,17 +7,8 @@ from python_tsp.heuristics import solve_tsp_local_search
 from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 from python_tsp.utils import setup_initial_solution
 
-# All possible neighborhood structures available to the local search
-# algorithm. The order in this list matters.
-DEFAULT_PERTURBATION_SCHEMES = [
-    "two_opt",
-    "ps3",
-    "ps2",
-    "ps1",
-    "ps4",
-    "ps5",
-    "ps6",
-]
+# All available neighborhood schemes for the local search algorithm
+AVAILABLE_PERTURBATION_SCHEMES = list(neighborhood_gen.keys())
 
 
 def solve_tsp_variable_neighborhood_search(
@@ -43,9 +34,9 @@ def solve_tsp_variable_neighborhood_search(
 
     perturbation_schemes
         An optional list of perturbation schemes to be used in the VNS
-        algorithm. If not provided, default schemes will be used.
-        The listed neighborhood schemes must be available to the local search
-        algorithm, the order of the list matters.
+        algorithm. The listed neighborhood schemes must be available to
+        the local search algorithm, the order of the list matters.
+        If not provided, all available schemes will be used.
 
     max_processing_time
         An optional maximum processing time in seconds. If not provided, the
@@ -70,19 +61,19 @@ def solve_tsp_variable_neighborhood_search(
     "Design of Heuristic Algorithms for Hard Optimization",
     Graduate Texts in Operations Research, Springer, 2023.
     """
-    if perturbation_schemes is None:
-        perturbation_schemes = DEFAULT_PERTURBATION_SCHEMES
-
     log_file_handler = (
         open(log_file, "w", encoding="utf-8") if log_file else None
     )
 
     x, fx = setup_initial_solution(distance_matrix, x0)
     perturbation_index = 0
+    perturbation_schemes = (
+        perturbation_schemes or AVAILABLE_PERTURBATION_SCHEMES
+    )
     while perturbation_index < len(perturbation_schemes):
         perturbation_name = perturbation_schemes[perturbation_index]
 
-        msg = f"Current value: {fx}; Neighborhood scheme: {perturbation_name}"
+        msg = f"Current value: {fx}; Search neighborhood: {perturbation_name}"
         _print_message(msg, verbose, log_file_handler)
 
         neighbors_gen = neighborhood_gen[perturbation_name](x)
