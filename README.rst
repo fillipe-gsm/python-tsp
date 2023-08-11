@@ -209,6 +209,12 @@ There are two types of solvers available:
                Annealing metaheuristic. It may be slower, but it has better
                chances of avoiding getting trapped in local minima.
 
+             - ``heuristics.solve_tsp_variable_neighborhood_search``: Uses
+               the Variable Neighborhood Search metaheuristic. With no maximum
+               processing time restriction it is slower than the previous
+               heuristics, but has a much better chance of not getting stuck
+               in a local minima.
+
 
 For developers
 ==============
