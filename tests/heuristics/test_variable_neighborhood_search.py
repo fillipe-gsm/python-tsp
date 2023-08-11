@@ -34,4 +34,4 @@ def test_log_file_is_created_if_required(tmp_path):
 
     assert log_file.exists()
     assert "Current value:" in log_file.read_text()
-    assert "Neighborhood scheme:" in log_file.read_text()
+    assert "Search neighborhood:" in log_file.read_text()
