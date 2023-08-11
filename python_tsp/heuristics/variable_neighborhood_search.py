@@ -8,7 +8,7 @@ from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 from python_tsp.utils import setup_initial_solution
 
 # All available neighborhood schemes for the local search algorithm
-AVAILABLE_PERTURBATION_SCHEMES = list(neighborhood_gen.keys())
+AVAILABLE_PERTURBATION_SCHEMES = sorted(neighborhood_gen.keys(), reverse=True)
 
 
 def solve_tsp_variable_neighborhood_search(
@@ -76,13 +76,11 @@ def solve_tsp_variable_neighborhood_search(
         msg = f"Current value: {fx}; Search neighborhood: {perturbation_name}"
         _print_message(msg, verbose, log_file_handler)
 
-        neighbors_gen = neighborhood_gen[perturbation_name](x)
-        x_neighbor = next(neighbors_gen, None)
+        x_neighbor = next(neighborhood_gen[perturbation_name](x), None)
         if x_neighbor:
             xn, fn = solve_tsp_local_search(
                 distance_matrix=distance_matrix,
                 x0=x_neighbor,
-                perturbation_scheme=perturbation_name,
                 max_processing_time=max_processing_time,
             )
             if fn < fx:
