@@ -189,6 +189,16 @@ To help keeping this library relatively up to date and maintainable but not to a
 Release Notes and Changelog
 ===========================
 
+Releases 0.4.X
+--------------
+
+Release 0.4.0
+~~~~~~~~~~~~~
+
+- Add Branch and Bound to the list of exact solvers. Thanks @luanleonardo for this contribution.
+
+Python support: Python >= 3.8.1
+
 Releases 0.3.X
 --------------
 
