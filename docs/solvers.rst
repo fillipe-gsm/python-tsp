@@ -31,7 +31,7 @@ Dynamic Programming
 
 A Dynamic programming approach. It is faster than the Brute Force but may require more memory, which is controlled by the ``maxsize`` parameter.  When in doubt, leave it as default.
 
-   .. code:: python
+.. code:: python
 
   from python_tsp.exact import solve_tsp_dynamic_programming
 
@@ -46,6 +46,19 @@ A Dynamic programming approach. It is faster than the Brute Force but may requir
     Parameter passed to ``lru_cache`` decorator. Used to define the maximum
     size for the recursion tree. Defaults to `None`, which essentially
     means "take as much space as needed".
+
+
+Branch and Bound
+----------------
+
+A Branch and Bound approach, which may be more scalable than previous methods and not grow in time as fast as them. Courtesy of @luanleonardo.
+
+.. code:: python
+
+  from python_tsp.exact import solve_tsp_branch_and_bound
+
+
+  xopt, fopt = solve_tsp_branch_and_bound(distance_matrix)
 
 
 Heuristic solvers
