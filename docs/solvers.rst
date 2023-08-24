@@ -73,7 +73,7 @@ The perturbation schemes currently available are:
 - ``two_opt``: the well-known `2-opt <https://en.wikipedia.org/wiki/2-opt>`_;
 - ``ps1``, ``ps2``, ``ps3``, ``ps4``, ``ps5`` and ``ps6``: the PSX schemes work directly in the permutation space as shown in the figure below. Among these, the 2-opt is very close to the PS5 and it works very well in most instances, but sometimes other schemes may yield better results because their neighborhoods are different.
 
-.. image:: figures/perturbation_schemes.png
+.. image:: ../figures/perturbation_schemes.png
 
 Local Search
 ------------
