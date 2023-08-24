@@ -11,6 +11,7 @@ Installation
 .. code:: bash
 
   pip install python-tsp
+  poetry add python-tsp  # if using Poetry in the project
 
 
 Quickstart
@@ -39,11 +40,9 @@ We can find an optimal path using a Dynamic Programming method with:
    ])
    permutation, distance = solve_tsp_dynamic_programming(distance_matrix)
 
-The solution will be ``[0, 1, 3, 2]``, with total distance 17. Notice it is
-always a closed path, so after node 2 we go back to 0.
+The solution will be ``[0, 1, 3, 2]``, with total distance 17.
 
-There are also heuristic-based approaches to solve the same problem. For
-instance, to use a local search method:
+There are also heuristic-based approaches to solve the same problem. For instance, to use a local search method:
 
 .. code:: python
 
@@ -51,26 +50,26 @@ instance, to use a local search method:
 
    permutation, distance = solve_tsp_local_search(distance_matrix)
 
-In this case there is generally no guarantee of optimality, but in this small
-instance the answer is normally a permutation with total distance 17 as well
-(notice in this case there are many permutations with the same optimal
-distance).
+In this case there is generally no guarantee of optimality, but in this small instance the answer is normally a permutation with total distance 17 as well (notice in this case there are many permutations with the same optimal distance).
+
+You can check `here to see the list of available solvers <docs/solvers.rst>`_.
+
+Keep in mind that, by definition, the route always starts and finishes at node 0 (a closed path). So, in the previous example, after node 2 we go back to 0.
+
 
 Open TSP problem
 ----------------
 
-If you opt for an open TSP version (it is not required to go back to the
-origin), just set all elements of the first column of the distance matrix to
-zero:
+If your problem is of the "open" type, i.e., it is not required to go back to the origin, you can "trick" the solvers by setting all elements of the first column of the distance matrix to zero:
 
 .. code:: python
 
    distance_matrix[:, 0] = 0
    permutation, distance = solve_tsp_dynamic_programming(distance_matrix)
 
-and we obtain ``[0, 2, 3, 1]``, with distance 12. Notice that in
-this case the distance matrix is actually asymmetric, and the methods here are
-applicable as well.
+and we obtain ``[0, 2, 3, 1]``, with distance 12. Keep in mind that we still start and end at 0, but since the distance from everyone to 0 is null, in practice it is the same as stopping at node 1.
+
+Notice that in this case the distance matrix is actually asymmetric, but the methods here are applicable as well.
 
 
 Computing a distance matrix
@@ -82,8 +81,7 @@ The previous examples assumed you already had a distance matrix. If that is not 
 A more intricate example
 ------------------------
 
-Let us attempt to solve the ``a280.tsp`` TSPLIB file. It has 280 nodes, so an exact
-approach may take too long. Hence, let us start with a Local Search (LS) solver:
+Let us attempt to solve the ``a280.tsp`` TSPLIB file. It has 280 nodes, so an exact approach may take too long. Hence, let us start with a Local Search (LS) solver:
 
 
 .. code:: python
@@ -100,55 +98,27 @@ approach may take too long. Hence, let us start with a Local Search (LS) solver:
     # distance: 3064
 
 
-When calling ``solve_tsp_local_search`` like this, we are starting with a
-random permutation, using the 2-opt scheme as neighborhood, and running it until
-a local optimum is obtained. It is the same as this:
+When calling ``solve_tsp_local_search`` like this, we are starting with a random permutation, using the 2-opt scheme as neighborhood, and running it until a local optimum is obtained. Check `the solvers documentation <docs/solvers.rst>`_ for more information.
 
-.. code:: python
+In my specific run, I obtained a permutation with total distance 3064. The actual best solution for this instance is 2579, so our solution has a 18.8% gap. Remember this solver is a heuristic, and thus it has no business in finding the actual optimum. Moreover, you can get different results trying distinct perturbation schemes and starting points.
 
-    permutation, distance = solve_tsp_local_search(
-        distance_matrix,
-        x0=None,
-        perturbation_scheme="two_opt",
-        max_processing_time=None,
-        log_file=None,
-        verbose=False,
-    )
-
-Each input variable is probably self-explanatory, but you can run
-``help solve_tsp_local_search`` for more information.
-
-In my specific run, I obtained a permutation with total distance 3064. The
-actual best solution for this instance is 2579, so our solution has a 18.8%
-gap. Remember this solver is a heuristic, and thus it has no business in
-finding the actual optimum. Moreover, you can get different results trying
-distinct perturbation schemes and starting points.
-
-Since the local search solver only obtains local minima, maybe we can get more
-lucky with a metaheuristic such as the Simulated Annealing (SA):
+Since the local search solver only obtains local minima, maybe we can get more lucky with a metaheuristic such as the Simulated Annealing (SA):
 
 .. code:: python
 
     permutation2, distance2 = solve_tsp_simulated_annealing(distance_matrix)
     # distance: 2830
 
-In my execution, I got a 2830 as distance, representing a 9.7% gap, a great
-improvement over the local search. The SA input parameters are basically the
-same as the LS, but you can check ``help solve_tsp_simulated_annealing`` for
-more details as well.
+In my execution, I got a 2830 as distance, representing a 9.7% gap, a great improvement over the local search. The SA input parameters are basically the same as the LS, but you can check `the solvers documentation <docs/solvers.rst>`_ for more details as well.
 
-If you are familiar with metaheuristics, you would know that the SA does not
-guarantee a local minimum, despite its solution being better than the LS in
-this case. Thus, maybe we can squeeze some improvement by running a local
-search starting with its returned solution:
+If you are familiarized with metaheuristics, you would know that the SA does not guarantee a local minimum, despite its solution being better than the LS in this case. Thus, maybe we can squeeze some improvement by running a local search starting with its returned solution:
 
 .. code:: python
 
     permutation3, distance3 = solve_tsp_local_search(distance_matrix, x0=permutation2)
     # distance: 2825
 
-So, that was o.k., nothing groundbreaking, but a nice combo to try in some
-situations. Nevertheless, if we change the perturbation scheme to, say, PS3:
+So, that was o.k., nothing groundbreaking, but a nice combo to try in some situations. Nevertheless, if we change the perturbation scheme to, say, PS3:
 
 .. code:: python
 
@@ -157,22 +127,13 @@ situations. Nevertheless, if we change the perturbation scheme to, say, PS3:
     )
     # distance: 2746
 
-and there we go, a distance of 2746 or a 6.5% gap of the optimum.
+and there we go, a distance of 2746 or a 6.5% gap of the optimum. Notice we set the ``x_0`` to the permutation returned by the SA in the last run.
 
-The PSX schemes work directly in the permutation space as shown in the figure
-below. Among these, the well-known 2-opt is very close to the PS5 and it works very
-well in most instances, but sometimes other schemes may yield better results because their
-neighborhoods are different.
+Check again `the solvers documentation <docs/solvers.rst>`_ to get an idea of these perturbation schemes.
 
-.. image:: figures/perturbation_schemes.png
+In this case, PS3 and PS6 have larger neighborhood sizes, so we may get a better chance of improvement by switching to them in the LS step. Test other schemes and see if you can get different results.
 
-In this case, PS3 and PS6 have larger neighborhood sizes, so we may get a better
-chance of improvement by switching to them in the LS step. Test other schemes
-and see if you can get different results.
-
-Finally, if you don't feel like fine-tunning the solvers for each problem, a
-rule of thumb that worked relatively well for me is to run the SA with a
-2-opt and follow it by a LS with PS3 or PS6, like
+Finally, if you don't feel like fine-tunning the solvers for each problem, a rule of thumb that worked relatively well for me is to run the SA with a 2-opt and follow it by a LS with PS3 or PS6, like
 
 .. code:: python
 
@@ -184,31 +145,8 @@ rule of thumb that worked relatively well for me is to run the SA with a
 
 Methods available
 =================
-There are two types of solvers available:
 
-:Exact: Methods that always return the optimal solution of a problem.
-        Use these solvers in relatively small instances (wherein "small" is
-        relative to your requirements).
-
-        - ``exact.solve_tsp_brute_force``: checks all permutations and returns
-          the best one;
-
-        - ``exact.solve_tsp_dynamic_programming``: uses a Dynamic Programming
-          approach. It tends to be faster than the previous one, but it may
-          demand more memory.
-        - ``exact.solve_tsp_branch_and_bound``: uses a Branch and Bound
-          approach, it is more scalable than previous methods.
-:Heuristics: These methods have no guarantees of finding the best solution,
-             but usually return a good enough candidate in a more reasonable
-             time for larger problems.
-
-             - ``heuristics.solve_tsp_local_search``: local search heuristic.
-               Fast, but it can get stuck in a local minimum;
-
-             - ``heuristics.solve_tsp_simulated_annealing``: the Simulated
-               Annealing metaheuristic. It may be slower, but it has better
-               chances of avoiding getting trapped in local minima.
-
+See `here <docs/solvers.rst>`_ for a list of available solvers and how to use them.
 
 For developers
 ==============
@@ -216,8 +154,7 @@ The project uses `Python Poetry <https://python-poetry.org/>`_ to manage depende
 
 After that, clone the repo and install dependencies with ``poetry install``.
 
-Here are the detailed steps that should be followed before making a pull
-request:
+Here are the detailed steps that should be followed before making a pull request:
 
 .. code:: bash
 
@@ -236,12 +173,17 @@ You can also run all of these steps at once with the check-up bash script:
    ./.scripts/checkup_scripts.sh
    bash ./.scripts/checkup_scripts.sh  # if the previous one fails
 
-Finally (and of course), make sure all tests pass and you get at least 95% of
-coverage:
+Finally (and of course), make sure all tests pass and you get at least 95% of coverage:
 
 .. code:: bash
 
   poetry run pytest --cov=. --cov-report=term-missing --cov-fail-under=95 tests/
+
+
+Python version support
+======================
+
+To help keeping this library relatively up to date and maintainable but not to a point of becoming bleeding edge, it follows at least the `supported version of Debian Stable <https://wiki.debian.org/Python>`_. New features won't be backported to older versions, but this can be accomplished for bug fixes. Just open an issue in case you find a problem.
 
 
 Release Notes and Changelog
@@ -311,12 +253,12 @@ Python support: Python >= 3.6
 Release 0.1.0
 ~~~~~~~~~~~~~
 
-* Initial version. Support for the following solvers:
+- Initial version. Support for the following solvers:
 
-  * Exact (Brute force and Dynamic Programming);
-  * Heuristics (Local Search and Simulated Annealing).
+  - Exact (Brute force and Dynamic Programming);
+  - Heuristics (Local Search and Simulated Annealing).
 
-* The local search-based algorithms can be run with neighborhoods PS1, PS2 and PS3.
+- The local search-based algorithms can be run with neighborhoods PS1, PS2 and PS3.
 
 Python support: Python >= 3.8
 
