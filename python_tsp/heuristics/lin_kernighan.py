@@ -1,11 +1,24 @@
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import numpy as np
 
 from python_tsp.utils import setup_initial_solution
 
 
-def _cycle_to_successors(cycle):
+def _cycle_to_successors(cycle: List[int]) -> List[int]:
+    """
+    Convert a cycle representation to successors representation.
+
+    Parameters
+    ----------
+    cycle
+        A list representing a cycle.
+
+    Returns
+    -------
+    List
+        A list representing successors.
+    """
     successors = cycle[:]
     n = len(cycle)
     for i, _ in enumerate(cycle):
@@ -13,7 +26,20 @@ def _cycle_to_successors(cycle):
     return successors
 
 
-def _successors_to_cycle(successors):
+def _successors_to_cycle(successors: List[int]) -> List[int]:
+    """
+    Convert a successors representation to a cycle representation.
+
+    Parameters
+    ----------
+    successors
+        A list representing successors.
+
+    Returns
+    -------
+    List
+        A list representing a cycle.
+    """
     cycle = successors[:]
     j = 0
     for i, _ in enumerate(successors):
@@ -23,14 +49,45 @@ def _successors_to_cycle(successors):
 
 
 def _minimizes_hamiltonian_path_distance(
-    tabu,
-    iteration,
-    successors,
-    ejected_edge,
-    distance_matrix,
-    hamiltonian_path_distance,
-    hamiltonian_cycle_distance,
-):
+    tabu: np.ndarray,
+    iteration: int,
+    successors: List[int],
+    ejected_edge: Tuple[int, int],
+    distance_matrix: np.ndarray,
+    hamiltonian_path_distance: float,
+    hamiltonian_cycle_distance: float,
+) -> Tuple[int, int, float]:
+    """
+    Minimize the Hamiltonian path distance after ejecting an edge.
+
+    Parameters
+    ----------
+    tabu
+        A NumPy array for tabu management.
+
+    iteration
+        The current iteration.
+
+    successors
+        A list representing successors.
+
+    ejected_edge
+        The edge that was ejected.
+
+    distance_matrix
+        A NumPy array representing the distance matrix.
+
+    hamiltonian_path_distance
+        The Hamiltonian path distance.
+
+    hamiltonian_cycle_distance
+        The Hamiltonian cycle distance.
+
+    Returns
+    -------
+    Tuple
+        The best c, d, and the new Hamiltonian path distance found.
+    """
     a, b = ejected_edge
     best_c = c = last_c = successors[b]
     path_cb_distance = distance_matrix[c][b]
@@ -73,7 +130,28 @@ def _minimizes_hamiltonian_path_distance(
 
 def solve_tsp_lin_kernighan(
     distance_matrix: np.ndarray, x0: Optional[List[int]] = None
-):
+) -> Tuple[List[int], float]:
+    """
+    Solve the Traveling Salesperson Problem using the Lin-Kernighan algorithm.
+
+    Parameters
+    ----------
+    distance_matrix
+        A NumPy array representing the distance matrix.
+
+    x0
+        An optional initial solution, by default None.
+
+    Returns
+    -------
+    Tuple
+        A tuple containing the Hamiltonian cycle and its distance.
+
+    References
+    ----------
+    Éric D. Taillard, "Design of Heuristic Algorithms for Hard Optimization,"
+    Chapter 5, Section 5.3.2.1: Lin-Kernighan Neighborhood, Springer, 2023.
+    """
     hamiltonian_cycle, hamiltonian_cycle_distance = setup_initial_solution(
         distance_matrix=distance_matrix, x0=x0
     )
@@ -91,7 +169,7 @@ def solve_tsp_lin_kernighan(
         # Eject edge [a, b] to start the chain and compute the Hamiltonian
         # path distance obtained by ejecting edge [a, b] from the cycle
         # as reference.
-        a = distance_matrix[vertices, successors].argmax()
+        a = int(distance_matrix[vertices, successors].argmax())
         b = successors[a]
         hamiltonian_path_distance = (
             hamiltonian_cycle_distance - distance_matrix[a][b]
@@ -100,9 +178,9 @@ def solve_tsp_lin_kernighan(
         while True:
             ejected_edge = a, b
 
-            # Find the edge [c, d] that minimizes the Hamiltonian path obtained by
-            # removing edge [c, d] and adding edge [b, d], with [c, d] not removed
-            # in the current ejection chain.
+            # Find the edge [c, d] that minimizes the Hamiltonian path obtained
+            # by removing edge [c, d] and adding edge [b, d], with [c, d] not
+            # removed in the current ejection chain.
             (
                 c,
                 d,
