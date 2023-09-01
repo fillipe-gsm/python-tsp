@@ -1,4 +1,4 @@
-from typing import List, Optional, Tuple
+from typing import List, Optional, TextIO, Tuple
 
 import numpy as np
 
@@ -128,8 +128,21 @@ def _minimizes_hamiltonian_path_distance(
     return best_c, successors[best_c], hamiltonian_path_distance_found
 
 
+def _print_message(
+    msg: str, verbose: bool, log_file_handler: Optional[TextIO]
+) -> None:
+    if log_file_handler:
+        print(msg, file=log_file_handler)
+
+    if verbose:
+        print(msg)
+
+
 def solve_tsp_lin_kernighan(
-    distance_matrix: np.ndarray, x0: Optional[List[int]] = None
+    distance_matrix: np.ndarray,
+    x0: Optional[List[int]] = None,
+    log_file: Optional[str] = None,
+    verbose: bool = False,
 ) -> Tuple[List[int], float]:
     """
     Solve the Traveling Salesperson Problem using the Lin-Kernighan algorithm.
@@ -141,6 +154,13 @@ def solve_tsp_lin_kernighan(
 
     x0
         An optional initial solution, by default None.
+
+    log_file
+        If not `None`, creates a log file with details about the whole
+        execution.
+
+    verbose
+        If true, prints algorithm status every iteration.
 
     Returns
     -------
@@ -160,6 +180,10 @@ def solve_tsp_lin_kernighan(
     iteration = 0
     improvement = True
     tabu = np.zeros(shape=(num_vertices, num_vertices), dtype=int)
+
+    log_file_handler = (
+        open(log_file, "w", encoding="utf-8") if log_file else None
+    )
 
     while improvement:
         iteration += 1
@@ -214,6 +238,12 @@ def solve_tsp_lin_kernighan(
             # c plays the role of b in the next iteration
             b = c
 
+            msg = (
+                f"Current value: {hamiltonian_cycle_distance}; "
+                f"Ejection chain: {iteration}"
+            )
+            _print_message(msg, verbose, log_file_handler)
+
             # If the Hamiltonian cycle improves, update the solution
             if (
                 hamiltonian_path_distance + distance_matrix[a][b]
@@ -225,5 +255,8 @@ def solve_tsp_lin_kernighan(
                 hamiltonian_cycle_distance = (
                     hamiltonian_path_distance + distance_matrix[a][b]
                 )
+
+    if log_file_handler:
+        log_file_handler.close()
 
     return hamiltonian_cycle, hamiltonian_cycle_distance

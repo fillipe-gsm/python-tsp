@@ -68,3 +68,16 @@ def test_lin_kernighan_returns_equal_optimal_solution(
 
     assert xopt == x
     assert fopt == fx
+
+
+def test_lin_kernighan_log_file_is_created_if_required(tmp_path):
+    """
+    If a log_file is provided, it contains information about the execution.
+    """
+
+    log_file = tmp_path / "tmp_log_file.log"
+
+    solve_tsp_lin_kernighan(distance_matrix1, log_file=log_file, verbose=True)
+
+    assert log_file.exists()
+    assert "Current value" in log_file.read_text()
