@@ -150,10 +150,11 @@ def solve_tsp_lin_kernighan(
     Parameters
     ----------
     distance_matrix
-        A NumPy array representing the distance matrix.
+        Distance matrix of shape (n x n) with the (i, j) entry indicating the
+        distance from node i to j
 
     x0
-        An optional initial solution, by default None.
+        Initial permutation. If not provided, it starts with a random pat.
 
     log_file
         If not `None`, creates a log file with details about the whole

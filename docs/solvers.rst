@@ -99,6 +99,10 @@ Notice this local optimum may be different for distinct perturbation schemes and
 
     Parameters
     ----------
+    distance_matrix
+        Distance matrix of shape (n x n) with the (i, j) entry indicating the
+        distance from node i to j
+
     x0
         Initial permutation. If not provided, it starts with a random path
 
@@ -199,10 +203,11 @@ A basic Lin and Kernighan implementation is provided. It can be said that the qu
     Parameters
     ----------
     distance_matrix
-        A NumPy array representing the distance matrix.
+        Distance matrix of shape (n x n) with the (i, j) entry indicating the
+        distance from node i to j
 
     x0
-        An optional initial solution, by default None.
+        Initial permutation. If not provided, it starts with a random pat.
 
     log_file
         If not `None`, creates a log file with details about the whole
