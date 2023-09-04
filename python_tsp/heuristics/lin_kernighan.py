@@ -197,7 +197,7 @@ def solve_tsp_lin_kernighan(
         a = int(distance_matrix[vertices, successors].argmax())
         b = successors[a]
         hamiltonian_path_distance = (
-            hamiltonian_cycle_distance - distance_matrix[a][b]
+            hamiltonian_cycle_distance - distance_matrix[a, b]
         )
 
         while True:
