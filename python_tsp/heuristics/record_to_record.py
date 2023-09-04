@@ -67,8 +67,8 @@ def solve_tsp_record_to_record(
     for iteration in range(1, max_iterations + 1):
         xn = x[:]
         for _ in range(2):
-            u = randint(0, n - 1)
-            v = randint(0, n - 1)
+            u = randint(1, n - 1)
+            v = randint(1, n - 1)
             xn[u], xn[v] = xn[v], xn[u]
 
         xn, fn = solve_tsp_lin_kernighan(

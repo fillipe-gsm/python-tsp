@@ -24,7 +24,9 @@ def test_record_to_record_solution_is_valid(distance_matrix):
     just checks if it is valid: it has all nodes and begins at the root 0.
     """
 
-    x, _ = solve_tsp_record_to_record(distance_matrix)
+    x, _ = solve_tsp_record_to_record(
+        distance_matrix=distance_matrix, max_iterations=5
+    )
 
     assert set(x) == set(range(5))
     assert x[0] == 0
@@ -44,7 +46,7 @@ def test_record_to_record_returns_better_neighbor(distance_matrix):
     )
 
     _, fopt = solve_tsp_record_to_record(
-        distance_matrix=distance_matrix, x0=x0
+        distance_matrix=distance_matrix, x0=x0, max_iterations=5
     )
 
     assert fopt < fx
@@ -67,7 +69,7 @@ def test_record_to_record_returns_equal_optimal_solution(
     """
     x, fx = optimal_permutation, optimal_distance
     xopt, fopt = solve_tsp_record_to_record(
-        distance_matrix=distance_matrix, x0=x
+        distance_matrix=distance_matrix, x0=x, max_iterations=5
     )
 
     assert xopt == x
@@ -82,7 +84,10 @@ def test_record_to_record_log_file_is_created_if_required(tmp_path):
     log_file = tmp_path / "tmp_log_file.log"
 
     solve_tsp_record_to_record(
-        distance_matrix1, log_file=log_file, verbose=True
+        distance_matrix=distance_matrix1,
+        max_iterations=5,
+        log_file=log_file,
+        verbose=True,
     )
 
     assert log_file.exists()
