@@ -222,7 +222,7 @@ Record to Record
 
 Implementation of a record-to-record method. The solution is disturbed by performing two random swaps in the best solution achieved. The method for repairing a perturbed solution is an ejection chain, done with our implementation of the Lin-Kernighan heuristic. The originally proposed method includes an additional parameter: a tolerance value of a possible degradation of the solution obtained after the local search. The implementation provided here would therefore correspond to zero tolerance.
 
-It can be said that this implementation is as fast as our local search implementation, with the advantage of obtaining much higher quality solutions.
+Depending on the maximum number of iterations, very high quality solutions can be obtained very quickly.
 
 .. code:: python
 
@@ -232,6 +232,7 @@ It can be said that this implementation is as fast as our local search implement
     xopt, fopt = solve_tsp_record_to_record(
         distance_matrix: np.ndarray,
         x0: Optional[List[int]] = None,
+        max_iterations: int = 250,
         log_file: Optional[str] = None,
         verbose: bool = False,
     )
@@ -246,6 +247,9 @@ It can be said that this implementation is as fast as our local search implement
 
     x0
         Initial permutation. If not provided, it starts with a random path.
+
+    max_iterations
+        Maximum number of iterations.
 
     log_file
         If not `None`, creates a log file with details about the whole
