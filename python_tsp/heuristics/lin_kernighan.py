@@ -90,30 +90,30 @@ def _minimizes_hamiltonian_path_distance(
     """
     a, b = ejected_edge
     best_c = c = last_c = successors[b]
-    path_cb_distance = distance_matrix[c][b]
-    path_bc_distance = distance_matrix[b][c]
+    path_cb_distance = distance_matrix[c, b]
+    path_bc_distance = distance_matrix[b, c]
     hamiltonian_path_distance_found = hamiltonian_cycle_distance
 
     while successors[c] != a:
         d = successors[c]
-        path_cb_distance += distance_matrix[c][last_c]
-        path_bc_distance += distance_matrix[last_c][c]
+        path_cb_distance += distance_matrix[c, last_c]
+        path_bc_distance += distance_matrix[last_c, c]
         new_hamiltonian_path_distance_found = (
             hamiltonian_path_distance
-            + distance_matrix[b][d]
-            - distance_matrix[c][d]
+            + distance_matrix[b, d]
+            - distance_matrix[c, d]
             + path_cb_distance
             - path_bc_distance
         )
 
         if (
-            new_hamiltonian_path_distance_found + distance_matrix[a][c]
+            new_hamiltonian_path_distance_found + distance_matrix[a, c]
             < hamiltonian_cycle_distance
         ):
             return c, d, new_hamiltonian_path_distance_found
 
         if (
-            tabu[c][d] != iteration
+            tabu[c, d] != iteration
             and new_hamiltonian_path_distance_found
             < hamiltonian_path_distance_found
         ):
@@ -197,7 +197,7 @@ def solve_tsp_lin_kernighan(
         a = int(distance_matrix[vertices, successors].argmax())
         b = successors[a]
         hamiltonian_path_distance = (
-            hamiltonian_cycle_distance - distance_matrix[a][b]
+            hamiltonian_cycle_distance - distance_matrix[a, b]
         )
 
         while True:
@@ -234,7 +234,7 @@ def solve_tsp_lin_kernighan(
                 successors[si], i, si = i, si, successors[si]
 
             # Don't remove again the minimal edge found
-            tabu[c][d] = tabu[d][c] = iteration
+            tabu[c, d] = tabu[d, c] = iteration
 
             # c plays the role of b in the next iteration
             b = c
@@ -247,14 +247,14 @@ def solve_tsp_lin_kernighan(
 
             # If the Hamiltonian cycle improves, update the solution
             if (
-                hamiltonian_path_distance + distance_matrix[a][b]
+                hamiltonian_path_distance + distance_matrix[a, b]
                 < hamiltonian_cycle_distance
             ):
                 improvement = True
                 successors[a] = b
                 hamiltonian_cycle = _successors_to_cycle(successors)
                 hamiltonian_cycle_distance = (
-                    hamiltonian_path_distance + distance_matrix[a][b]
+                    hamiltonian_path_distance + distance_matrix[a, b]
                 )
 
     if log_file_handler:
