@@ -25,7 +25,7 @@ def solve_tsp_record_to_record(
     verbose: bool = False,
 ):
     """
-    Solve the traveling Salesperson Problem using the
+    Solve the traveling Salesperson Problem using a
     Record to Record iterative local search heuristic.
 
     Parameters
