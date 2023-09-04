@@ -207,7 +207,7 @@ A basic Lin and Kernighan implementation is provided. It can be said that the qu
         distance from node i to j
 
     x0
-        Initial permutation. If not provided, it starts with a random pat.
+        Initial permutation. If not provided, it starts with a random path.
 
     log_file
         If not `None`, creates a log file with details about the whole
