@@ -171,3 +171,42 @@ An implementation of the `Simulated Annealing <https://en.wikipedia.org/wiki/Sim
         If true, prints algorithm status every iteration
 
 
+Lin and Kernighan
+-----------------
+
+One of the most effective neighborhoods for the TSP is due to Lin and Kernighan. It is based on an ejection chain.
+
+A starting solution is transformed into an object called a reference structure. The last is not a proper solution, but it can easily be transformed either into other reference structures or into feasible solutions. The starting solution is disrupted by the ejection of one of its components to obtain a reference structure which can also be transformed by the ejection of another component. This chain of ejections ends either when a better solution than the starting one has been identified or when all the elements to eject have been tested.
+
+If an improving solution is discovered, the process is reiterated from it. Otherwise, the chain is initiated by trying to eject another item from the initial solution. The process stops when all possible chain initializations have been vainly tried. To prevent an endless process, it is forbidden either to add an item previously ejected to the reference structure or to propagate the chain by ejecting an element that was added to the reference structure.
+
+A basic Lin and Kernighan implementation is provided. It can be said that the quality of the solutions found by the implementation is equivalent to the other metaheuristics presented, with the advantage of being much faster.
+
+.. code:: python
+
+    from python_tsp.heuristics import solve_tsp_lin_kernighan
+
+
+    xopt, fopt = solve_tsp_lin_kernighan(
+        distance_matrix: np.ndarray,
+        x0: Optional[List[int]] = None,
+        log_file: Optional[str] = None,
+        verbose: bool = False,
+    )
+
+.. code:: rst
+
+    Parameters
+    ----------
+    distance_matrix
+        A NumPy array representing the distance matrix.
+
+    x0
+        An optional initial solution, by default None.
+
+    log_file
+        If not `None`, creates a log file with details about the whole
+        execution.
+
+    verbose
+        If true, prints algorithm status every iteration.
