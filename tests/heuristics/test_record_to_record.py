@@ -67,13 +67,14 @@ def test_record_to_record_returns_equal_optimal_solution(
     If there is no room for improvement, the same solution is returned.
     Here, we choose purposely the optimal solution of each problem
     """
-    x, fx = optimal_permutation, optimal_distance
     xopt, fopt = solve_tsp_record_to_record(
-        distance_matrix=distance_matrix, x0=x, max_iterations=5
+        distance_matrix=distance_matrix,
+        x0=optimal_permutation,
+        max_iterations=5,
     )
 
-    assert xopt == x
-    assert fopt == fx
+    assert xopt == optimal_permutation
+    assert fopt == optimal_distance
 
 
 def test_record_to_record_log_file_is_created_if_required(tmp_path):
