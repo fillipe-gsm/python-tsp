@@ -20,7 +20,7 @@ def _print_message(
 def solve_tsp_record_to_record(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
-    max_iterations: int = 250,
+    max_iterations: int = None,
     log_file: Optional[str] = None,
     verbose: bool = False,
 ):
@@ -58,6 +58,7 @@ def solve_tsp_record_to_record(
     Chapter 7, Problems of Chapter 7, 7.4 Record to Record, Springer, 2023.
     """
     n = distance_matrix.shape[0]
+    max_iterations = max_iterations or n
     x, fx = setup_initial_solution(distance_matrix=distance_matrix, x0=x0)
 
     log_file_handler = (
