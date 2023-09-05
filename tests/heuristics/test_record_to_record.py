@@ -25,7 +25,7 @@ def test_record_to_record_solution_is_valid(distance_matrix):
     """
 
     x, _ = solve_tsp_record_to_record(
-        distance_matrix=distance_matrix, max_iterations=5
+        distance_matrix=distance_matrix,
     )
 
     assert set(x) == set(range(5))
@@ -46,7 +46,8 @@ def test_record_to_record_returns_better_neighbor(distance_matrix):
     )
 
     _, fopt = solve_tsp_record_to_record(
-        distance_matrix=distance_matrix, x0=x0, max_iterations=5
+        distance_matrix=distance_matrix,
+        x0=x0,
     )
 
     assert fopt < fx
@@ -70,7 +71,6 @@ def test_record_to_record_returns_equal_optimal_solution(
     xopt, fopt = solve_tsp_record_to_record(
         distance_matrix=distance_matrix,
         x0=optimal_permutation,
-        max_iterations=5,
     )
 
     assert xopt == optimal_permutation
@@ -86,7 +86,6 @@ def test_record_to_record_log_file_is_created_if_required(tmp_path):
 
     solve_tsp_record_to_record(
         distance_matrix=distance_matrix1,
-        max_iterations=5,
         log_file=log_file,
         verbose=True,
     )

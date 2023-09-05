@@ -38,7 +38,8 @@ def solve_tsp_record_to_record(
         Initial permutation. If not provided, it starts with a random path.
 
     max_iterations
-        Maximum number of iterations.
+        The maximum number of iterations for the algorithm. If not specified,
+        it defaults to the number of nodes in the distance matrix.
 
     log_file
         If not `None`, creates a log file with details about the whole
