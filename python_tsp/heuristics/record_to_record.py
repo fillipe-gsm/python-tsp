@@ -20,7 +20,7 @@ def _print_message(
 def solve_tsp_record_to_record(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
-    max_iterations: int = None,
+    max_iterations: Optional[int] = None,
     log_file: Optional[str] = None,
     verbose: bool = False,
 ):
