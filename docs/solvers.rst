@@ -215,3 +215,46 @@ A basic Lin and Kernighan implementation is provided. It can be said that the qu
 
     verbose
         If true, prints algorithm status every iteration.
+
+
+Record to Record
+----------------
+
+Implementation of a record-to-record method. The solution is disturbed by performing two random swaps in the best solution achieved. The method for repairing a perturbed solution is an ejection chain, done with our implementation of the Lin-Kernighan heuristic. The originally proposed method includes an additional parameter: a tolerance value of a possible degradation of the solution obtained after the local search. The implementation provided here would therefore correspond to zero tolerance.
+
+Depending on the ``max_iterations`` parameter set, very high quality solutions can be obtained very quickly. This parameter is more experimental than the others, experiment with values according to your needs.
+
+.. code:: python
+
+    from python_tsp.heuristics import solve_tsp_record_to_record
+
+
+    xopt, fopt = solve_tsp_record_to_record(
+        distance_matrix: np.ndarray,
+        x0: Optional[List[int]] = None,
+        max_iterations: Optional[int] = None,
+        log_file: Optional[str] = None,
+        verbose: bool = False,
+    )
+
+.. code:: rst
+
+    Parameters
+    ----------
+    distance_matrix
+        Distance matrix of shape (n x n) with the (i, j) entry indicating the
+        distance from node i to j
+
+    x0
+        Initial permutation. If not provided, it starts with a random path.
+
+    max_iterations
+        The maximum number of iterations for the algorithm. If not specified,
+        it defaults to the number of nodes in the distance matrix.
+
+    log_file
+        If not `None`, creates a log file with details about the whole
+        execution.
+
+    verbose
+        If true, prints algorithm status every iteration.
