@@ -6,6 +6,9 @@ import numpy as np
 from .permutation_distance import compute_permutation_distance
 
 
+STARTING_NODE_TOO_LARGE_MSG = "Starting node larger than the number of nodes"
+
+
 def setup_initial_solution(
     distance_matrix: np.ndarray,
     x0: Optional[List] = None,
@@ -46,6 +49,9 @@ def _build_initial_permutation(n: int, starting_node: int) -> List[int]:
     Build a random list of integers from 0 to `n` - 1 guaranteeing the initial
     node is `starting_node`.
     """
+    if starting_node >= n:
+        raise ValueError(STARTING_NODE_TOO_LARGE_MSG)
+
     all_nodes_except_starting_node = [
         node for node in range(n) if node != starting_node
     ]
