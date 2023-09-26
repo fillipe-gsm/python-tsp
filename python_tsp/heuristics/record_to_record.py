@@ -64,7 +64,9 @@ def solve_tsp_record_to_record(
     """
     n = distance_matrix.shape[0]
     max_iterations = max_iterations or n
-    x, fx = setup_initial_solution(distance_matrix=distance_matrix, x0=x0, starting_node=starting_node)
+    x, fx = setup_initial_solution(
+        distance_matrix=distance_matrix, x0=x0, starting_node=starting_node
+    )
 
     log_file_handler = (
         open(log_file, "w", encoding="utf-8") if log_file else None

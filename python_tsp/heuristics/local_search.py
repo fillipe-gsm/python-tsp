@@ -69,7 +69,9 @@ def solve_tsp_local_search(
         3. Repeat step 2 until all neighbors of `x` are tried and there is no
         improvement. Return `x`, `fx` as solution.
     """
-    x, fx = setup_initial_solution(distance_matrix, x0, starting_node=starting_node)
+    x, fx = setup_initial_solution(
+        distance_matrix, x0, starting_node=starting_node
+    )
     max_processing_time = max_processing_time or np.inf
 
     log_file_handler = (

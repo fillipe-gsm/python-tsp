@@ -75,7 +75,9 @@ def solve_tsp_simulated_annealing(
     case studies. Springer Science & Business Media, 2006.
     """
 
-    x, fx = setup_initial_solution(distance_matrix, x0, starting_node=starting_node)
+    x, fx = setup_initial_solution(
+        distance_matrix, x0, starting_node=starting_node
+    )
     temp = _initial_temperature(distance_matrix, x, fx, perturbation_scheme)
     max_processing_time = max_processing_time or inf
     log_file_handler = (

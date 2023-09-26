@@ -25,18 +25,19 @@ def test_initial_solution_respects_starting_node(starting_node):
 
 def test_exception_is_raise_if_starting_node_is_too_large():
     with pytest.raises(ValueError) as e:
-        x0, _ = setup_initial_solution(
-            distance_matrix1, starting_node=999
-        )
+        x0, _ = setup_initial_solution(distance_matrix1, starting_node=999)
 
     assert str(e.value) == STARTING_NODE_TOO_LARGE_MSG
 
 
 @pytest.mark.parametrize(
-    "solver", 
+    "solver",
     [
-        solve_tsp_local_search, solve_tsp_simulated_annealing, solve_tsp_lin_kernighan, solve_tsp_record_to_record
-    ]
+        solve_tsp_local_search,
+        solve_tsp_simulated_annealing,
+        solve_tsp_lin_kernighan,
+        solve_tsp_record_to_record,
+    ],
 )
 def test_solver_solution_respects_starting_node(solver):
     starting_node = 3

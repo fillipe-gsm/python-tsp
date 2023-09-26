@@ -12,7 +12,7 @@ STARTING_NODE_TOO_LARGE_MSG = "Starting node larger than the number of nodes"
 def setup_initial_solution(
     distance_matrix: np.ndarray,
     x0: Optional[List] = None,
-    starting_node: int = 0
+    starting_node: int = 0,
 ) -> Tuple[List[int], float]:
     """Return initial solution and its objective value
 
