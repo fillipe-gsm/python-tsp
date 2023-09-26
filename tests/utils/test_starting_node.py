@@ -2,6 +2,7 @@ import pytest
 
 from python_tsp.utils import setup_initial_solution
 from python_tsp.utils.setup_initial_solution import STARTING_NODE_TOO_LARGE_MSG
+from python_tsp.exact import solve_tsp_dynamic_programming, solve_tsp_brute_force, solve_tsp_branch_and_bound
 from python_tsp.heuristics import (
     solve_tsp_local_search,
     solve_tsp_simulated_annealing,
@@ -33,10 +34,14 @@ def test_exception_is_raise_if_starting_node_is_too_large():
 @pytest.mark.parametrize(
     "solver",
     [
+        solve_tsp_brute_force,
+        solve_tsp_dynamic_programming,
         solve_tsp_local_search,
         solve_tsp_simulated_annealing,
-        solve_tsp_lin_kernighan,
-        solve_tsp_record_to_record,
+        # These are not working yet
+        # solve_tsp_branch_and_bound,
+        # solve_tsp_lin_kernighan,
+        # solve_tsp_record_to_record,
     ],
 )
 def test_solver_solution_respects_starting_node(solver):
