@@ -143,6 +143,7 @@ def solve_tsp_lin_kernighan(
     x0: Optional[List[int]] = None,
     log_file: Optional[str] = None,
     verbose: bool = False,
+    starting_node: int = 0,
 ) -> Tuple[List[int], float]:
     """
     Solve the Traveling Salesperson Problem using the Lin-Kernighan algorithm.
@@ -163,6 +164,9 @@ def solve_tsp_lin_kernighan(
     verbose
         If true, prints algorithm status every iteration.
 
+    starting_node
+        Determines the starting node of the final permutation. Defaults to 0.
+
     Returns
     -------
     Tuple
@@ -174,7 +178,7 @@ def solve_tsp_lin_kernighan(
     Chapter 5, Section 5.3.2.1: Lin-Kernighan Neighborhood, Springer, 2023.
     """
     hamiltonian_cycle, hamiltonian_cycle_distance = setup_initial_solution(
-        distance_matrix=distance_matrix, x0=x0
+        distance_matrix=distance_matrix, x0=x0, starting_node=starting_node
     )
     num_vertices = distance_matrix.shape[0]
     vertices = list(range(num_vertices))

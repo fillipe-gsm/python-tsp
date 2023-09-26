@@ -24,6 +24,7 @@ def solve_tsp_simulated_annealing(
     max_processing_time: Optional[float] = None,
     log_file: Optional[str] = None,
     verbose: bool = False,
+    starting_node: int = 0,
 ) -> Tuple[List, float]:
     """Solve a TSP problem using a Simulated Annealing
     The approach used here is the one proposed in [1].
@@ -58,6 +59,9 @@ def solve_tsp_simulated_annealing(
     verbose {False}
         If true, prints algorithm status every iteration
 
+    starting_node
+        Determines the starting node of the final permutation. Defaults to 0.
+
     Returns
     -------
     A permutation of nodes from 0 to n - 1 that produces the least total
@@ -71,7 +75,7 @@ def solve_tsp_simulated_annealing(
     case studies. Springer Science & Business Media, 2006.
     """
 
-    x, fx = setup_initial_solution(distance_matrix, x0)
+    x, fx = setup_initial_solution(distance_matrix, x0, starting_node=starting_node)
     temp = _initial_temperature(distance_matrix, x, fx, perturbation_scheme)
     max_processing_time = max_processing_time or inf
     log_file_handler = (

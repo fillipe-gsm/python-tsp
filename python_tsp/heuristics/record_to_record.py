@@ -23,6 +23,7 @@ def solve_tsp_record_to_record(
     max_iterations: Optional[int] = None,
     log_file: Optional[str] = None,
     verbose: bool = False,
+    starting_node: int = 0,
 ):
     """
     Solve the traveling Salesperson Problem using a
@@ -48,6 +49,9 @@ def solve_tsp_record_to_record(
     verbose
         If true, prints algorithm status every iteration.
 
+    starting_node
+        Determines the starting node of the final permutation. Defaults to 0.
+
     Returns
     -------
     Tuple
@@ -60,7 +64,7 @@ def solve_tsp_record_to_record(
     """
     n = distance_matrix.shape[0]
     max_iterations = max_iterations or n
-    x, fx = setup_initial_solution(distance_matrix=distance_matrix, x0=x0)
+    x, fx = setup_initial_solution(distance_matrix=distance_matrix, x0=x0, starting_node=starting_node)
 
     log_file_handler = (
         open(log_file, "w", encoding="utf-8") if log_file else None
