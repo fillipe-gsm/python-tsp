@@ -7,7 +7,9 @@ from .permutation_distance import compute_permutation_distance
 
 
 def setup_initial_solution(
-    distance_matrix: np.ndarray, x0: Optional[List] = None
+    distance_matrix: np.ndarray,
+    x0: Optional[List] = None,
+    starting_node: int = 0
 ) -> Tuple[List[int], float]:
     """Return initial solution and its objective value
 
@@ -33,7 +35,20 @@ def setup_initial_solution(
 
     if not x0:
         n = distance_matrix.shape[0]  # number of nodes
-        x0 = [0] + sample(range(1, n), n - 1)  # ensure 0 is the first node
+        x0 = _build_initial_permutation(n, starting_node)
 
     fx0 = compute_permutation_distance(distance_matrix, x0)
     return x0, fx0
+
+
+def _build_initial_permutation(n: int, starting_node: int) -> List[int]:
+    """
+    Build a random list of integers from 0 to `n` - 1 guaranteeing the initial
+    node is `starting_node`.
+    """
+    all_nodes_except_starting_node = [
+        node for node in range(n) if node != starting_node
+    ]
+    x0 = [starting_node] + sample(all_nodes_except_starting_node, n - 1)
+
+    return x0
