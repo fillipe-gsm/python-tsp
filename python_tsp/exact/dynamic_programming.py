@@ -25,7 +25,7 @@ def solve_tsp_dynamic_programming(
 
     starting_node
         Determines the starting node of the final permutation. Defaults to 0.
-    
+
     Returns
     -------
     permutation
@@ -96,7 +96,8 @@ def solve_tsp_dynamic_programming(
     # Get initial set {0, 1, 2, ..., tsp_size} \ {starting_node} as a frozenset
     # because @lru_cache requires a hashable type
     N = frozenset(
-        node for node in range(distance_matrix.shape[0])
+        node
+        for node in range(distance_matrix.shape[0])
         if node != starting_node
     )
     memo: Dict[Tuple, int] = {}

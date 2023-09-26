@@ -2,7 +2,11 @@ import pytest
 
 from python_tsp.utils import setup_initial_solution
 from python_tsp.utils.setup_initial_solution import STARTING_NODE_TOO_LARGE_MSG
-from python_tsp.exact import solve_tsp_dynamic_programming, solve_tsp_brute_force, solve_tsp_branch_and_bound
+from python_tsp.exact import (
+    solve_tsp_dynamic_programming,
+    solve_tsp_brute_force,
+    solve_tsp_branch_and_bound,
+)
 from python_tsp.heuristics import (
     solve_tsp_local_search,
     solve_tsp_simulated_annealing,
