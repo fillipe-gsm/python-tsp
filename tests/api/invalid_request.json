@@ -1,0 +1,55 @@
+{
+    "cities": [{
+            "latitude": 40.712776,
+            "longitude": -74.005974
+        }, {
+            "name": "Los Angeles",
+            "latitude": 34.052235,
+            "longitude": -118.243683
+        }, {
+            "name": "Chicago",
+            "latitude": 41.878113,
+            "longitude": -87.629799
+        }, {
+            "name": "Minneapolis",
+            "latitude": 44.977753,
+            "longitude": -93.265015
+        }, {
+            "name": "Denver",
+            "latitude": 39.739235,
+            "longitude": -104.99025
+        }, {
+            "name": "Dallas",
+            "latitude": 32.776664,
+            "longitude": -96.796988
+        }, {
+            "name": "Seattle",
+            "latitude": 47.606139,
+            "longitude": -122.332848
+        }, {
+            "name": "Boston",
+            "latitude": 42.360083,
+            "longitude": -71.05888
+        }, {
+            "name": "San Francisco",
+            "latitude": 37.77493,
+            "longitude": -122.419415
+        }, {
+            "name": "St. Louis",
+            "latitude": 38.627003,
+            "longitude": -90.199404
+        }, {
+            "name": "Houston",
+            "latitude": 29.760427,
+            "longitude": -95.369803
+        }, {
+            "name": "Phoenix",
+            "latitude": 33.448377,
+            "longitude": -112.074037
+        }, {
+            "name": "Salt Lake City",
+            "latitude": 40.760779,
+            "longitude": -111.891047
+        }
+    ]
+}
