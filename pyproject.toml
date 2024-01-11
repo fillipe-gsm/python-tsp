@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "python_tsp"
-version = "0.4.0"
-description = "Simple library to solve the Traveling Salesperson Problem in pure Python."
+version = "0.5.0"
+description = "Library to solve the Traveling Salesperson Problem in pure Python."
 readme = "README_pypi.rst"
-authors = ["Fillipe Goulart <fillipe.gsm@tutanota.com>"]
+authors = ["Fillipe Goulart <fillipe.gsm@tutanota.com>", "Luan Leonardo <>"]
 repository = "https://github.com/fillipe-gsm/python-tsp"
 license = "MIT"
 
