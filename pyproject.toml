@@ -11,7 +11,7 @@ license = "MIT"
 python = "^3.9"
 tsplib95 = "^0.7.1"
 requests = "^2.28.0"
-numpy = "^1.23.5"
+numpy = "^1.26.3"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^0.991"
