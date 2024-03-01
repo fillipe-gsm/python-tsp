@@ -106,7 +106,7 @@ def solve_tsp_simulated_annealing(
             xn = _perturbation(x, perturbation_scheme, rng=rng)
             fn = compute_permutation_distance(distance_matrix, xn)
 
-            if _acceptance_rule(fx, fn, temp):
+            if _acceptance_rule(fx, fn, temp, rng=rng):
                 x, fx = xn, fn
                 k_accepted += 1
                 k_noimprovements = 0
@@ -192,8 +192,9 @@ def _perturbation(x: List[int], perturbation_scheme: str, rng:  Optional[Random]
 
 def _acceptance_rule(fx: float, fn: float, temp: float, rng: Optional[Random]) -> bool:
     """Metropolis acceptance rule"""
+    rand = rng.random() if rng else np.random.rand()
 
     dfx = fn - fx
     return (dfx < 0) or (
-        (dfx > 0) and (rng.random() <= np.exp(-(fn - fx) / temp))
+        (dfx > 0) and (rand <= np.exp(-(fn - fx) / temp))
     )
