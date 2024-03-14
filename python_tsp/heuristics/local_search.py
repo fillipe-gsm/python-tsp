@@ -1,6 +1,7 @@
 """Simple local search solver"""
 from timeit import default_timer
 from typing import List, Optional, Tuple, TextIO
+from random import Random
 
 import numpy as np
 
@@ -12,6 +13,7 @@ from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 
 
 TIME_LIMIT_MSG = "WARNING: Stopping early due to time constraints"
+ITERATION_LIMIT_MSG = "WARNING: Stopping early due to iteration limit"
 
 
 def solve_tsp_local_search(
@@ -19,6 +21,8 @@ def solve_tsp_local_search(
     x0: Optional[List[int]] = None,
     perturbation_scheme: str = "two_opt",
     max_processing_time: Optional[float] = None,
+    max_iterations: Optional[int] = None,
+    rng: Optional[Random] = None,
     log_file: Optional[str] = None,
     verbose: bool = False,
 ) -> Tuple[List, float]:
@@ -39,6 +43,15 @@ def solve_tsp_local_search(
     max_processing_time {None}
         Maximum processing time in seconds. If not provided, the method stops
         only when a local minimum is obtained
+
+    max_iterations {None}
+        Maximum number of iterations to perform. If not provided, the method
+        only stops when a local minimum is obtained or if max_processing_time
+        is provided
+        
+    rng
+        Random number generator to be passed to the pertubation scheme. If not
+        provided, the initial random generator is used.
 
     log_file
         If not `None`, creates a log file with details about the whole
@@ -76,13 +89,20 @@ def solve_tsp_local_search(
     stop_early = False
     improvement = True
 
+    i = 0
     while improvement and (not stop_early):
         improvement = False
-        for n_index, xn in enumerate(neighborhood_gen[perturbation_scheme](x)):
+        for n_index, xn in enumerate(neighborhood_gen[perturbation_scheme](x, rng=rng)):
+            i += 1
             if default_timer() - tic > max_processing_time:
                 _print_message(TIME_LIMIT_MSG, verbose, log_file_handler)
                 stop_early = True
                 break
+            if max_iterations and i > max_iterations:
+                _print_message(ITERATION_LIMIT_MSG, verbose, log_file_handler)
+                stop_early = True
+                break
+            
 
             fn = compute_permutation_distance(distance_matrix, xn)
 
