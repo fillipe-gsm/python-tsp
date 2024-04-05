@@ -1,5 +1,7 @@
 import pytest
 
+import numpy as np
+
 from python_tsp.heuristics import solve_tsp_lin_kernighan
 from python_tsp.utils import compute_permutation_distance
 from tests.data import (
@@ -82,3 +84,18 @@ def test_lin_kernighan_log_file_is_created_if_required(tmp_path):
 
     assert log_file.exists()
     assert "Current value" in log_file.read_text()
+
+
+@pytest.mark.parametrize(
+    "distance_matrix",
+    (np.array([[0, 5], [1, 0]]),), (np.array([[0, 1], [1, 0]]))
+)
+def test_lin_kernighan__problem_with_two_nodes(distance_matrix):
+    """Handle bug https://github.com/fillipe-gsm/python-tsp/issues/53"""
+    xopt, fopt = solve_tsp_lin_kernighan(
+        distance_matrix=distance_matrix
+    )
+
+    # Simply ensure the algorithm finishes without hanging
+    assert xopt
+    assert fopt
