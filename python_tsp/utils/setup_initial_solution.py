@@ -6,6 +6,7 @@ import numpy as np
 from .permutation_distance import compute_permutation_distance
 
 
+DEFAULT_STARTING_NODE = 0
 STARTING_NODE_OUTSIDE_BOUNDARIES_MSG = (
     "Starting node outside limits [0, num_nodes]"
 )
@@ -21,15 +22,16 @@ INVALID_SIZE_INITIAL_SOLUTION_MSG = (
 INVALID_INITIAL_SOLUTION_MSG = (
     "`x0` does not contain a permutation of all nodes"
 )
-OVERLAPPING_INPUT_ARGUMENTS_MSG = (
-    "Cannot set `starting_node` or `ending_node` if `x0` is provided"
+MISMATCH_INPUT_ARGUMENTS_MSG = (
+    "`x0` first and last node do not match with "
+    "`starting_node` or `ending_node`"
 )
 
 
 def setup_initial_solution(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
-    starting_node: Optional[int] = None,
+    starting_node: Optional[int] = DEFAULT_STARTING_NODE,
     ending_node: Optional[int] = None,
 ) -> Tuple[List[int], float]:
     """Return initial solution and its objective value
@@ -88,8 +90,10 @@ def _validate_input_arguments(
             raise ValueError(INVALID_SIZE_INITIAL_SOLUTION_MSG)
         if set(x0) != all_nodes:
             raise ValueError(INVALID_INITIAL_SOLUTION_MSG)
-        if starting_node is not None or ending_node is not None:
-            raise ValueError(OVERLAPPING_INPUT_ARGUMENTS_MSG)
+        if starting_node is not None and x0[0] != starting_node:
+            raise ValueError(MISMATCH_INPUT_ARGUMENTS_MSG)
+        if ending_node is not None and x0[-1] != ending_node:
+            raise ValueError(MISMATCH_INPUT_ARGUMENTS_MSG)
 
     if starting_node is not None:
         if starting_node < 0 or starting_node >= num_nodes:
@@ -106,7 +110,7 @@ def _validate_input_arguments(
 
 def _build_initial_permutation(
     num_nodes: int,
-    starting_node: Optional[int] = None,
+    starting_node: Optional[int] = DEFAULT_STARTING_NODE,
     ending_node: Optional[int] = None,
 ) -> List[int]:
     """
@@ -117,7 +121,10 @@ def _build_initial_permutation(
     randomly.
     """
 
-    starting_node = starting_node or 0
+    all_nodes = list(range(num_nodes))
+    starting_node = (
+        starting_node if starting_node is not None else choice(all_nodes)
+    )
 
     all_nodes_except_starting_node = [
         node for node in range(num_nodes) if node != starting_node
