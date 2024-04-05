@@ -6,13 +6,31 @@ import numpy as np
 from .permutation_distance import compute_permutation_distance
 
 
-STARTING_NODE_TOO_LARGE_MSG = "Starting node larger than the number of nodes"
+STARTING_NODE_OUTSIDE_BOUNDARIES_MSG = (
+    "Starting node outside limits [0, num_nodes]"
+)
+ENDING_NODE_OUTSIDE_BOUNDARIES_MSG = (
+    "Ending node outside limits [0, num_nodes]"
+)
+STARTING_ENDING_NODE_ARE_EQUAL_MSG = (
+    "Starting and ending nodes cannot be equal"
+)
+INVALID_SIZE_INITIAL_SOLUTION_MSG = (
+    "`x0` size does not match the number of nodes from distance matrix"
+)
+INVALID_INITIAL_SOLUTION_MSG = (
+    "`x0` does not contain a permutation of all nodes"
+)
+OVERLAPPING_INPUT_ARGUMENTS_MSG = (
+    "Cannot set `starting_node` or `ending_node` if `x0` is provided"
+)
 
 
 def setup_initial_solution(
     distance_matrix: np.ndarray,
-    x0: Optional[List] = None,
-    starting_node: int = 0,
+    x0: Optional[List[int]] = None,
+    starting_node: Optional[int] = None,
+    ending_node: Optional[int] = None,
 ) -> Tuple[List[int], float]:
     """Return initial solution and its objective value
 
@@ -26,6 +44,14 @@ def setup_initial_solution(
         Permutation of nodes from 0 to n - 1 indicating the starting solution.
         If not provided, a random list is created.
 
+    starting_node
+        First node to appear in the permutation.
+
+    ending_node
+        Last node to appear in the permutation. Note, despite the name, the
+        TSP is still by definition a cycle, so we always go back from
+        `ending_node` to `starting_node`.
+
     Returns
     -------
     x0
@@ -35,6 +61,7 @@ def setup_initial_solution(
     fx0
         Objective value of x0
     """
+    _validate_input_arguments(distance_matrix, x0, starting_node, ending_node)
 
     if not x0:
         n = distance_matrix.shape[0]  # number of nodes
@@ -44,13 +71,46 @@ def setup_initial_solution(
     return x0, fx0
 
 
-def _build_initial_permutation(n: int, starting_node: int) -> List[int]:
+def _validate_input_arguments(
+    distance_matrix: np.ndarray,
+    x0: Optional[List[int]],
+    starting_node: Optional[int],
+    ending_node: Optional[int],
+) -> None:
+    """Validate combination of input parameters"""
+    num_nodes = distance_matrix.shape[0]
+
+    if x0:
+        all_nodes = set(range(num_nodes))
+        if len(x0) != num_nodes:
+            raise ValueError(INVALID_SIZE_INITIAL_SOLUTION_MSG)
+        if set(x0) != all_nodes:
+            raise ValueError(INVALID_INITIAL_SOLUTION_MSG)
+        if starting_node is not None or ending_node is not None:
+            raise ValueError(OVERLAPPING_INPUT_ARGUMENTS_MSG)
+
+    if starting_node is not None:
+        if starting_node < 0 or starting_node >= num_nodes:
+            raise ValueError(STARTING_NODE_OUTSIDE_BOUNDARIES_MSG)
+
+    if ending_node is not None:
+        if ending_node < 0 or ending_node >= num_nodes:
+            raise ValueError(ENDING_NODE_OUTSIDE_BOUNDARIES_MSG)
+
+    if starting_node is not None and ending_node is not None:
+        if starting_node == ending_node:
+            raise ValueError(STARTING_ENDING_NODE_ARE_EQUAL_MSG)
+
+
+def _build_initial_permutation(
+    n: int, starting_node: Optional[int] = 0, ending_node: Optional[int] = None
+) -> List[int]:
     """
     Build a random list of integers from 0 to `n` - 1 guaranteeing the initial
     node is `starting_node`.
     """
-    if starting_node >= n:
-        raise ValueError(STARTING_NODE_TOO_LARGE_MSG)
+
+    starting_node = starting_node or 0
 
     all_nodes_except_starting_node = [
         node for node in range(n) if node != starting_node
