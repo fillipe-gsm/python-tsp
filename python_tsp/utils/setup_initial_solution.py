@@ -1,4 +1,4 @@
-from random import sample
+from random import sample, choice
 from typing import List, Optional, Tuple
 
 import numpy as np
@@ -64,8 +64,10 @@ def setup_initial_solution(
     _validate_input_arguments(distance_matrix, x0, starting_node, ending_node)
 
     if not x0:
-        n = distance_matrix.shape[0]  # number of nodes
-        x0 = _build_initial_permutation(n, starting_node)
+        num_nodes = distance_matrix.shape[0]
+        x0 = _build_initial_permutation(
+            num_nodes, starting_node=starting_node, ending_node=ending_node
+        )
 
     fx0 = compute_permutation_distance(distance_matrix, x0)
     return x0, fx0
@@ -103,18 +105,38 @@ def _validate_input_arguments(
 
 
 def _build_initial_permutation(
-    n: int, starting_node: Optional[int] = 0, ending_node: Optional[int] = None
+    num_nodes: int,
+    starting_node: Optional[int] = None,
+    ending_node: Optional[int] = None,
 ) -> List[int]:
     """
-    Build a random list of integers from 0 to `n` - 1 guaranteeing the initial
-    node is `starting_node`.
+    Build a random list of integers from 0 to `num_nodes` - 1 guaranteeing the
+    initial node is `starting_node` and the last one is `ending_node`.
+
+    If not provided, `starting_node` is assumed as 0 and `ending_node` is taken
+    randomly.
     """
 
     starting_node = starting_node or 0
 
     all_nodes_except_starting_node = [
-        node for node in range(n) if node != starting_node
+        node for node in range(num_nodes) if node != starting_node
     ]
-    x0 = [starting_node] + sample(all_nodes_except_starting_node, n - 1)
+    ending_node = (
+        ending_node
+        if ending_node is not None
+        else choice(all_nodes_except_starting_node)
+    )
+
+    all_nodes_without_extremes = [
+        node
+        for node in range(num_nodes)
+        if node != starting_node and node != ending_node
+    ]
+    x0 = (
+        [starting_node]
+        + sample(all_nodes_without_extremes, len(all_nodes_without_extremes))
+        + [ending_node]
+    )
 
     return x0

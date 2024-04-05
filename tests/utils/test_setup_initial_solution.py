@@ -61,7 +61,37 @@ def test_setup__respects_starting_node():
         distance_matrix, starting_node=starting_node
     )
 
+    assert set(x0) == set(range(num_nodes))
     assert x0[0] == starting_node
+    assert fx0
+
+
+def test_setup__respects_ending_node():
+    num_nodes = 10
+    ending_node = 5
+    distance_matrix = np.random.rand(num_nodes, num_nodes)
+
+    x0, fx0 = setup_initial_solution(distance_matrix, ending_node=ending_node)
+
+    assert set(x0) == set(range(num_nodes))
+    assert x0[0] == 0  # it is always 0 by default
+    assert x0[-1] == ending_node
+    assert fx0
+
+
+def test_setup__respects_starting_and_ending_node():
+    num_nodes = 10
+    starting_node = 7
+    ending_node = 5
+    distance_matrix = np.random.rand(num_nodes, num_nodes)
+
+    x0, fx0 = setup_initial_solution(
+        distance_matrix, starting_node=starting_node, ending_node=ending_node
+    )
+
+    assert set(x0) == set(range(num_nodes))
+    assert x0[0] == starting_node
+    assert x0[-1] == ending_node
     assert fx0
 
 
@@ -138,5 +168,7 @@ def test_setup_input_validation__overlapping_arguments():
     assert OVERLAPPING_INPUT_ARGUMENTS_MSG in str(exc)
 
     with pytest.raises(ValueError) as exc:
-        setup_initial_solution(distance_matrix, x0=x0, starting_node=5, ending_node=0)
+        setup_initial_solution(
+            distance_matrix, x0=x0, starting_node=5, ending_node=0
+        )
     assert OVERLAPPING_INPUT_ARGUMENTS_MSG in str(exc)
