@@ -11,6 +11,7 @@ Installation
 .. code:: bash
 
   pip install python-tsp
+  poetry add python-tsp  # if using Poetry in the project
 
 
 Examples
@@ -41,7 +42,7 @@ To solve the same problem with a metaheuristic method:
 
    from python_tsp.heuristics import solve_tsp_simulated_annealing
 
-   permutation, distance = solve_tsp_simulated_annealing(distance_matrix) 
+   permutation, distance = solve_tsp_simulated_annealing(distance_matrix)
 
 Keep in mind that, being a metaheuristic, the solution may vary from execution
 to execution, and there is no guarantee of optimality. However, it may be a
@@ -61,7 +62,7 @@ this case the distance matrix is actually asymmetric, and the methods here are
 applicable as well.
 
 The previous examples assumed you already had a distance matrix. If that is not
-the case, the ``distances`` module has prepared some functions to compute an 
+the case, the ``distances`` module has prepared some functions to compute an
 Euclidean distance matrix or a
 `Great Circle Distance <https://en.wikipedia.org/wiki/Great-circle_distance>`_.
 
@@ -81,5 +82,5 @@ of a point,
    ])
    distance_matrix = great_circle_distance_matrix(sources)
 
-See the `project's repository <https://github.com/fillipe-gsm/python-tsp>`_ 
+See the `project's repository <https://github.com/fillipe-gsm/python-tsp>`_
 for more examples and a list of available methods.

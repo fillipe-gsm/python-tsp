@@ -192,6 +192,14 @@ Release Notes and Changelog
 Releases 0.4.X
 --------------
 
+Release 0.4.1
+~~~~~~~~~~~~~
+- Add Lin and Kernighan and Record to Record methods to the list of heuristic solvers. Thanks @luanleonardo for this contribution.
+
+  Keep in mind that these solvers are more recent and less tested, so if you experience a problem feel free to open an issue.
+
+Python support: Python >= 3.9
+
 Release 0.4.0
 ~~~~~~~~~~~~~
 
@@ -277,3 +285,4 @@ Contributors
 ============
 
 - @FrickTobias
+- @luanleonardo
