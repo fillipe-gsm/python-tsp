@@ -1,4 +1,4 @@
-from random import randint
+from random import Random, randint
 from typing import List, Optional, TextIO
 
 import numpy as np
@@ -21,6 +21,7 @@ def solve_tsp_record_to_record(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
     max_iterations: Optional[int] = None,
+    rng: Optional[Random] = None,
     log_file: Optional[str] = None,
     verbose: bool = False,
 ):
@@ -41,6 +42,10 @@ def solve_tsp_record_to_record(
         The maximum number of iterations for the algorithm. If not specified,
         it defaults to the number of nodes in the distance matrix.
 
+    rng
+        Random number generator to be passed to the pertubation scheme. If not
+        provided, the initial random generator is used.
+        
     log_file
         If not `None`, creates a log file with details about the whole
         execution.
@@ -62,6 +67,8 @@ def solve_tsp_record_to_record(
     max_iterations = max_iterations or n
     x, fx = setup_initial_solution(distance_matrix=distance_matrix, x0=x0)
 
+    new_int = rng.randint if rng else randint
+
     log_file_handler = (
         open(log_file, "w", encoding="utf-8") if log_file else None
     )
@@ -69,8 +76,8 @@ def solve_tsp_record_to_record(
     for iteration in range(1, max_iterations + 1):
         xn = x[:]
         for _ in range(2):
-            u = randint(1, n - 1)
-            v = randint(1, n - 1)
+            u = new_int(1, n - 1)
+            v = new_int(1, n - 1)
             xn[u], xn[v] = xn[v], xn[u]
 
         xn, fn = solve_tsp_lin_kernighan(
