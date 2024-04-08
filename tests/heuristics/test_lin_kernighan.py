@@ -1,6 +1,5 @@
-import pytest
-
 import numpy as np
+import pytest
 
 from python_tsp.heuristics import solve_tsp_lin_kernighan
 from python_tsp.utils import compute_permutation_distance
@@ -8,12 +7,12 @@ from tests.data import (
     distance_matrix1,
     distance_matrix2,
     distance_matrix3,
-    optimal_permutation1,
-    optimal_permutation2,
-    optimal_permutation3,
     optimal_distance1,
     optimal_distance2,
     optimal_distance3,
+    optimal_permutation1,
+    optimal_permutation2,
+    optimal_permutation3,
 )
 
 
@@ -86,14 +85,16 @@ def test_lin_kernighan_log_file_is_created_if_required(tmp_path):
     assert "Current value" in log_file.read_text()
 
 
-@pytest.mark.skip("Getting hanged forever. Should be fixed first")
 @pytest.mark.parametrize(
-    "distance_matrix", [np.array([[0, 5], [1, 0]]), np.array([[0, 1], [1, 0]])]
+    "distance_matrix, xopt, fopt",
+    [
+        (np.array([[0, 5], [1, 0]]), [0, 1], 6),
+        (np.array([[0, 1], [1, 0]]), [0, 1], 2),
+    ],
 )
-def test_lin_kernighan__problem_with_two_nodes(distance_matrix):
-    """Handle bug https://github.com/fillipe-gsm/python-tsp/issues/53"""
-    xopt, fopt = solve_tsp_lin_kernighan(distance_matrix=distance_matrix)
+def test_lin_kernighan_handles_few_node_problems(distance_matrix, xopt, fopt):
+    """It should handle problems with less than 4 nodes."""
+    x, fx = solve_tsp_lin_kernighan(distance_matrix=distance_matrix)
 
-    # Simply ensure the algorithm finishes without hanging
-    assert xopt
-    assert fopt
+    assert x == xopt
+    assert fx == fopt
