@@ -2,6 +2,7 @@ from typing import List, Optional, TextIO, Tuple
 
 import numpy as np
 
+from python_tsp.exact import solve_tsp_brute_force
 from python_tsp.utils import setup_initial_solution
 
 
@@ -138,6 +139,33 @@ def _print_message(
         print(msg)
 
 
+def _solve_tsp_brute_force(
+    distance_matrix: np.ndarray,
+    log_file: Optional[str] = None,
+    verbose: bool = False,
+) -> Tuple[List[int], float]:
+    x, fx = solve_tsp_brute_force(distance_matrix)
+    x = x or []
+
+    log_file_handler = (
+        open(log_file, "w", encoding="utf-8") if log_file else None
+    )
+    msg = (
+        "Few nodes to use Lin-Kernighan heuristics, "
+        "using Brute Force instead. "
+    )
+    if not x:
+        msg += "No solution found."
+    else:
+        msg += f"Found value: {fx}"
+    _print_message(msg, verbose, log_file_handler)
+
+    if log_file_handler:
+        log_file_handler.close()
+
+    return x, fx
+
+
 def solve_tsp_lin_kernighan(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
@@ -173,10 +201,13 @@ def solve_tsp_lin_kernighan(
     Éric D. Taillard, "Design of Heuristic Algorithms for Hard Optimization,"
     Chapter 5, Section 5.3.2.1: Lin-Kernighan Neighborhood, Springer, 2023.
     """
+    num_vertices = distance_matrix.shape[0]
+    if num_vertices < 4:
+        return _solve_tsp_brute_force(distance_matrix, log_file, verbose)
+
     hamiltonian_cycle, hamiltonian_cycle_distance = setup_initial_solution(
         distance_matrix=distance_matrix, x0=x0
     )
-    num_vertices = distance_matrix.shape[0]
     vertices = list(range(num_vertices))
     iteration = 0
     improvement = True
