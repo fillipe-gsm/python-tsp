@@ -139,6 +139,15 @@ def _print_message(
         print(msg)
 
 
+def _brute_force_solution(
+    distance_matrix: np.ndarray,
+) -> Tuple[List[int], float]:
+    x, fx = solve_tsp_brute_force(distance_matrix)
+    if x is None:
+        return [], np.inf
+    return x, fx
+
+
 def solve_tsp_lin_kernighan(
     distance_matrix: np.ndarray,
     x0: Optional[List[int]] = None,
@@ -176,7 +185,7 @@ def solve_tsp_lin_kernighan(
     """
     num_vertices = distance_matrix.shape[0]
     if num_vertices < 4:
-        return solve_tsp_brute_force(distance_matrix)
+        return _brute_force_solution(distance_matrix)
 
     hamiltonian_cycle, hamiltonian_cycle_distance = setup_initial_solution(
         distance_matrix=distance_matrix, x0=x0
