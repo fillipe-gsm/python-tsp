@@ -1,4 +1,5 @@
 """Module with a brute force TSP solver"""
+
 from itertools import permutations
 from typing import Any, List, Optional, Tuple
 

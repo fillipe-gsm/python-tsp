@@ -2,6 +2,7 @@
 Module with some variables used in most test files, but too simple to be
 considered fixtures
 """
+
 import numpy as np
 
 

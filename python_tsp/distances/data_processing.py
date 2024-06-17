@@ -1,4 +1,5 @@
 """Common data processing tasks between all distances"""
+
 from typing import Optional, Tuple
 
 import numpy as np
