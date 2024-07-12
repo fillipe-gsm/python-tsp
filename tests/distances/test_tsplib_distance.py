@@ -37,7 +37,7 @@ def test_geo_tsplib_file():
 
 
 def test_explicit_full_matrix_tsplib_file():
-    """Note that this test file is asymetric"""
+    """Note that this test file is asymmetric"""
     dimension = 17
     distance_matrix = tsplib_distance_matrix(EXPLICIT_FULL_MATRIX_FILE)
 

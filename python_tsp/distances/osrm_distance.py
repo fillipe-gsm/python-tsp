@@ -58,13 +58,13 @@ def osrm_distance_matrix(
             sources_batch = sources[start_i:end_i]
             destinations_batch = destinations[start_j:end_j]
 
-            cost_matrix[
-                start_i:end_i, start_j:end_j
-            ] = _get_batch_osrm_distance(
-                sources_batch,
-                destinations_batch,
-                osrm_server_address,
-                cost_type=cost_type,
+            cost_matrix[start_i:end_i, start_j:end_j] = (
+                _get_batch_osrm_distance(
+                    sources_batch,
+                    destinations_batch,
+                    osrm_server_address,
+                    cost_type=cost_type,
+                )
             )
 
     return cost_matrix
