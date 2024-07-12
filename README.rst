@@ -192,6 +192,12 @@ Release Notes and Changelog
 Releases 0.4.X
 --------------
 
+Release 0.4.2
+~~~~~~~~~~~~~
+- Fix bug `#53 <https://github.com/fillipe-gsm/python-tsp/issues/53>`_ that Lin and Kernighan and Record to Record heuristics fail on problems with < 4 nodes. Since this is a must for these heuristics to work, they now default to a brute force in such cases.
+
+Python support: Python >= 3.9
+
 Release 0.4.1
 ~~~~~~~~~~~~~
 - Add Lin and Kernighan and Record to Record methods to the list of heuristic solvers. Thanks @luanleonardo for this contribution.
