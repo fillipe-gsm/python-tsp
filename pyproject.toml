@@ -4,7 +4,7 @@ build-backend = "poetry.masonry.api"
 
 [tool.poetry]
 name = "python_tsp"
-version = "0.4.2"
+version = "0.5.0"
 description = "Library to solve the Traveling Salesperson Problem in pure Python."
 readme = "README_pypi.rst"
 authors = ["Fillipe Goulart <fillipe.gsm@tutanota.com>", "Luan Leonardo <>"]
@@ -42,5 +42,6 @@ include = ["*.py", "*.pyi", "**/pyproject.toml"]
 
 [tool.ruff.lint]
 select = [
-    "NPY201",# numpy2-deprecation
+    "NPY201", # numpy2-deprecation
 ]
+

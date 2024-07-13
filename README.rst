@@ -189,6 +189,15 @@ To help keeping this library relatively up to date and maintainable but not to a
 Release Notes and Changelog
 ===========================
 
+Releases 0.5.X
+--------------
+
+Release 0.5.0
+~~~~~~~~~~~~~
+- Upgrade Numpy dependency to 2.0 as per `#58 <https://github.com/fillipe-gsm/python-tsp/issues/58>`_. Thanks, @CoolCat467, for the contribution.
+
+Python support: Python >= 3.9
+
 Releases 0.4.X
 --------------
 
@@ -292,3 +301,4 @@ Contributors
 
 - @FrickTobias
 - @luanleonardo
+- @CoolCat467
