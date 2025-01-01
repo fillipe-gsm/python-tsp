@@ -12,6 +12,7 @@ References
     339-355.
 .. [2] 2-opt: https://en.wikipedia.org/wiki/2-opt
 """
+
 from random import Random
 from typing import Callable, Dict, Generator, List
 

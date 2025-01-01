@@ -189,8 +189,23 @@ To help keeping this library relatively up to date and maintainable but not to a
 Release Notes and Changelog
 ===========================
 
+Releases 0.5.X
+--------------
+
+Release 0.5.0
+~~~~~~~~~~~~~
+- Upgrade Numpy dependency to 2.0 as per `#58 <https://github.com/fillipe-gsm/python-tsp/issues/58>`_. Thanks, @CoolCat467, for the contribution.
+
+Python support: Python >= 3.9
+
 Releases 0.4.X
 --------------
+
+Release 0.4.2
+~~~~~~~~~~~~~
+- Fix bug `#53 <https://github.com/fillipe-gsm/python-tsp/issues/53>`_ that Lin and Kernighan and Record to Record heuristics fail on problems with < 4 nodes. Since this is a must for these heuristics to work, they now default to a brute force in such cases.
+
+Python support: Python >= 3.9
 
 Release 0.4.1
 ~~~~~~~~~~~~~
@@ -286,3 +301,4 @@ Contributors
 
 - @FrickTobias
 - @luanleonardo
+- @CoolCat467

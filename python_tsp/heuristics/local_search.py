@@ -1,4 +1,5 @@
 """Simple local search solver"""
+
 from timeit import default_timer
 from typing import List, Optional, Tuple, TextIO
 from random import Random
