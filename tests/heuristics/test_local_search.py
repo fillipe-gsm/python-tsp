@@ -1,3 +1,4 @@
+import random
 import sys
 from io import StringIO
 
@@ -66,6 +67,31 @@ def test_local_search_returns_equal_optimal_solution(
 
     assert xopt == x
     assert fopt == fx
+
+
+@pytest.mark.parametrize("scheme", PERTURBATION_SCHEMES)
+@pytest.mark.parametrize(
+    "distance_matrix", [distance_matrix1, distance_matrix2, distance_matrix3]
+)
+def test_local_search_calls_rng(scheme, distance_matrix):
+    """
+    Ensure that the rng is actually called when solving the TSP.
+    """
+
+    called = False
+
+    class psuedo_rng(random.Random):
+        def getrandbits(self, k: int, /) -> int:
+            nonlocal called
+            called = True
+            return super().getrandbits(k)
+
+    x = [0, 4, 2, 3, 1]
+    local_search.solve_tsp_local_search(
+        distance_matrix, x, perturbation_scheme=scheme, rng=psuedo_rng(42)
+    )
+
+    assert called
 
 
 @pytest.mark.parametrize("scheme", PERTURBATION_SCHEMES)
