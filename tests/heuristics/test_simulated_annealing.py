@@ -1,3 +1,4 @@
+import random
 import sys
 from io import StringIO
 
@@ -67,6 +68,30 @@ def test_simulated_annealing_with_time_constraints(permutation, scheme):
     )
 
     assert simulated_annealing.TIME_LIMIT_MSG in captured_output.getvalue()
+
+
+@pytest.mark.parametrize("scheme", PERTURBATION_SCHEMES)
+@pytest.mark.parametrize(
+    "distance_matrix", [distance_matrix1, distance_matrix2, distance_matrix3]
+)
+def test_simulated_annealing_calls_rng(scheme, distance_matrix):
+    """
+    Ensure that the rng is actually called when solving the TSP.
+    """
+
+    called = False
+
+    class psuedo_rng(random.Random):
+        def getrandbits(self, k: int, /) -> int:
+            nonlocal called
+            called = True
+            return super().getrandbits(k)
+
+    simulated_annealing.solve_tsp_simulated_annealing(
+        distance_matrix, perturbation_scheme=scheme, rng=psuedo_rng(42)
+    )
+
+    assert called
 
 
 def test_log_file_is_created_if_required(permutation, tmp_path):
