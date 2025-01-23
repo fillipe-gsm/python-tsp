@@ -49,7 +49,7 @@ def solve_tsp_local_search(
         Maximum number of iterations to perform. If not provided, the method
         only stops when a local minimum is obtained or if max_processing_time
         is provided
-        
+
     rng
         Random number generator to be passed to the pertubation scheme. If not
         provided, the initial random generator is used.
@@ -93,7 +93,9 @@ def solve_tsp_local_search(
     i = 0
     while improvement and (not stop_early):
         improvement = False
-        for n_index, xn in enumerate(neighborhood_gen[perturbation_scheme](x, rng=rng)):
+        for n_index, xn in enumerate(
+            neighborhood_gen[perturbation_scheme](x, rng)
+        ):
             i += 1
             if default_timer() - tic > max_processing_time:
                 _print_message(TIME_LIMIT_MSG, verbose, log_file_handler)
@@ -103,7 +105,6 @@ def solve_tsp_local_search(
                 _print_message(ITERATION_LIMIT_MSG, verbose, log_file_handler)
                 stop_early = True
                 break
-            
 
             fn = compute_permutation_distance(distance_matrix, xn)
 

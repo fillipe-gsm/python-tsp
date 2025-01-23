@@ -76,7 +76,9 @@ def solve_tsp_simulated_annealing(
     """
 
     x, fx = setup_initial_solution(distance_matrix, x0)
-    temp = _initial_temperature(distance_matrix, x, fx, perturbation_scheme, rng=rng)
+    temp = _initial_temperature(
+        distance_matrix, x, fx, perturbation_scheme, rng=rng
+    )
     max_processing_time = max_processing_time or inf
     log_file_handler = (
         open(log_file, "w", encoding="utf-8") if log_file else None
@@ -181,20 +183,22 @@ def _initial_temperature(
     return -dfx_mean / np.log(tau0)
 
 
-def _perturbation(x: List[int], perturbation_scheme: str, rng:  Optional[Random]):
+def _perturbation(
+    x: List[int], perturbation_scheme: str, rng: Optional[Random]
+):
     """Generate a random neighbor of a current solution ``x``
     In this case, we can use the generators created in the `local_search`
     module, and pick the first solution. Since the neighborhood is randomized,
     it is the same as creating a random perturbation.
     """
-    return next(neighborhood_gen[perturbation_scheme](x, rng=rng))
+    return next(neighborhood_gen[perturbation_scheme](x, rng))
 
 
-def _acceptance_rule(fx: float, fn: float, temp: float, rng: Optional[Random]) -> bool:
+def _acceptance_rule(
+    fx: float, fn: float, temp: float, rng: Optional[Random]
+) -> bool:
     """Metropolis acceptance rule"""
     rand = rng.random() if rng else np.random.rand()
 
     dfx = fn - fx
-    return (dfx < 0) or (
-        (dfx > 0) and (rand <= np.exp(-(fn - fx) / temp))
-    )
+    return (dfx < 0) or ((dfx > 0) and (rand <= np.exp(-(fn - fx) / temp)))

@@ -45,7 +45,7 @@ def solve_tsp_record_to_record(
     rng
         Random number generator to be passed to the pertubation scheme. If not
         provided, the initial random generator is used.
-        
+
     log_file
         If not `None`, creates a log file with details about the whole
         execution.
