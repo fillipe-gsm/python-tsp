@@ -88,10 +88,32 @@ def test_local_search_calls_rng(scheme, distance_matrix):
 
     x = [0, 4, 2, 3, 1]
     local_search.solve_tsp_local_search(
-        distance_matrix, x, perturbation_scheme=scheme, rng=psuedo_rng(42)
+        distance_matrix, x, perturbation_scheme=scheme, rng=psuedo_rng(0)
     )
 
     assert called
+
+
+@pytest.mark.parametrize("scheme", PERTURBATION_SCHEMES)
+@pytest.mark.parametrize(
+    "distance_matrix", [distance_matrix1, distance_matrix2, distance_matrix3]
+)
+def test_local_search_eql_with_same_seed(scheme, distance_matrix):
+    """
+    Ensure that the same solution is returned when using the same seed.
+    """
+
+    x = [0, 4, 2, 3, 1]
+    xopt, fopt = local_search.solve_tsp_local_search(
+        distance_matrix, x, perturbation_scheme=scheme, rng=random.Random(42)
+    )
+
+    xopt2, fopt2 = local_search.solve_tsp_local_search(
+        distance_matrix, x, perturbation_scheme=scheme, rng=random.Random(42)
+    )
+
+    assert all(e1 == e2 for e1, e2 in zip(xopt, xopt2))
+    assert fopt == fopt2
 
 
 @pytest.mark.parametrize("scheme", PERTURBATION_SCHEMES)
