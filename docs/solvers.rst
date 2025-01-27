@@ -113,10 +113,6 @@ Notice this local optimum may be different for distinct perturbation schemes and
         Maximum processing time in seconds. If not provided, the method stops
         only when a local minimum is obtained or if max_iterations is set.
 
-    max_iterations {None}
-        Maximum number of iteratons to run. If not provided, the method stops
-        only when a local minimum is obtained or if max_processing_time is set.
-
     rng {None}
         A python random number generator which can be seeded to ensure 
         consistent results given a call to this function. If not provided
@@ -178,11 +174,6 @@ An implementation of the `Simulated Annealing <https://en.wikipedia.org/wiki/Sim
         Maximum processing time in seconds. If not provided, the method stops
         only when there were 3 temperature cycles with no improvement or if
         max_iterations is set.
-
-    max_iterations {None}
-        Maximum number of iteratons to run. If not provided the method stops
-        only when there were 3 temperature cycles with no improvement or if
-        max_processing_time is set.
 
     rng {None}
         A python random number generator which can be seeded to ensure 

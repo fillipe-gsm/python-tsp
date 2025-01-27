@@ -14,7 +14,6 @@ from python_tsp.heuristics.perturbation_schemes import neighborhood_gen
 
 
 TIME_LIMIT_MSG = "WARNING: Stopping early due to time constraints"
-ITERATION_LIMIT_MSG = "WARNING: Stopping early due to iteration limit"
 
 
 def solve_tsp_local_search(
@@ -44,11 +43,6 @@ def solve_tsp_local_search(
     max_processing_time {None}
         Maximum processing time in seconds. If not provided, the method stops
         only when a local minimum is obtained
-
-    max_iterations {None}
-        Maximum number of iterations to perform. If not provided, the method
-        only stops when a local minimum is obtained or if max_processing_time
-        is provided
 
     rng
         Random number generator to be passed to the pertubation scheme. If not
@@ -90,19 +84,13 @@ def solve_tsp_local_search(
     stop_early = False
     improvement = True
 
-    i = 0
     while improvement and (not stop_early):
         improvement = False
         for n_index, xn in enumerate(
             neighborhood_gen[perturbation_scheme](x, rng)
         ):
-            i += 1
             if default_timer() - tic > max_processing_time:
                 _print_message(TIME_LIMIT_MSG, verbose, log_file_handler)
-                stop_early = True
-                break
-            if max_iterations and i > max_iterations:
-                _print_message(ITERATION_LIMIT_MSG, verbose, log_file_handler)
                 stop_early = True
                 break
 
