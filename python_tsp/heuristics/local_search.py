@@ -2,6 +2,7 @@
 
 from timeit import default_timer
 from typing import List, Optional, Tuple, TextIO
+from random import Random
 
 import numpy as np
 
@@ -20,6 +21,8 @@ def solve_tsp_local_search(
     x0: Optional[List[int]] = None,
     perturbation_scheme: str = "two_opt",
     max_processing_time: Optional[float] = None,
+    max_iterations: Optional[int] = None,
+    rng: Optional[Random] = None,
     log_file: Optional[str] = None,
     verbose: bool = False,
 ) -> Tuple[List, float]:
@@ -40,6 +43,10 @@ def solve_tsp_local_search(
     max_processing_time {None}
         Maximum processing time in seconds. If not provided, the method stops
         only when a local minimum is obtained
+
+    rng
+        Random number generator to be passed to the pertubation scheme. If not
+        provided, the initial random generator is used.
 
     log_file
         If not `None`, creates a log file with details about the whole
@@ -79,7 +86,9 @@ def solve_tsp_local_search(
 
     while improvement and (not stop_early):
         improvement = False
-        for n_index, xn in enumerate(neighborhood_gen[perturbation_scheme](x)):
+        for n_index, xn in enumerate(
+            neighborhood_gen[perturbation_scheme](x, rng)
+        ):
             if default_timer() - tic > max_processing_time:
                 _print_message(TIME_LIMIT_MSG, verbose, log_file_handler)
                 stop_early = True

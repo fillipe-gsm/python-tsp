@@ -1,3 +1,4 @@
+import random
 import pytest
 
 from python_tsp.heuristics import solve_tsp_record_to_record
@@ -75,6 +76,53 @@ def test_record_to_record_returns_equal_optimal_solution(
 
     assert xopt == optimal_permutation
     assert fopt == optimal_distance
+
+
+@pytest.mark.parametrize(
+    "distance_matrix", [distance_matrix1, distance_matrix2, distance_matrix3]
+)
+def test_record_to_record_calls_rng(distance_matrix):
+    """
+    Ensure that the rng is actually called when solving the TSP.
+    """
+
+    called = False
+
+    class psuedo_rng(random.Random):
+        def getrandbits(self, k: int, /) -> int:
+            nonlocal called
+            called = True
+            return super().getrandbits(k)
+
+    x0 = [0, 4, 2, 3, 1]
+    solve_tsp_record_to_record(
+        distance_matrix=distance_matrix,
+        x0=x0,
+        rng=psuedo_rng(0),
+    )
+
+    assert called
+
+
+@pytest.mark.parametrize(
+    "distance_matrix", [distance_matrix1, distance_matrix2, distance_matrix3]
+)
+def test_record_to_record_eql_with_same_seed(distance_matrix):
+    """
+    Ensure that the same solution is returned when using the same seed.
+    """
+
+    x0 = [0, 4, 2, 3, 1]
+    xopt, fopt = solve_tsp_record_to_record(
+        distance_matrix=distance_matrix, x0=x0, rng=random.Random(42)
+    )
+
+    xopt2, fopt2 = solve_tsp_record_to_record(
+        distance_matrix=distance_matrix, x0=x0, rng=random.Random(42)
+    )
+
+    assert all(e1 == e2 for e1, e2 in zip(xopt, xopt2))
+    assert fopt == fopt2
 
 
 def test_record_to_record_log_file_is_created_if_required(tmp_path):

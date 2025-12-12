@@ -111,13 +111,18 @@ Notice this local optimum may be different for distinct perturbation schemes and
 
     max_processing_time {None}
         Maximum processing time in seconds. If not provided, the method stops
-        only when a local minimum is obtained
+        only when a local minimum is obtained or if max_iterations is set.
 
-    log_file
+    rng {None}
+        A python random number generator which can be seeded to ensure 
+        consistent results given a call to this function. If not provided
+        the initial random number generator is used.
+
+    log_file {None}
         If not `None`, creates a log file with details about the whole
         execution
 
-    verbose
+    verbose {False}
         If true, prints algorithm status every iteration
 
 
@@ -138,6 +143,8 @@ An implementation of the `Simulated Annealing <https://en.wikipedia.org/wiki/Sim
       perturbation_scheme: str = "two_opt",
       alpha: float = 0.9,
       max_processing_time: Optional[float] = None,
+      max_iterations: Optional[int] = None,
+      rng: Optional[Random] = None,
       log_file: Optional[str] = None,
       verbose: bool = False,
   )
@@ -165,7 +172,13 @@ An implementation of the `Simulated Annealing <https://en.wikipedia.org/wiki/Sim
 
     max_processing_time {None}
         Maximum processing time in seconds. If not provided, the method stops
-        only when there were 3 temperature cycles with no improvement.
+        only when there were 3 temperature cycles with no improvement or if
+        max_iterations is set.
+
+    rng {None}
+        A python random number generator which can be seeded to ensure 
+        consistent results given a call to this function. If not provided
+        the initial random number generator is used.
 
     log_file {None}
         If not `None`, creates a log file with details about the whole
@@ -209,11 +222,11 @@ A basic Lin and Kernighan implementation is provided. It can be said that the qu
     x0
         Initial permutation. If not provided, it starts with a random path.
 
-    log_file
+    log_file {None}
         If not `None`, creates a log file with details about the whole
         execution.
 
-    verbose
+    verbose {False}
         If true, prints algorithm status every iteration.
 
 
@@ -233,6 +246,7 @@ Depending on the ``max_iterations`` parameter set, very high quality solutions c
         distance_matrix: np.ndarray,
         x0: Optional[List[int]] = None,
         max_iterations: Optional[int] = None,
+        rng: Optional[Random] = None,
         log_file: Optional[str] = None,
         verbose: bool = False,
     )
@@ -248,13 +262,18 @@ Depending on the ``max_iterations`` parameter set, very high quality solutions c
     x0
         Initial permutation. If not provided, it starts with a random path.
 
-    max_iterations
+    max_iterations {None}
         The maximum number of iterations for the algorithm. If not specified,
         it defaults to the number of nodes in the distance matrix.
 
-    log_file
+    rng {None}
+        A python random number generator which can be seeded to ensure 
+        consistent results given a call to this function. If not provided
+        the initial random number generator is used.
+
+    log_file {None}
         If not `None`, creates a log file with details about the whole
         execution.
 
-    verbose
+    verbose {False}
         If true, prints algorithm status every iteration.

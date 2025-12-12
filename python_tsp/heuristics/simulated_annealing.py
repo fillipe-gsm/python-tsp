@@ -1,5 +1,6 @@
 from math import inf
 from timeit import default_timer
+from random import Random
 from typing import List, Optional, Tuple, TextIO
 
 import numpy as np
@@ -22,6 +23,7 @@ def solve_tsp_simulated_annealing(
     perturbation_scheme: str = "two_opt",
     alpha: float = 0.9,
     max_processing_time: Optional[float] = None,
+    rng: Optional[Random] = None,
     log_file: Optional[str] = None,
     verbose: bool = False,
 ) -> Tuple[List, float]:
@@ -72,7 +74,9 @@ def solve_tsp_simulated_annealing(
     """
 
     x, fx = setup_initial_solution(distance_matrix, x0)
-    temp = _initial_temperature(distance_matrix, x, fx, perturbation_scheme)
+    temp = _initial_temperature(
+        distance_matrix, x, fx, perturbation_scheme, rng=rng
+    )
     max_processing_time = max_processing_time or inf
     log_file_handler = (
         open(log_file, "w", encoding="utf-8") if log_file else None
@@ -93,10 +97,10 @@ def solve_tsp_simulated_annealing(
                 stop_early = True
                 break
 
-            xn = _perturbation(x, perturbation_scheme)
+            xn = _perturbation(x, perturbation_scheme, rng=rng)
             fn = compute_permutation_distance(distance_matrix, xn)
 
-            if _acceptance_rule(fx, fn, temp):
+            if _acceptance_rule(fx, fn, temp, rng=rng):
                 x, fx = xn, fn
                 k_accepted += 1
                 k_noimprovements = 0
@@ -136,6 +140,7 @@ def _initial_temperature(
     x: List[int],
     fx: float,
     perturbation_scheme: str,
+    rng: Optional[Random],
 ) -> float:
     """Compute initial temperature
     Instead of relying on problem-dependent parameters, this function estimates
@@ -159,7 +164,7 @@ def _initial_temperature(
     # Step 1
     dfx_list = []
     for _ in range(100):
-        xn = _perturbation(x, perturbation_scheme)
+        xn = _perturbation(x, perturbation_scheme, rng=rng)
         fn = compute_permutation_distance(distance_matrix, xn)
         dfx_list.append(fn - fx)
 
@@ -170,19 +175,22 @@ def _initial_temperature(
     return -dfx_mean / np.log(tau0)
 
 
-def _perturbation(x: List[int], perturbation_scheme: str):
+def _perturbation(
+    x: List[int], perturbation_scheme: str, rng: Optional[Random]
+):
     """Generate a random neighbor of a current solution ``x``
     In this case, we can use the generators created in the `local_search`
     module, and pick the first solution. Since the neighborhood is randomized,
     it is the same as creating a random perturbation.
     """
-    return next(neighborhood_gen[perturbation_scheme](x))
+    return next(neighborhood_gen[perturbation_scheme](x, rng))
 
 
-def _acceptance_rule(fx: float, fn: float, temp: float) -> bool:
+def _acceptance_rule(
+    fx: float, fn: float, temp: float, rng: Optional[Random]
+) -> bool:
     """Metropolis acceptance rule"""
+    rand = rng.random() if rng else np.random.rand()
 
     dfx = fn - fx
-    return (dfx < 0) or (
-        (dfx > 0) and (np.random.rand() <= np.exp(-(fn - fx) / temp))
-    )
+    return (dfx < 0) or ((dfx > 0) and (rand <= np.exp(-(fn - fx) / temp)))
