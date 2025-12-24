@@ -22,6 +22,7 @@ def solve_tsp_local_search(
     max_processing_time: Optional[float] = None,
     log_file: Optional[str] = None,
     verbose: bool = False,
+    starting_node: int = 0,
 ) -> Tuple[List, float]:
     """Solve a TSP problem with a local search heuristic
 
@@ -48,6 +49,9 @@ def solve_tsp_local_search(
     verbose
         If true, prints algorithm status every iteration
 
+    starting_node
+        Determines the starting node of the final permutation. Defaults to 0.
+
     Returns
     -------
     A permutation of nodes from 0 to n - 1 that produces the least total
@@ -66,7 +70,9 @@ def solve_tsp_local_search(
         3. Repeat step 2 until all neighbors of `x` are tried and there is no
         improvement. Return `x`, `fx` as solution.
     """
-    x, fx = setup_initial_solution(distance_matrix, x0)
+    x, fx = setup_initial_solution(
+        distance_matrix, x0, starting_node=starting_node
+    )
     max_processing_time = max_processing_time or np.inf
 
     log_file_handler = (

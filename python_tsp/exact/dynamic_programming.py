@@ -7,6 +7,7 @@ import numpy as np
 def solve_tsp_dynamic_programming(
     distance_matrix: np.ndarray,
     maxsize: Optional[int] = None,
+    starting_node: int = 0,
 ) -> Tuple[List, float]:
     """
     Solve TSP to optimality with dynamic programming
@@ -21,6 +22,9 @@ def solve_tsp_dynamic_programming(
         Parameter passed to ``lru_cache`` decorator. Used to define the maximum
         size for the recursion tree. Defaults to `None`, which essentially
         means "take as much space as needed".
+
+    starting_node
+        Determines the starting node of the final permutation. Defaults to 0.
 
     Returns
     -------
@@ -89,16 +93,20 @@ def solve_tsp_dynamic_programming(
     ---------
     https://en.wikipedia.org/wiki/Held%E2%80%93Karp_algorithm#cite_note-5
     """
-    # Get initial set {1, 2, ..., tsp_size} as a frozenset because @lru_cache
-    # requires a hashable type
-    N = frozenset(range(1, distance_matrix.shape[0]))
+    # Get initial set {0, 1, 2, ..., tsp_size} \ {starting_node} as a frozenset
+    # because @lru_cache requires a hashable type
+    N = frozenset(
+        node
+        for node in range(distance_matrix.shape[0])
+        if node != starting_node
+    )
     memo: Dict[Tuple, int] = {}
 
     # Step 1: get minimum distance
     @lru_cache(maxsize=maxsize)
     def dist(ni: int, N: frozenset) -> float:
         if not N:
-            return distance_matrix[ni, 0]
+            return distance_matrix[ni, starting_node]
 
         # Store the costs in the form (nj, dist(nj, N))
         costs = [
@@ -110,11 +118,11 @@ def solve_tsp_dynamic_programming(
 
         return min_cost
 
-    best_distance = dist(0, N)
+    best_distance = dist(starting_node, N)
 
     # Step 2: get path with the minimum distance
-    ni = 0  # start at the origin
-    solution = [0]
+    ni = starting_node  # start at the origin
+    solution = [starting_node]
 
     while N:
         ni = memo[(ni, N)]
